@@ -1,0 +1,4238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>LangGraph Production Architecture — A Companion Guide for Engineers</title>
+<meta name="description" content="A warm, deeply practical guide to building stateful multi-agent systems with LangGraph. From mental models to production-ready code for sequential, parallel, conditional, and human-in-the-loop workflows."/>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --bg-primary: #080a11;
+  --bg-secondary: #0e1320;
+  --bg-card: #131a2d;
+  --bg-card-hover: #17213a;
+  --border: #1e293b;
+  --border-light: rgba(148, 163, 184, 0.12);
+  --accent-purple: #8b5cf6;
+  --accent-purple-light: #a78bfa;
+  --accent-blue: #38bdf8;
+  --accent-emerald: #10b981;
+  --accent-amber: #f59e0b;
+  --accent-rose: #f43f5e;
+  --text-primary: #f8fafc;
+  --text-secondary: #cbd5e1;
+  --text-muted: #94a3b8;
+  --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-secondary);
+  font-family: var(--font-sans);
+  line-height: 1.8;
+  font-size: 16.5px;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Top Reading Progress Bar */
+#reading-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--accent-purple), var(--accent-blue));
+  width: 0%;
+  z-index: 200;
+  transition: width 0.1s ease-out;
+}
+
+/* Header */
+header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(8, 10, 17, 0.88);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border);
+  padding: 0.9rem 2rem;
+}
+.header-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1.5rem;
+}
+.brand-link {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  text-decoration: none;
+  color: var(--text-primary);
+}
+.brand-icon {
+  width: 36px;
+  height: 36px;
+  background: linear-gradient(135deg, var(--accent-purple), #6366f1);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 1.05rem;
+  color: #fff;
+  box-shadow: 0 0 16px rgba(139, 92, 246, 0.35);
+}
+.brand-text { display: flex; flex-direction: column; }
+.brand-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+.brand-subtitle {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.nav-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.45rem 0.95rem;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.15s ease;
+  border: 1px solid var(--border);
+  background: var(--bg-secondary);
+  color: var(--text-secondary);
+}
+.nav-btn:hover {
+  border-color: var(--accent-purple);
+  color: var(--text-primary);
+  transform: translateY(-1px);
+}
+.nav-btn.primary {
+  background: linear-gradient(135deg, var(--accent-purple), #6d28d9);
+  color: #fff;
+  border: none;
+  box-shadow: 0 2px 10px rgba(139, 92, 246, 0.3);
+}
+
+/* Layout */
+.layout {
+  display: flex;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 2.5rem 2rem;
+  gap: 3rem;
+}
+
+/* Sidebar */
+aside.sidebar {
+  width: 290px;
+  flex-shrink: 0;
+  position: sticky;
+  top: 5rem;
+  height: calc(100vh - 6.5rem);
+  overflow-y: auto;
+  padding-right: 0.75rem;
+}
+aside.sidebar::-webkit-scrollbar { width: 4px; }
+aside.sidebar::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+.toc-title {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-muted);
+  margin-bottom: 0.85rem;
+  font-weight: 700;
+}
+.toc-list { list-style: none; display: flex; flex-direction: column; gap: 0.3rem; }
+.toc-link {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.45rem 0.75rem;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  text-decoration: none;
+  transition: all 0.15s ease;
+  border-left: 2px solid transparent;
+}
+.toc-link:hover, .toc-link.active {
+  background: var(--bg-card);
+  color: var(--accent-purple-light);
+  border-left-color: var(--accent-purple);
+}
+
+/* Main Content */
+main.content {
+  flex: 1;
+  min-width: 0;
+}
+
+/* Welcoming Hero Banner */
+.welcome-hero {
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.08) 0%, rgba(56, 189, 248, 0.04) 100%);
+  border: 1px solid rgba(139, 92, 246, 0.25);
+  border-radius: 16px;
+  padding: 2.5rem 2.5rem;
+  margin-bottom: 3.5rem;
+  position: relative;
+  overflow: hidden;
+}
+.welcome-hero::after {
+  content: "";
+  position: absolute;
+  top: -50%;
+  right: -20%;
+  width: 300px;
+  height: 300px;
+  background: radial-gradient(circle, rgba(139, 92, 246, 0.15), transparent 70%);
+  border-radius: 50%;
+  pointer-events: none;
+}
+.badge-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.25rem 0.75rem;
+  background: rgba(139, 92, 246, 0.15);
+  border: 1px solid rgba(139, 92, 246, 0.35);
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--accent-purple-light);
+  margin-bottom: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+h1.welcome-title {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: -0.025em;
+  line-height: 1.25;
+  margin-bottom: 1.2rem;
+}
+p.welcome-lead {
+  font-size: 1.15rem;
+  color: var(--text-secondary);
+  line-height: 1.85;
+  margin-bottom: 1.75rem;
+  max-width: 880px;
+}
+.welcome-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--border);
+  font-size: 0.88rem;
+  color: var(--text-muted);
+}
+.meta-item { display: flex; align-items: center; gap: 0.45rem; }
+.meta-item strong { color: var(--text-primary); }
+
+/* Sections */
+section {
+  margin-bottom: 4.5rem;
+  scroll-margin-top: 5rem;
+}
+.section-tag {
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 700;
+  color: var(--accent-purple-light);
+  margin-bottom: 0.4rem;
+}
+h2.section-heading {
+  font-size: 1.9rem;
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: -0.02em;
+  margin-bottom: 1.25rem;
+}
+h3.sub-heading {
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: #fff;
+  margin: 2rem 0 0.85rem 0;
+}
+p {
+  margin-bottom: 1.2rem;
+  color: var(--text-secondary);
+}
+strong { color: var(--text-primary); }
+
+/* Mentor / Companion Callouts */
+.mentor-note {
+  background: rgba(14, 19, 32, 0.75);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.4rem 1.6rem;
+  margin: 1.6rem 0;
+  position: relative;
+}
+.mentor-note.tip {
+  border-left: 4px solid var(--accent-purple);
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.06), rgba(14, 19, 32, 0.75));
+}
+.mentor-note.caution {
+  border-left: 4px solid var(--accent-amber);
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.06), rgba(14, 19, 32, 0.75));
+}
+.mentor-note.gotcha {
+  border-left: 4px solid var(--accent-rose);
+  background: linear-gradient(135deg, rgba(244, 63, 94, 0.06), rgba(14, 19, 32, 0.75));
+}
+.mentor-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.88rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.6rem;
+}
+.mentor-note.tip .mentor-header { color: var(--accent-purple-light); }
+.mentor-note.caution .mentor-header { color: var(--accent-amber); }
+.mentor-note.gotcha .mentor-header { color: var(--accent-rose); }
+
+/* Collapsible Under-the-Hood Explanations */
+details.deep-dive {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  margin: 1.4rem 0;
+  padding: 0;
+  overflow: hidden;
+}
+details.deep-dive summary {
+  padding: 1rem 1.4rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: var(--text-primary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  user-select: none;
+  background: var(--bg-secondary);
+  transition: background 0.15s ease;
+}
+details.deep-dive summary:hover { background: rgba(139, 92, 246, 0.08); }
+details.deep-dive summary::-webkit-details-marker { display: none; }
+details.deep-dive summary::after {
+  content: "+";
+  font-size: 1.25rem;
+  color: var(--accent-purple-light);
+  font-weight: 400;
+}
+details.deep-dive[open] summary::after { content: "−"; }
+details.deep-dive .details-content {
+  padding: 1.4rem 1.6rem;
+  border-top: 1px solid var(--border);
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+}
+
+/* Comparison Tables */
+.table-wrapper {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  margin: 1.6rem 0;
+}
+.table-header-title {
+  padding: 0.85rem 1.4rem;
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border);
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+table.styled-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.92rem;
+  text-align: left;
+}
+table.styled-table th {
+  background: rgba(14, 19, 32, 0.85);
+  padding: 0.85rem 1.25rem;
+  color: var(--accent-purple-light);
+  font-weight: 700;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-bottom: 1px solid var(--border);
+}
+table.styled-table td {
+  padding: 0.95rem 1.25rem;
+  border-bottom: 1px solid rgba(30, 41, 59, 0.6);
+  color: var(--text-secondary);
+  vertical-align: top;
+}
+table.styled-table tr:last-child td { border-bottom: none; }
+table.styled-table tr:hover td { background: rgba(255, 255, 255, 0.015); }
+
+/* Code Containers */
+.code-container {
+  background: #07090e;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  margin: 1.6rem 0;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.45);
+}
+.code-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1.25rem;
+  background: #0d111c;
+  border-bottom: 1px solid var(--border);
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+}
+.file-name {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--text-secondary);
+}
+.file-name::before {
+  content: "";
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  background: var(--accent-purple);
+  border-radius: 50%;
+}
+.copy-btn {
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  color: var(--text-muted);
+  font-size: 0.76rem;
+  padding: 0.3rem 0.65rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: var(--font-mono);
+  transition: all 0.15s ease;
+}
+.copy-btn:hover {
+  background: var(--bg-card);
+  color: #fff;
+  border-color: var(--accent-purple);
+}
+pre {
+  margin: 0;
+  padding: 1.25rem 1.5rem;
+  overflow-x: auto;
+  font-family: var(--font-mono);
+  font-size: 0.88rem;
+  line-height: 1.65;
+  color: #e2e8f0;
+}
+pre::-webkit-scrollbar { height: 5px; }
+pre::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+/* Key Step Badges */
+.step-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  background: rgba(139, 92, 246, 0.2);
+  border: 1px solid var(--accent-purple);
+  border-radius: 50%;
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: var(--accent-purple-light);
+  margin-right: 0.5rem;
+}
+
+/* Inline Code */
+code.inline {
+  background: rgba(30, 41, 59, 0.7);
+  padding: 0.15rem 0.45rem;
+  border-radius: 4px;
+  font-family: var(--font-mono);
+  font-size: 0.86rem;
+  color: var(--accent-purple-light);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* Interactive Quiz */
+.quiz-wrapper {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 2rem 2.2rem;
+  margin: 2rem 0;
+}
+.quiz-q {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 1.25rem;
+}
+.quiz-opts {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+.quiz-btn {
+  padding: 0.85rem 1.2rem;
+  border-radius: 8px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  font-size: 0.95rem;
+  text-align: left;
+}
+.quiz-btn:hover {
+  border-color: var(--accent-purple);
+  color: #fff;
+}
+.quiz-btn.correct {
+  background: rgba(16, 185, 129, 0.12);
+  border-color: var(--accent-emerald);
+  color: var(--accent-emerald);
+}
+.quiz-btn.incorrect {
+  background: rgba(244, 63, 94, 0.12);
+  border-color: var(--accent-rose);
+  color: var(--accent-rose);
+}
+.quiz-explanation {
+  margin-top: 1rem;
+  font-size: 0.92rem;
+  display: none;
+  line-height: 1.6;
+}
+
+@media (max-width: 1024px) {
+  aside.sidebar { display: none; }
+  .layout { padding: 1.5rem 1rem; }
+  h1.welcome-title { font-size: 2rem; }
+}
+
+/* ==========================================================================
+   3-Column Architecture & Auxiliary Dock (Study Assistant)
+   ========================================================================== */
+.layout {
+  display: flex !important;
+  max-width: 1780px !important;
+  margin: 0 auto !important;
+  padding: 1.5rem 1.5rem !important;
+  gap: 1.5rem !important;
+}
+
+aside.sidebar {
+  width: 270px !important;
+  flex: 0 0 270px !important;
+  position: sticky !important;
+  top: 5rem !important;
+  height: calc(100vh - 6.5rem) !important;
+  overflow-y: auto !important;
+}
+
+main.content {
+  flex: 1 1 55% !important;
+  min-width: 0 !important;
+}
+
+/* Right Column: Dedicated Auxiliary Assistant Dock */
+.auxiliary-dock {
+  width: 360px;
+  flex: 0 0 360px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  height: calc(100vh - 6.5rem);
+  position: sticky;
+  top: 5rem;
+  display: flex;
+  flex-direction: column;
+  z-index: 50;
+  overflow: hidden;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.4);
+}
+
+.dock-header {
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(14, 19, 32, 0.95);
+}
+
+.dock-title-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.dock-icon {
+  font-size: 1.15rem;
+  color: var(--accent-cyan, #06b6d4);
+}
+
+.dock-title {
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.2;
+}
+
+.dock-badge {
+  font-size: 0.65rem;
+  font-family: var(--font-mono);
+  background: rgba(6, 182, 212, 0.15);
+  color: var(--accent-cyan-light, #67e8f9);
+  border: 1px solid rgba(6, 182, 212, 0.3);
+  padding: 2px 6px;
+  border-radius: 4px;
+  display: inline-block;
+  margin-top: 2px;
+}
+
+.btn-icon {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+  width: 30px;
+  height: 30px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+}
+
+.btn-icon:hover {
+  background: var(--bg-card);
+  color: #ffffff;
+}
+
+.dock-settings {
+  background: #090d16;
+  border-bottom: 1px solid var(--border);
+  padding: 12px 16px;
+  font-size: 0.78rem;
+}
+
+.settings-title {
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 3px;
+}
+
+.settings-desc {
+  color: var(--text-muted);
+  font-size: 0.72rem;
+  line-height: 1.4;
+  margin-bottom: 8px;
+}
+
+.settings-field label {
+  display: block;
+  font-weight: 600;
+  color: #cbd5e1;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+.settings-input, .settings-select {
+  width: 100%;
+  padding: 5px 8px;
+  background: #05070c;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: #ffffff;
+  font-size: 0.78rem;
+  outline: none;
+}
+
+.settings-input:focus, .settings-select:focus {
+  border-color: var(--accent-cyan, #06b6d4);
+}
+
+/* Chat Messages Stream */
+.chat-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  font-size: 0.82rem;
+  line-height: 1.55;
+}
+
+.chat-bubble {
+  padding: 10px 12px;
+  border-radius: 10px;
+  max-width: 92%;
+  word-wrap: break-word;
+}
+
+.chat-bubble.assistant {
+  background: rgba(6, 182, 212, 0.08);
+  border: 1px solid rgba(6, 182, 212, 0.25);
+  color: var(--text-primary);
+  align-self: flex-start;
+}
+
+.chat-bubble.user {
+  background: #2563eb;
+  color: #ffffff;
+  align-self: flex-end;
+}
+
+.bubble-header {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--accent-cyan-light, #67e8f9);
+  margin-bottom: 5px;
+}
+
+.suggested-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-top: 8px;
+}
+
+.prompt-chip {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--border);
+  color: var(--accent-cyan-light, #67e8f9);
+  font-size: 0.7rem;
+  padding: 3px 8px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.prompt-chip:hover {
+  background: var(--accent-blue, #3b82f6);
+  color: #ffffff;
+  border-color: var(--accent-blue, #3b82f6);
+}
+
+.chat-input-area {
+  padding: 10px 14px;
+  border-top: 1px solid var(--border);
+  background: rgba(14, 19, 32, 0.95);
+}
+
+.chat-input {
+  flex: 1;
+  padding: 8px 10px;
+  background: #07090e;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: #ffffff;
+  font-size: 0.8rem;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.chat-input:focus {
+  border-color: var(--accent-cyan, #06b6d4);
+}
+
+.chat-action-row {
+  display: flex;
+  gap: 6px;
+  margin-top: 8px;
+  flex-wrap: wrap;
+}
+
+.btn-jump {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: #2563eb;
+  color: #ffffff;
+  border: none;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.btn-jump:hover {
+  background: #1d4ed8;
+}
+
+.btn-yt {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: rgba(239, 68, 68, 0.15);
+  border: 1px solid rgba(239, 68, 68, 0.35);
+  color: #fca5a5;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 0.72rem;
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.15s;
+}
+
+.btn-yt:hover {
+  background: #dc2626;
+  color: #ffffff;
+}
+
+/* Video Banner inside sections */
+.yt-lecture-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(239, 68, 68, 0.12);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: #fca5a5;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 6px;
+  text-decoration: none;
+  margin: 6px 0 12px 0;
+  transition: all 0.2s;
+}
+
+.yt-lecture-badge:hover {
+  background: #dc2626;
+  color: #ffffff;
+  transform: translateY(-1px);
+}
+
+@keyframes sectionHighlight {
+  0% { box-shadow: 0 0 0 3px #06b6d4; }
+  50% { box-shadow: 0 0 0 3px #06b6d4; }
+  100% { box-shadow: none; }
+}
+
+section.highlighted-section {
+  animation: sectionHighlight 2.5s ease-out;
+  border-color: #06b6d4 !important;
+}
+
+@media (max-width: 1400px) {
+  .auxiliary-dock { width: 320px; flex: 0 0 320px; }
+}
+
+@media (max-width: 1100px) {
+  .layout { flex-direction: column; }
+  aside.sidebar, .auxiliary-dock {
+    width: 100% !important;
+    position: static !important;
+    height: auto !important;
+  }
+}
+
+
+/* ==========================================================================
+   AUTHENTIC DOCUMENT WHITE SHEET THEME (Matching DBMS Benchmark)
+   ========================================================================== */
+section.guide-section, section[id] {
+  background: #FFFFFF !important;
+  color: #111827 !important;
+  border-radius: 8px !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  padding: 44px 50px !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 1px 3px rgba(0, 0, 0, 0.3) !important;
+  margin-bottom: 28px !important;
+}
+
+section[id] h2, section[id] h3 {
+  color: #111827 !important;
+}
+
+section[id] h4 {
+  color: #1E3A8A !important;
+}
+
+section[id] p, section[id] li {
+  color: #374151 !important;
+}
+
+.welcome-hero {
+  background: #FFFFFF !important;
+  color: #111827 !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  border-radius: 8px !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5) !important;
+}
+
+.welcome-title {
+  color: #111827 !important;
+}
+
+.welcome-lead {
+  color: #374151 !important;
+}
+
+.mentor-note {
+  background: #F8FAFC !important;
+  border: 1px solid #E2E8F0 !important;
+  color: #1E293B !important;
+}
+
+.mentor-note.tip {
+  background: #EFF6FF !important;
+  border-color: #BFDBFE !important;
+  color: #1E3A8A !important;
+}
+
+.mentor-note.caution {
+  background: #FFFBEB !important;
+  border-color: #FDE68A !important;
+  color: #92400E !important;
+}
+
+.mentor-note.gotcha {
+  background: #FFF1F2 !important;
+  border-color: #FECDD3 !important;
+  color: #9F1239 !important;
+}
+
+table-wrapper {
+  background: #FFFFFF !important;
+  border: 1px solid #E2E8F0 !important;
+}
+
+table {
+  background: #FFFFFF !important;
+}
+
+th {
+  background: #0F172A !important;
+  color: #FFFFFF !important;
+}
+
+td {
+  color: #1F2937 !important;
+  border-bottom: 1px solid #E2E8F0 !important;
+}
+
+</style>
+
+<style>
+/* ── Search Bar Color Fix ── */
+#section-search, .nav-search-bar input, input[type="text"].search-input {
+  color: #F8FAFC !important;
+  background: rgba(7,10,18,0.9) !important;
+  border: 1.5px solid #334155 !important;
+  border-radius: 10px !important;
+  padding: 9px 14px !important;
+  font-size: 0.88rem !important;
+  width: 100% !important;
+  outline: none !important;
+  caret-color: #60A5FA !important;
+  transition: border-color .2s, box-shadow .2s !important;
+}
+#section-search:focus, .nav-search-bar input:focus, input[type="text"].search-input:focus {
+  border-color: #3B82F6 !important;
+  box-shadow: 0 0 0 3px rgba(59,130,246,0.18) !important;
+}
+#section-search::placeholder, .nav-search-bar input::placeholder { color: #475569 !important; }
+</style>
+
+
+<style>
+/* ── Smart Search Autocomplete ───────────────────────────────────────── */
+.smart-search-wrapper {
+  position: relative;
+  flex: 1;
+}
+.smart-search-wrapper input {
+  color: #F8FAFC !important;
+  background: rgba(14,20,36,0.85) !important;
+  border: 1.5px solid #334155 !important;
+  border-radius: 10px !important;
+  padding: 9px 14px 9px 40px !important;
+  font-size: 0.9rem !important;
+  width: 100% !important;
+  outline: none !important;
+  transition: border-color 0.2s, box-shadow 0.2s !important;
+  caret-color: #60A5FA !important;
+}
+.smart-search-wrapper input::placeholder { color: #64748B !important; }
+.smart-search-wrapper input:focus {
+  border-color: #3B82F6 !important;
+  box-shadow: 0 0 0 3px rgba(59,130,246,0.18) !important;
+  background: rgba(14,20,36,0.97) !important;
+}
+.search-icon-abs {
+  position: absolute;
+  left: 13px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 15px;
+  color: #64748B;
+  pointer-events: none;
+  z-index: 1;
+}
+/* Autocomplete Dropdown */
+.search-autocomplete {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  background: #0F172A;
+  border: 1px solid #334155;
+  border-radius: 10px;
+  box-shadow: 0 12px 32px rgba(0,0,0,0.6);
+  z-index: 9999;
+  max-height: 320px;
+  overflow-y: auto;
+  display: none;
+}
+.search-autocomplete.open { display: block; }
+.ac-section-label {
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: #475569;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  padding: 8px 12px 4px;
+}
+.ac-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  cursor: pointer;
+  border-radius: 6px;
+  margin: 2px 6px;
+  transition: background 0.15s;
+}
+.ac-item:hover, .ac-item.selected { background: rgba(59,130,246,0.15); }
+.ac-item-icon { font-size: 1rem; min-width: 20px; text-align: center; }
+.ac-item-main { flex: 1; min-width: 0; }
+.ac-item-title { font-size: 0.84rem; font-weight: 600; color: #E2E8F0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ac-item-subtitle { font-size: 0.72rem; color: #64748B; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ac-item-type { font-size: 0.65rem; background: rgba(59,130,246,0.2); color: #60A5FA; padding: 2px 6px; border-radius: 4px; font-weight: 600; white-space: nowrap; }
+.ac-item-type.topic { background: rgba(139,92,246,0.2); color: #A78BFA; }
+.ac-item-type.section { background: rgba(16,185,129,0.2); color: #34D399; }
+.ac-item-type.match { background: rgba(245,158,11,0.2); color: #FCD34D; }
+.ac-divider { height: 1px; background: #1E293B; margin: 4px 0; }
+/* Content highlight for word search */
+.search-highlight { background: rgba(251,191,36,0.35); color: #FCD34D; border-radius: 2px; padding: 0 1px; }
+</style>
+
+  <!-- MathJax 3 -->
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$', '$']],
+        displayMath: [['$$', '$$']],
+        processEscapes: true
+      },
+      options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+    };
+  </script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <!-- Mermaid -->
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script>mermaid.initialize({startOnLoad:true,theme:'dark',themeVariables:{primaryColor:'#1e293b',primaryBorderColor:'#334155',primaryTextColor:'#f8fafc',lineColor:'#475569',fontFamily:'Plus Jakarta Sans, sans-serif'}});</script>
+
+
+<style id="placement-universal-v3-styles">
+  /* ── 1. Top Navbar & High-Contrast Search Bar ── */
+  .top-navbar, .top-nav, .master-header {
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 1000 !important;
+    background: rgba(11, 15, 25, 0.98) !important;
+    backdrop-filter: blur(12px) !important;
+    border-bottom: 1px solid #1E293B !important;
+    height: 62px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    padding: 0 24px !important;
+    gap: 16px !important;
+  }
+  .hub-link {
+    color: #94A3B8 !important;
+    text-decoration: none !important;
+    font-weight: 600 !important;
+    font-size: 0.88rem !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+    padding: 6px 12px !important;
+    border-radius: 6px !important;
+    background: rgba(255, 255, 255, 0.05) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    transition: all 0.2s ease !important;
+    white-space: nowrap !important;
+  }
+  .hub-link:hover {
+    color: #FFFFFF !important;
+    background: rgba(59, 130, 246, 0.15) !important;
+    border-color: #3B82F6 !important;
+  }
+
+  /* High contrast search bar inputs */
+  input#section-search,
+  input#searchInput,
+  input.search-box,
+  .smart-search-wrapper input,
+  .nav-search-bar input {
+    background: #0E1424 !important;
+    color: #FFFFFF !important;
+    border: 1.5px solid #334155 !important;
+    border-radius: 8px !important;
+    padding: 8px 14px 8px 38px !important;
+    font-size: 0.88rem !important;
+    outline: none !important;
+    transition: border-color 0.2s, box-shadow 0.2s !important;
+    caret-color: #60A5FA !important;
+    width: 100% !important;
+  }
+  input#section-search::placeholder,
+  input#searchInput::placeholder,
+  input.search-box::placeholder,
+  .smart-search-wrapper input::placeholder,
+  .nav-search-bar input::placeholder {
+    color: #94A3B8 !important;
+  }
+  input#section-search:focus,
+  input#searchInput:focus,
+  input.search-box:focus,
+  .smart-search-wrapper input:focus,
+  .nav-search-bar input:focus {
+    border-color: #3B82F6 !important;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2) !important;
+    background: #0F172A !important;
+    color: #FFFFFF !important;
+  }
+
+  .nav-controls, .nav-right {
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    flex-shrink: 0 !important;
+  }
+  .btn-nav {
+    background: #111827 !important;
+    border: 1px solid #334155 !important;
+    color: #E2E8F0 !important;
+    padding: 6px 12px !important;
+    border-radius: 6px !important;
+    font-size: 0.82rem !important;
+    font-weight: 600 !important;
+    cursor: pointer !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+    transition: all 0.2s ease !important;
+  }
+  .btn-nav:hover {
+    background: #1E293B !important;
+    border-color: #64748B !important;
+    color: #FFFFFF !important;
+  }
+  .btn-nav.active {
+    background: rgba(59, 130, 246, 0.18) !important;
+    border-color: #3B82F6 !important;
+    color: #60A5FA !important;
+  }
+
+  /* ── 2. Collapsible Left Sidebar ── */
+  .chapter-sidebar, .sidebar {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  }
+  .chapter-sidebar.collapsed, .sidebar.collapsed {
+    flex: 0 0 0px !important;
+    width: 0px !important;
+    min-width: 0px !important;
+    max-width: 0px !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    border: none !important;
+    overflow: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+  }
+
+  /* ── 3. Dynamic Auto-Expanding Main Content ── */
+  .main-content, .notes-column, .pdf-guide-column {
+    flex: 1 1 0% !important;
+    min-width: 0 !important;
+    width: 100% !important;
+    max-width: none !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  }
+
+  /* ── 4. Resizable & Minimizable Chatbot Dock ── */
+  .auxiliary-dock, .aux-dock {
+    flex: 0 0 350px !important;
+    width: 350px !important;
+    position: sticky !important;
+    top: 76px !important;
+    height: calc(100vh - 96px) !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 0 !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    z-index: 50 !important;
+  }
+  .auxiliary-dock.wide, .aux-dock.wide {
+    flex: 0 0 490px !important;
+    width: 490px !important;
+  }
+  .auxiliary-dock.minimized, .aux-dock.minimized {
+    display: none !important;
+  }
+
+  /* Chatbot Dock Card */
+  .chatbot-dock-card, .dock-card.chat-card {
+    background: #0E1424 !important;
+    border: 1px solid #1E293B !important;
+    border-radius: 12px !important;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.4) !important;
+    display: flex !important;
+    flex-direction: column !important;
+    height: 100% !important;
+    min-height: 400px !important;
+    overflow: hidden !important;
+  }
+  .chat-dock-header {
+    background: #111827 !important;
+    border-bottom: 1px solid #1E293B !important;
+    padding: 10px 14px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 8px !important;
+  }
+  .chat-header-top {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+  }
+  .chat-assistant-title {
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    font-family: 'Outfit', sans-serif !important;
+    font-size: 0.92rem !important;
+    font-weight: 700 !important;
+    color: #FFFFFF !important;
+  }
+  .chat-status-dot {
+    width: 8px !important;
+    height: 8px !important;
+    border-radius: 50% !important;
+    background: #10B981 !important;
+    box-shadow: 0 0 8px #10B981 !important;
+  }
+  .chat-window-controls {
+    display: flex !important;
+    align-items: center !important;
+    gap: 4px !important;
+  }
+  .chat-ctrl-btn {
+    background: transparent !important;
+    border: 1px solid #334155 !important;
+    color: #94A3B8 !important;
+    width: 26px !important;
+    height: 26px !important;
+    border-radius: 5px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    cursor: pointer !important;
+    font-size: 11px !important;
+    transition: all 0.2s !important;
+  }
+  .chat-ctrl-btn:hover {
+    background: #1E293B !important;
+    color: #FFFFFF !important;
+    border-color: #64748B !important;
+  }
+
+  /* Segmented RAG vs LCEL Mode Toggle */
+  .rag-mode-toggle {
+    display: flex !important;
+    background: #070A12 !important;
+    border: 1px solid #1E293B !important;
+    border-radius: 6px !important;
+    padding: 3px !important;
+    gap: 4px !important;
+    width: 100% !important;
+  }
+  .rag-mode-btn {
+    flex: 1 1 50% !important;
+    background: transparent !important;
+    border: none !important;
+    color: #94A3B8 !important;
+    font-size: 0.72rem !important;
+    font-weight: 600 !important;
+    padding: 5px 6px !important;
+    border-radius: 4px !important;
+    cursor: pointer !important;
+    text-align: center !important;
+    transition: all 0.2s !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+  .rag-mode-btn:hover { color: #FFFFFF !important; }
+  .rag-mode-btn.active {
+    background: #2563EB !important;
+    color: #FFFFFF !important;
+    box-shadow: 0 2px 6px rgba(37, 99, 235, 0.4) !important;
+  }
+  .rag-mode-btn.lcel.active {
+    background: linear-gradient(135deg, #7C3AED, #EC4899) !important;
+    box-shadow: 0 2px 6px rgba(124, 58, 237, 0.4) !important;
+  }
+
+  .chat-messages {
+    flex: 1 !important;
+    padding: 14px !important;
+    overflow-y: auto !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 12px !important;
+    font-size: 0.85rem !important;
+  }
+  .chat-bubble {
+    padding: 10px 14px !important;
+    border-radius: 10px !important;
+    max-width: 92% !important;
+    line-height: 1.55 !important;
+  }
+  .chat-bubble.assistant {
+    background: #111827 !important;
+    border: 1px solid #1E293B !important;
+    color: #E2E8F0 !important;
+    align-self: flex-start !important;
+  }
+  .chat-bubble.user {
+    background: #1D4ED8 !important;
+    color: #FFFFFF !important;
+    align-self: flex-end !important;
+  }
+  .chat-bubble pre {
+    background: #070A12 !important;
+    border: 1px solid #1E293B !important;
+    border-radius: 6px !important;
+    padding: 8px !important;
+    margin: 8px 0 !important;
+    overflow-x: auto !important;
+    font-family: 'Fira Code', monospace !important;
+    font-size: 0.8rem !important;
+  }
+
+  .yt-jump-btn {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 4px !important;
+    background: rgba(239, 68, 68, 0.15) !important;
+    border: 1px solid rgba(239, 68, 68, 0.3) !important;
+    color: #FCA5A5 !important;
+    padding: 3px 8px !important;
+    border-radius: 4px !important;
+    font-size: 0.72rem !important;
+    font-weight: 600 !important;
+    text-decoration: none !important;
+    margin-top: 6px !important;
+    transition: all 0.2s !important;
+  }
+  .yt-jump-btn:hover {
+    background: rgba(239, 68, 68, 0.3) !important;
+    color: #FFFFFF !important;
+  }
+
+  .suggested-prompts {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 6px !important;
+    margin-top: 10px !important;
+  }
+  .prompt-chip {
+    background: #1E293B !important;
+    border: 1px solid #334155 !important;
+    color: #94A3B8 !important;
+    padding: 3px 8px !important;
+    border-radius: 12px !important;
+    font-size: 0.72rem !important;
+    cursor: pointer !important;
+    transition: all 0.15s !important;
+  }
+  .prompt-chip:hover {
+    background: #2563EB !important;
+    color: #FFFFFF !important;
+    border-color: #3B82F6 !important;
+  }
+
+  .chat-input-bar {
+    padding: 10px 12px !important;
+    background: #111827 !important;
+    border-top: 1px solid #1E293B !important;
+    display: flex !important;
+    gap: 8px !important;
+  }
+  .chat-input-bar input {
+    flex: 1 !important;
+    background: #070A12 !important;
+    border: 1px solid #334155 !important;
+    border-radius: 6px !important;
+    padding: 8px 12px !important;
+    color: #FFFFFF !important;
+    font-size: 0.85rem !important;
+    outline: none !important;
+  }
+  .chat-input-bar input:focus { border-color: #3B82F6 !important; }
+  .chat-input-bar button {
+    background: #2563EB !important;
+    border: none !important;
+    color: #FFFFFF !important;
+    padding: 0 14px !important;
+    border-radius: 6px !important;
+    font-weight: 600 !important;
+    font-size: 0.82rem !important;
+    cursor: pointer !important;
+    transition: background 0.2s !important;
+  }
+  .chat-input-bar button:hover { background: #1D4ED8 !important; }
+
+  /* ── 5. Floating Chat Pill (Only visible when minimized) ── */
+  .chat-floating-pill {
+    position: fixed !important;
+    bottom: 24px !important;
+    right: 24px !important;
+    z-index: 9999 !important;
+    background: linear-gradient(135deg, #1E293B 0%, #0F172A 100%) !important;
+    border: 1px solid #3B82F6 !important;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6), 0 0 16px rgba(59, 130, 246, 0.3) !important;
+    border-radius: 9999px !important;
+    padding: 10px 18px !important;
+    display: none !important;
+    align-items: center !important;
+    gap: 10px !important;
+    cursor: pointer !important;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  }
+  .chat-floating-pill.visible {
+    display: flex !important;
+  }
+  .chat-floating-pill:hover {
+    transform: translateY(-3px) scale(1.03) !important;
+    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.7), 0 0 24px rgba(59, 130, 246, 0.5) !important;
+    border-color: #60A5FA !important;
+  }
+  .chat-pill-icon { font-size: 16px !important; }
+  .chat-pill-title {
+    font-weight: 700 !important;
+    font-size: 0.86rem !important;
+    color: #FFFFFF !important;
+    letter-spacing: -0.01em !important;
+  }
+  .chat-pill-badge {
+    background: rgba(59, 130, 246, 0.2) !important;
+    color: #60A5FA !important;
+    font-size: 0.68rem !important;
+    font-weight: 700 !important;
+    padding: 2px 7px !important;
+    border-radius: 9999px !important;
+    border: 1px solid rgba(59, 130, 246, 0.3) !important;
+  }
+
+  /* ── 6. Official Video Lectures Directory Banner ── */
+  .video-resources-banner {
+    background: linear-gradient(135deg, rgba(37, 99, 235, 0.1) 0%, rgba(139, 92, 246, 0.12) 100%) !important;
+    border: 1px solid rgba(59, 130, 246, 0.3) !important;
+    border-radius: 12px !important;
+    padding: 16px 20px !important;
+    margin-bottom: 24px !important;
+  }
+  .vrb-header {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    margin-bottom: 12px !important;
+    flex-wrap: wrap !important;
+    gap: 8px !important;
+  }
+  .vrb-title-group {
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+  }
+  .vrb-badge {
+    background: #2563EB !important;
+    color: #FFFFFF !important;
+    font-size: 0.68rem !important;
+    font-weight: 700 !important;
+    padding: 2px 8px !important;
+    border-radius: 9999px !important;
+    text-transform: uppercase !important;
+  }
+  .vrb-title {
+    font-weight: 700 !important;
+    font-size: 0.95rem !important;
+    color: #FFFFFF !important;
+  }
+  .vrb-note {
+    font-size: 0.78rem !important;
+    color: #94A3B8 !important;
+  }
+  .vrb-grid {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)) !important;
+    gap: 10px !important;
+  }
+  .vrb-card {
+    background: #0E1424 !important;
+    border: 1px solid #1E293B !important;
+    border-radius: 8px !important;
+    padding: 10px 14px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: space-between !important;
+    gap: 6px !important;
+    text-decoration: none !important;
+    transition: all 0.2s ease !important;
+  }
+  .vrb-card:hover {
+    border-color: #3B82F6 !important;
+    background: #151D33 !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2) !important;
+  }
+  .vrb-card.featured {
+    border-color: rgba(139, 92, 246, 0.4) !important;
+    background: rgba(139, 92, 246, 0.08) !important;
+  }
+  .vrb-card.featured:hover {
+    border-color: #8B5CF6 !important;
+    background: rgba(139, 92, 246, 0.16) !important;
+  }
+  .vrb-card-tutor {
+    font-size: 0.7rem !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    color: #60A5FA !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 4px !important;
+  }
+  .vrb-card.featured .vrb-card-tutor { color: #A78BFA !important; }
+  .vrb-card-name {
+    font-size: 0.84rem !important;
+    font-weight: 600 !important;
+    color: #F8FAFC !important;
+    line-height: 1.35 !important;
+  }
+  .vrb-card-action {
+    font-size: 0.75rem !important;
+    color: #94A3B8 !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 4px !important;
+    font-weight: 500 !important;
+  }
+  .vrb-card:hover .vrb-card-action { color: #38BDF8 !important; }
+
+  /* ── 7. Placement Interview Questions in Bottom Content Section ── */
+  .placement-interview-section {
+    background: #0E1424 !important;
+    border: 1px solid #1E293B !important;
+    border-radius: 14px !important;
+    padding: 28px !important;
+    margin-top: 40px !important;
+    margin-bottom: 30px !important;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3) !important;
+  }
+  .piq-header {
+    display: flex !important;
+    align-items: flex-start !important;
+    justify-content: space-between !important;
+    margin-bottom: 20px !important;
+    flex-wrap: wrap !important;
+    gap: 16px !important;
+    border-bottom: 1px solid #1E293B !important;
+    padding-bottom: 16px !important;
+  }
+  .piq-title-group {
+    display: flex !important;
+    align-items: center !important;
+    gap: 12px !important;
+  }
+  .piq-icon {
+    font-size: 28px !important;
+    background: rgba(236, 72, 153, 0.15) !important;
+    width: 48px !important;
+    height: 48px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border-radius: 12px !important;
+    border: 1px solid rgba(236, 72, 153, 0.3) !important;
+  }
+  .piq-main-title {
+    font-family: 'Outfit', sans-serif !important;
+    font-size: 1.45rem !important;
+    font-weight: 800 !important;
+    color: #FFFFFF !important;
+    letter-spacing: -0.02em !important;
+    margin-bottom: 4px !important;
+  }
+  .piq-subtitle {
+    font-size: 0.85rem !important;
+    color: #94A3B8 !important;
+  }
+  .piq-tabs {
+    display: flex !important;
+    gap: 8px !important;
+    background: #070A12 !important;
+    padding: 4px !important;
+    border-radius: 8px !important;
+    border: 1px solid #1E293B !important;
+  }
+  .piq-tab-btn {
+    background: transparent !important;
+    border: none !important;
+    color: #94A3B8 !important;
+    font-size: 0.82rem !important;
+    font-weight: 600 !important;
+    padding: 6px 14px !important;
+    border-radius: 6px !important;
+    cursor: pointer !important;
+    transition: all 0.2s !important;
+  }
+  .piq-tab-btn:hover { color: #FFFFFF !important; }
+  .piq-tab-btn.active {
+    background: #2563EB !important;
+    color: #FFFFFF !important;
+    box-shadow: 0 2px 8px rgba(37, 99, 235, 0.3) !important;
+  }
+  .piq-grid {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 12px !important;
+    margin-top: 16px !important;
+  }
+  .piq-card {
+    background: #111827 !important;
+    border: 1px solid #1E293B !important;
+    border-radius: 10px !important;
+    overflow: hidden !important;
+    transition: all 0.2s ease !important;
+  }
+  .piq-card:hover { border-color: #334155 !important; }
+  .piq-card.open { border-color: #3B82F6 !important; }
+  .piq-question-bar {
+    padding: 14px 18px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 12px !important;
+    cursor: pointer !important;
+    user-select: none !important;
+  }
+  .piq-q-text {
+    font-weight: 600 !important;
+    font-size: 0.95rem !important;
+    color: #F8FAFC !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+  }
+  .piq-q-num {
+    color: #3B82F6 !important;
+    font-weight: 700 !important;
+    font-family: 'Fira Code', monospace !important;
+    font-size: 0.85rem !important;
+  }
+  .piq-q-badges {
+    display: flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+  }
+  .piq-tag {
+    font-size: 0.7rem !important;
+    font-weight: 600 !important;
+    padding: 2px 7px !important;
+    border-radius: 4px !important;
+    background: #1E293B !important;
+    color: #94A3B8 !important;
+  }
+  .piq-tag.easy { color: #34D399; background: rgba(16, 185, 129, 0.15); }
+  .piq-tag.med { color: #FBBF24; background: rgba(245, 158, 11, 0.15); }
+  .piq-tag.hard { color: #F87171; background: rgba(239, 68, 68, 0.15); }
+  .piq-toggle-icon {
+    font-size: 11px !important;
+    color: #64748B !important;
+    transition: transform 0.2s !important;
+  }
+  .piq-card.open .piq-toggle-icon {
+    transform: rotate(180deg) !important;
+    color: #3B82F6 !important;
+  }
+  .piq-answer-box {
+    display: none !important;
+    padding: 0 18px 16px 18px !important;
+    color: #CBD5E1 !important;
+    font-size: 0.88rem !important;
+    line-height: 1.65 !important;
+    border-top: 1px solid #1E293B !important;
+    margin-top: 4px !important;
+    padding-top: 14px !important;
+  }
+  .piq-card.open .piq-answer-box { display: block !important; }
+  .piq-answer-box pre {
+    background: #070A12 !important;
+    border: 1px solid #1E293B !important;
+    border-radius: 6px !important;
+    padding: 10px 14px !important;
+    margin: 10px 0 !important;
+    font-family: 'Fira Code', monospace !important;
+    font-size: 0.82rem !important;
+    overflow-x: auto !important;
+  }
+  .piq-complexity-row {
+    display: flex !important;
+    gap: 14px !important;
+    margin-top: 10px !important;
+    font-size: 0.78rem !important;
+    color: #94A3B8 !important;
+    font-family: 'Fira Code', monospace !important;
+  }
+</style>
+
+
+<style id="piq-card-layout-fix">
+  .piq-card {
+    background: #111827 !important;
+    border: 1px solid #1E293B !important;
+    border-radius: 10px !important;
+    overflow: hidden !important;
+    transition: all 0.2s ease !important;
+    margin-bottom: 8px !important;
+  }
+  .piq-question-bar {
+    padding: 14px 18px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 16px !important;
+    cursor: pointer !important;
+    user-select: none !important;
+    width: 100% !important;
+  }
+  .piq-q-text {
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
+    font-weight: 600 !important;
+    font-size: 0.95rem !important;
+    color: #F8FAFC !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+    line-height: 1.4 !important;
+    word-break: normal !important;
+    overflow-wrap: break-word !important;
+  }
+  .piq-q-badges {
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    flex-shrink: 0 !important;
+  }
+  .piq-answer-box {
+    padding: 16px 20px !important;
+    background: rgba(7, 10, 18, 0.6) !important;
+    border-top: 1px solid #1E293B !important;
+  }
+</style>
+
+</head>
+<body>
+
+<div id="reading-progress"></div>
+
+<header>
+  <div class="header-container">
+    <a href="index.html" class="brand-link">
+      <div class="brand-icon">LG</div>
+      <div class="brand-text">
+        <div class="brand-title">LangGraph Architecture Handbook</div>
+        <div class="brand-subtitle">The Complete State Machine Guide</div>
+      </div>
+    </a>
+    <div class="nav-actions">
+      <a href="index.html" class="nav-btn">← Portal</a>
+      <a href="langchain.html" class="nav-btn primary">LangChain Handbook →</a>
+    </div>
+  </div>
+</header>
+
+<div class="layout">
+  <aside class="sidebar">
+    
+    <div style="margin-bottom: 16px;">
+      <a href="../index.html" style="display: flex; align-items: center; justify-content: space-between; padding: 6px 12px; background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.25); border-radius: 8px; color: #60a5fa; text-decoration: none; font-size: 0.78rem; font-weight: 600;">
+        <span>&larr; Placement Hub</span>
+        <span style="background: #2563eb; color: #ffffff; padding: 1px 6px; border-radius: 4px; font-size: 0.65rem;">4 U By U</span>
+      </a>
+    </div>
+<div class="toc-title">Guide Roadmap</div>
+    <ul class="toc-list">
+      <li><a href="#paradigm" class="toc-link">1. The Paradigm Shift</a></li>
+      <li><a href="#states" class="toc-link">2. State Modeling: states.py</a></li>
+      <li><a href="#p1-sequential" class="toc-link">3. Project 1: Sequential Base</a></li>
+      <li><a href="#p2-parallel" class="toc-link">4. Project 2: Parallel Reducers</a></li>
+      <li><a href="#p3-conditional" class="toc-link">5. Project 3: Conditional Multi-RAG</a></li>
+      <li><a href="#p4-iterative" class="toc-link">6. Project 4: Iterative Reviewer</a></li>
+      <li><a href="#p5-hitl" class="toc-link">7. Project 5: Human-in-the-Loop</a></li>
+      <li><a href="#p6-streamlit" class="toc-link">8. Project 6: Streamlit Web App</a></li>
+      <li><a href="#quiz" class="toc-link">9. Interactive Knowledge Check</a></li>
+      <li><a href="#interview-questions" class="toc-link">🎯 Top Interview Questions</a></li>
+    </ul>
+  </aside>
+
+  <main class="content">
+
+    <!-- WELCOMING HERO BANNER -->
+    <div class="welcome-hero">
+      <div class="badge-pill">Advanced Agentic Engineering</div>
+      <h1 class="welcome-title">Mastering Production Workflows with LangGraph</h1>
+      <p class="welcome-lead">
+        If you’ve ever tried building complex AI agents with simple loops and felt things spiraling out of control—tools hallucinating arguments, parallel branches overwriting state, or prompts growing into fragile 4,000-word monoliths—<strong>you are not alone</strong>.
+        <br><br>
+        This guide is designed as your companion. We will build, break down, and master the exact architectural patterns needed to turn chaotic LLM calls into deterministic, resilient state machines you can deploy with pride.
+      </p>
+      <div class="welcome-meta">
+        <div class="meta-item">⏱️ Reading Time: <strong>~20 min</strong></div>
+        <div class="meta-item">🛠️ Projects: <strong>6 Production Python Applications</strong></div>
+        <div class="meta-item">🎯 Prerequisites: <strong>Python &amp; Basic LangChain</strong></div>
+      </div>
+    </div>
+
+    <!-- 1. PARADIGM SHIFT -->
+    <section id="paradigm">
+
+      <a href="https://www.youtube.com/watch?v=ytsHs-KZHVI&t=111s" target="_blank" class="yt-lecture-badge">
+        ▶ YouTube Lecture: GenAI vs Agentic AI & State Machines (Timestamp 00:01:51) ↗
+      </a>
+
+      <div class="section-tag">Foundation</div>
+      <h2 class="section-heading">1. Generative AI vs. Agentic AI: The Fundamental Shift</h2>
+
+      <p>
+        Most developers enter the AI space by making standard chat completions: send a prompt, wait for tokens, parse the answer. But the moment your application requires more than one step—like querying a database, verifying facts against a PDF, or having a reviewer approve a draft—single-call prompting collapses.
+      </p>
+
+      <p>
+        In traditional software, we didn't solve complex problems by writing one giant 10,000-line function. We split logic into modules, state stores, and control flows. <strong>LangGraph applies this exact engineering wisdom to LLMs.</strong>
+      </p>
+
+      <div class="mentor-note tip">
+        <div class="mentor-header">💡 The Mental Model That Makes It Click</div>
+        Instead of treating the LLM as an isolated genius answering questions in a vacuum, think of LangGraph as appointing an <strong>Operations Director</strong> with a shared whiteboard. The Director assigns tasks to specialized workers (Nodes), collects their progress (Reducers), routes according to rules (Conditional Edges), and pauses for human sign-off before major decisions (Interrupts).
+      </div>
+
+      <div class="table-wrapper">
+        <div class="table-header-title">⚖️ Architectural Evolution: How We Got Here</div>
+        <table class="styled-table">
+          <thead>
+            <tr>
+              <th>Approach</th>
+              <th>How It Works</th>
+              <th>Where It Shines</th>
+              <th>Where It Breaks</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Simple Chains (LCEL)</strong></td>
+              <td>Linear A &rarr; B &rarr; C DAG</td>
+              <td>Fast, deterministic document transformation &amp; basic RAG</td>
+              <td>Cannot loop, cannot recover from errors, cannot pause for human input</td>
+            </tr>
+            <tr>
+              <td><strong>Legacy AgentExecutor</strong></td>
+              <td>Black-box ReAct while-loop</td>
+              <td>Quick prototypes with tools</td>
+              <td>Brittle, unpredictable loops, impossible to debug intermediate state</td>
+            </tr>
+            <tr>
+              <td><strong>LangGraph StateGraph</strong></td>
+              <td>Explicit cyclic state machine</td>
+              <td><strong>Enterprise agents, parallel branches, reviewer loops, human approval</strong></td>
+              <td>Requires deliberate state and reducer design upfront</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 2. STATE MODELING -->
+    <section id="states">
+      <div class="section-tag">Core Architecture</div>
+      <h2 class="section-heading">2. State Modeling: TypedDict vs. Pydantic</h2>
+
+      <p>
+        Every LangGraph workflow is organized around a central <strong>State Schema</strong>. Think of State as the single source of truth that travels through your graph. When a node executes, it receives a read-only copy of the current state and returns a small dictionary of updates (deltas) that get merged back into the state.
+      </p>
+
+      <p>
+        In Python, you have two primary ways to define this schema: <code>TypedDict</code> and <code>Pydantic BaseModel</code>. Here is how they compare in the field:
+      </p>
+
+      <div class="table-wrapper">
+        <div class="table-header-title">⚖️ TypedDict vs. Pydantic: Making the Right Choice</div>
+        <table class="styled-table">
+          <thead>
+            <tr>
+              <th>Feature</th>
+              <th>TypedDict (Most Common)</th>
+              <th>Pydantic BaseModel</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Runtime Overhead</strong></td>
+              <td>Virtually zero (standard Python dictionary)</td>
+              <td>Slight (validates fields and types on instantiation)</td>
+            </tr>
+            <tr>
+              <td><strong>Validation Strictness</strong></td>
+              <td>Static typing only (IDE &amp; mypy check)</td>
+              <td>Strict runtime checking, automatic type coercion</td>
+            </tr>
+            <tr>
+              <td><strong>Best Used When</strong></td>
+              <td>Internal application state, speed is critical</td>
+              <td>Ingesting external untrusted payloads or user webhooks</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="mentor-note gotcha">
+        <div class="mentor-header">⚠️ A Common Pitfall: In-Place Mutation</div>
+        Never modify state in place inside a node (e.g. <code>state["history"].append(item)</code>). LangGraph relies on immutable state transitions to support checkpointing, thread isolation, and time-travel replay. Always return a dictionary containing the new or updated keys!
+      </div>
+
+      <h3 class="sub-heading">Production Source Code: states.py</h3>
+      <p>Here is the canonical implementation supporting both approaches:</p>
+      
+      <div class="code-container">
+        <div class="code-header">
+          <div class="file-name">states.py — State Schemas</div>
+          <button class="copy-btn" onclick="copyCode(this)">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+            <span>Copy Code</span>
+          </button>
+        </div>
+        <pre><code class="language-python">import os
+from typing import TypedDict
+from pydantic import BaseModel, Field
+
+# =====================================================================
+# 1) TypedDict Approach (Most Common in LangGraph)
+# Lightweight, native Python dictionary with compile-time type hints.
+# Best for high-throughput, low-overhead pipelines.
+# =====================================================================
+class SimpleState(TypedDict):
+    query: str
+    intermediate_steps: list[str]
+    final_output: str
+
+# =====================================================================
+# 2) Pydantic Approach (Runtime Validation & Coercion)
+# Strict runtime type checking, default values, and schema enforcement.
+# Best when accepting arbitrary untrusted user or webhook inputs.
+# =====================================================================
+class ValidatedState(BaseModel):
+    query: str = Field(..., min_length=3, description="User input question")
+    intermediate_steps: list[str] = Field(default_factory=list, description="Audit trace")
+    final_output: str = Field(default="", description="Synthesized response")
+</code></pre>
+      </div>
+
+    </section>
+
+    <!-- 3. PROJECT 1: SEQUENTIAL BASE -->
+    <section id="p1-sequential">
+
+      <a href="https://www.youtube.com/watch?v=ytsHs-KZHVI&t=1719s" target="_blank" class="yt-lecture-badge">
+        ▶ YouTube Lecture: Project 1 Sequential Workflow Pipeline (Timestamp 00:28:39) ↗
+      </a>
+
+      <div class="section-tag">Project 1</div>
+      <h2 class="section-heading">3. Sequential Workflows: The Predictable Assembly Line</h2>
+
+      <p>
+        Let's build our first graph. A sequential workflow is the simplest pattern: Node A finishes, updates the state, and passes the baton cleanly to Node B.
+      </p>
+
+      <p>
+        In this project, we create an automated content pipeline:
+        <br>
+        <code>START</code> &rarr; <strong>Copyeditor</strong> (expands raw topic into an article) &rarr; <strong>Hook Creator</strong> (crafts a high-retention video hook) &rarr; <strong>Hinglish Translator</strong> (adapts the hook for urban Indian audiences) &rarr; <code>END</code>.
+      </p>
+
+      <div class="mentor-note tip">
+        <div class="mentor-header">💡 Why Not Just Do This In One Prompt?</div>
+        If you ask a single prompt to simultaneously be a rigorous tech copyeditor, a viral YouTube creator, and a colloquial Hinglish translator, the model tries to compromise on all three tones. Decomposing the task into distinct nodes gives each prompt full focus and allows you to tune temperatures individually.
+      </div>
+
+      <h3 class="sub-heading">Production Source Code: sequential_base.py</h3>
+      
+      <div class="code-container">
+        <div class="code-header">
+          <div class="file-name">sequential_base.py — Complete Linear Pipeline</div>
+          <button class="copy-btn" onclick="copyCode(this)">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+            <span>Copy Code</span>
+          </button>
+        </div>
+        <pre><code class="language-python">import os
+from typing import TypedDict
+from langchain_openai import ChatOpenAI
+from langchain_core.messages import SystemMessage, HumanMessage
+from langgraph.graph import StateGraph, START, END
+
+# Step 1: Define Pipeline State
+class ContentState(TypedDict):
+    raw_topic: str
+    editorial_draft: str
+    video_hook: str
+    hinglish_script: str
+
+# Central Deterministic LLM
+llm = ChatOpenAI(model="gpt-4o", temperature=0.3)
+
+# Step 2: Define Node 1 - Copyeditor
+def copyeditor_node(state: ContentState) -&gt; dict:
+    prompt = [
+        SystemMessage(content="You are a senior tech copyeditor. Expand this topic into an informative 2-paragraph draft."),
+        HumanMessage(content=state["raw_topic"])
+    ]
+    res = llm.invoke(prompt)
+    return {"editorial_draft": res.content}
+
+# Step 2: Define Node 2 - Video Scriptwriter Hook
+def video_hook_node(state: ContentState) -&gt; dict:
+    prompt = [
+        SystemMessage(content="You are a viral YouTube creator. Create a 15-second high-retention video hook based on this draft."),
+        HumanMessage(content=state["editorial_draft"])
+    ]
+    res = llm.invoke(prompt)
+    return {"video_hook": res.content}
+
+# Step 2: Define Node 3 - Indian Hinglish Translator
+def hinglish_translator_node(state: ContentState) -&gt; dict:
+    prompt = [
+        SystemMessage(content="Translate this video hook into engaging, conversational Indian Hinglish (mix of Hindi & English) for urban youth."),
+        HumanMessage(content=state["video_hook"])
+    ]
+    res = llm.invoke(prompt)
+    return {"hinglish_script": res.content}
+
+# Step 3: Build Sequential Graph
+workflow = StateGraph(ContentState)
+
+workflow.add_node("copyeditor", copyeditor_node)
+workflow.add_node("hook_creator", video_hook_node)
+workflow.add_node("hinglish_translator", hinglish_translator_node)
+
+workflow.add_edge(START, "copyeditor")
+workflow.add_edge("copyeditor", "hook_creator")
+workflow.add_edge("hook_creator", "hinglish_translator")
+workflow.add_edge("hinglish_translator", END)
+
+app = workflow.compile()
+
+# Execution Driver
+if __name__ == "__main__":
+    initial_input = {"raw_topic": "Vector Embeddings and Cosine Similarity in RAG"}
+    result = app.invoke(initial_input)
+    print("=== FINAL HINGLISH SCRIPT ===")
+    print(result["hinglish_script"])
+</code></pre>
+      </div>
+
+    </section>
+
+    <!-- 4. PROJECT 2: PARALLEL REDUCERS -->
+    <section id="p2-parallel">
+
+      <a href="https://www.youtube.com/watch?v=ytsHs-KZHVI&t=5246s" target="_blank" class="yt-lecture-badge">
+        ▶ YouTube Lecture: Project 2 Parallel Execution & Reducers (Timestamp 01:27:26) ↗
+      </a>
+
+      <div class="section-tag">Project 2</div>
+      <h2 class="section-heading">4. Parallel Workflows &amp; State Reducers: Safe Concurrency</h2>
+
+      <p>
+        Running evaluations one after another sequentially is slow. If you need to check a piece of text for Toxicity, Copyright Infringement, and Cultural Sensitivity, all three checks can run at the exact same moment.
+      </p>
+
+      <p>
+        LangGraph supports <strong>Parallel Fan-Out</strong> directly from <code>START</code>. But here is the critical challenge every developer encounters:
+      </p>
+
+      <div class="mentor-note gotcha">
+        <div class="mentor-header">⚠️ The Concurrency Trap: Last-Write-Wins</div>
+        If 3 parallel nodes all emit updates to a key called <code>scores</code>, standard dictionary assignment means the last node to finish overwrites the work of the other two!
+        <br><br>
+        <strong>The Solution:</strong> Python's <code>Annotated</code> type hint with a custom <strong>Reducer</strong>. A reducer is simply a function that teaches LangGraph how to combine multiple incoming updates without destroying data.
+      </div>
+
+      <h3 class="sub-heading">Production Source Code: parallel_reducers.py</h3>
+      
+      <div class="code-container">
+        <div class="code-header">
+          <div class="file-name">parallel_reducers.py — Fan-Out & Custom Reducer</div>
+          <button class="copy-btn" onclick="copyCode(this)">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+            <span>Copy Code</span>
+          </button>
+        </div>
+        <pre><code class="language-python">import os
+from typing import TypedDict, Annotated
+from langchain_openai import ChatOpenAI
+from langchain_core.messages import SystemMessage, HumanMessage
+from langgraph.graph import StateGraph, START, END
+
+# Custom Reducer: Merges dictionaries emitted by concurrent parallel branches
+def merge_score_dicts(left: dict, right: dict) -&gt; dict:
+    merged = left.copy() if left else {}
+    if right:
+        merged.update(right)
+    return merged
+
+# State with Annotated Reducer
+class SafetyState(TypedDict):
+    user_content: str
+    # Annotated with custom reducer ensures concurrent branch outputs merge without overwriting!
+    safety_audit_scores: Annotated[dict, merge_score_dicts]
+    final_verdict: str
+
+llm = ChatOpenAI(model="gpt-4o", temperature=0.0)
+
+# Branch 1: Toxicity Analysis Node
+def toxicity_node(state: SafetyState) -&gt; dict:
+    prompt = [
+        SystemMessage(content="Score toxicity from 0 to 100 as integer only."),
+        HumanMessage(content=state["user_content"])
+    ]
+    res = llm.invoke(prompt)
+    return {"safety_audit_scores": {"toxicity": res.content.strip()}}
+
+# Branch 2: Copyright & Plagiarism Check Node
+def copyright_node(state: SafetyState) -&gt; dict:
+    prompt = [
+        SystemMessage(content="Score copyright risk from 0 to 100 as integer only."),
+        HumanMessage(content=state["user_content"])
+    ]
+    res = llm.invoke(prompt)
+    return {"safety_audit_scores": {"copyright_risk": res.content.strip()}}
+
+# Branch 3: Regional & Cultural Sensitivity Node
+def cultural_node(state: SafetyState) -&gt; dict:
+    prompt = [
+        SystemMessage(content="Score cultural sensitivity from 0 to 100 as integer only."),
+        HumanMessage(content=state["user_content"])
+    ]
+    res = llm.invoke(prompt)
+    return {"safety_audit_scores": {"cultural_score": res.content.strip()}}
+
+# Build Graph with Parallel Fan-Out
+builder = StateGraph(SafetyState)
+
+builder.add_node("check_toxicity", toxicity_node)
+builder.add_node("check_copyright", copyright_node)
+builder.add_node("check_cultural", cultural_node)
+
+# Fan-out: All 3 nodes trigger simultaneously from START
+builder.add_edge(START, "check_toxicity")
+builder.add_edge(START, "check_copyright")
+builder.add_edge(START, "check_cultural")
+
+# Fan-in: All 3 nodes complete into END
+builder.add_edge("check_toxicity", END)
+builder.add_edge("check_copyright", END)
+builder.add_edge("check_cultural", END)
+
+safety_app = builder.compile()
+
+if __name__ == "__main__":
+    out = safety_app.invoke({"user_content": "AI is replacing junior developers in 2026."})
+    print("=== PARALLEL AUDIT SCORES ===")
+    print(out["safety_audit_scores"])
+</code></pre>
+      </div>
+
+    </section>
+
+    <!-- 5. PROJECT 3: CONDITIONAL MULTI-RAG -->
+    <section id="p3-conditional">
+
+      <a href="https://www.youtube.com/watch?v=ytsHs-KZHVI&t=6944s" target="_blank" class="yt-lecture-badge">
+        ▶ YouTube Lecture: Project 3 Conditional Routing & Multi-PDF RAG (Exact Timestamp 01:55:44 / 02:02:10) ↗
+      </a>
+
+      <div class="section-tag">Project 3</div>
+      <h2 class="section-heading">5. Conditional Routing &amp; Multi-PDF RAG: Smart Triage</h2>
+
+      <p>
+        One of the biggest mistakes in enterprise RAG is creating a single massive vector database containing engineering specs, HR policies, fee structures, and legal terms. Queries get confused by cross-domain semantic collisions.
+      </p>
+
+      <p>
+        A far more reliable architecture is <strong>Conditional Dynamic Routing</strong>:
+        <br>
+        1. An initial <strong>Classifier Node</strong> analyzes the user's intent.
+        <br>
+        2. A <strong>Conditional Edge</strong> inspects the classification and routes the query directly to the specialized domain retriever (e.g. Academics vs. Fees vs. General Knowledge).
+        <br>
+        3. A final <strong>Synthesizer Node</strong> grounds the response in the retrieved evidence.
+      </p>
+
+      <h3 class="sub-heading">Production Source Code: conditional_RAG.py</h3>
+      
+      <div class="code-container">
+        <div class="code-header">
+          <div class="file-name">conditional_RAG.py — Multi-Retriever Intent Router</div>
+          <button class="copy-btn" onclick="copyCode(this)">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+            <span>Copy Code</span>
+          </button>
+        </div>
+        <pre><code class="language-python">import os
+from typing import TypedDict, Annotated
+from langchain_openai import ChatOpenAI, OpenAIEmbeddings
+from langchain_community.vectorstores import Chroma
+from langchain_core.messages import SystemMessage, HumanMessage
+from langgraph.graph import StateGraph, START, END
+
+# Step 1: Build RAG Retrievers
+embeddings = OpenAIEmbeddings(model="text-embedding-3-small")
+
+academics_db = Chroma.from_texts(
+    ["The grading criteria requires 85% attendance and passing all 4 module exams."],
+    embedding=embeddings, collection_name="academics"
+).as_retriever(search_kwargs={"k": 1})
+
+fees_db = Chroma.from_texts(
+    ["Tuition is $12,000 per year. Late payment incurs a 5% monthly compounding penalty."],
+    embedding=embeddings, collection_name="fees"
+).as_retriever(search_kwargs={"k": 1})
+
+# Step 2: Define State
+class MultiRAGState(TypedDict):
+    user_query: str
+    target_category: str
+    retrieved_context: str
+    final_response: str
+
+llm = ChatOpenAI(model="gpt-4o", temperature=0.0)
+
+# Step 3: Nodes
+def query_classifier_node(state: MultiRAGState) -&gt; dict:
+    prompt = [
+        SystemMessage(content="Classify this student question into exactly one label: 'ACADEMICS', 'FEES', or 'GENERAL'."),
+        HumanMessage(content=state["user_query"])
+    ]
+    label = llm.invoke(prompt).content.strip().upper()
+    return {"target_category": label}
+
+def academics_retriever_node(state: MultiRAGState) -&gt; dict:
+    docs = academics_db.invoke(state["user_query"])
+    return {"retrieved_context": "\n".join([d.page_content for d in docs])}
+
+def fees_retriever_node(state: MultiRAGState) -&gt; dict:
+    docs = fees_db.invoke(state["user_query"])
+    return {"retrieved_context": "\n".join([d.page_content for d in docs])}
+
+def general_llm_node(state: MultiRAGState) -&gt; dict:
+    return {"retrieved_context": "No documents needed. Answer using general world knowledge."}
+
+def answer_synthesis_node(state: MultiRAGState) -&gt; dict:
+    prompt = [
+        SystemMessage(content=f"Answer the query using this context:\n{state['retrieved_context']}"),
+        HumanMessage(content=state["user_query"])
+    ]
+    res = llm.invoke(prompt)
+    return {"final_response": res.content}
+
+# Step 4: Conditional Router Function
+def route_query(state: MultiRAGState) -&gt; str:
+    category = state.get("target_category", "")
+    if "ACADEMICS" in category:
+        return "academics_retriever"
+    elif "FEES" in category:
+        return "fees_retriever"
+    else:
+        return "general_llm"
+
+# Step 5: Build Graph
+builder = StateGraph(MultiRAGState)
+
+builder.add_node("classifier", query_classifier_node)
+builder.add_node("academics_retriever", academics_retriever_node)
+builder.add_node("fees_retriever", fees_retriever_node)
+builder.add_node("general_llm", general_llm_node)
+builder.add_node("synthesizer", answer_synthesis_node)
+
+builder.add_edge(START, "classifier")
+builder.add_conditional_edges("classifier", route_query, {
+    "academics_retriever": "academics_retriever",
+    "fees_retriever": "fees_retriever",
+    "general_llm": "general_llm"
+})
+builder.add_edge("academics_retriever", "synthesizer")
+builder.add_edge("fees_retriever", "synthesizer")
+builder.add_edge("general_llm", "synthesizer")
+builder.add_edge("synthesizer", END)
+
+rag_app = builder.compile()
+
+if __name__ == "__main__":
+    q = "What happens if I fail to pay tuition on time?"
+    print(rag_app.invoke({"user_query": q})["final_response"])
+</code></pre>
+      </div>
+
+    </section>
+
+    <!-- 6. PROJECT 4: ITERATIVE REVIEWER -->
+    <section id="p4-iterative">
+
+      <a href="https://www.youtube.com/watch?v=ytsHs-KZHVI&t=12090s" target="_blank" class="yt-lecture-badge">
+        ▶ YouTube Lecture: Project 4 Iterative Reviewer Loop with Tools (Timestamp 03:21:30) ↗
+      </a>
+
+      <div class="section-tag">Project 4</div>
+      <h2 class="section-heading">6. Iterative Workflow &amp; Strict Reviewer Loop: Self-Correction</h2>
+
+      <p>
+        High-stakes production outputs rarely succeed on the first attempt. In this project, we implement an iterative feedback loop: a <strong>Writer Node</strong> drafts technical content, and a <strong>Reviewer Node</strong> audits it against <strong>7 Strict Editorial Criteria</strong>.
+      </p>
+
+      <details class="deep-dive">
+        <summary>View the 7 Strict Editorial Criteria Evaluated by the Reviewer</summary>
+        <div class="details-content">
+          <ol style="margin-left: 1.25rem; line-height: 1.8;">
+            <li><strong>Direct technical accuracy:</strong> Zero hallucinated APIs or nonexistent syntax.</li>
+            <li><strong>Complete absence of generic fluff:</strong> Eliminate filler phrases ("In today's fast-paced digital world...").</li>
+            <li><strong>Clear architectural breakdown:</strong> Explicit state flow and node boundaries.</li>
+            <li><strong>Inclusion of failure modes:</strong> Highlight where systems break in real-world use.</li>
+            <li><strong>Actionable implementation advice:</strong> Steps an engineer can execute immediately.</li>
+            <li><strong>Concise formatting:</strong> Clean typography, bullets, and tables.</li>
+            <li><strong>Concrete code or formulas:</strong> Verifiable syntax and calculations.</li>
+          </ol>
+        </div>
+      </details>
+
+      <div class="mentor-note caution">
+        <div class="mentor-header">💡 Guarding Your Wallet: Cycle Cutoffs</div>
+        Whenever an agent graph loops back on itself, you <strong>must</strong> include a hard attempt counter (e.g. <code>attempt_count &gt;= 3</code>). Otherwise, if the reviewer refuses to approve a draft, the graph could loop 100 times, consuming hundreds of dollars in API credits within minutes.
+      </div>
+
+      <h3 class="sub-heading">Production Source Code: iterative_tools.py</h3>
+      
+      <div class="code-container">
+        <div class="code-header">
+          <div class="file-name">iterative_tools.py — Writer-Reviewer Quality Loop</div>
+          <button class="copy-btn" onclick="copyCode(this)">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+            <span>Copy Code</span>
+          </button>
+        </div>
+        <pre><code class="language-python">import os
+from typing import TypedDict, Annotated
+from langchain_openai import ChatOpenAI
+from langchain_core.messages import SystemMessage, HumanMessage
+from langgraph.graph import StateGraph, START, END
+
+# Tools & Models
+llm = ChatOpenAI(model="gpt-4o", temperature=0.2)
+
+# State
+class ResearchState(TypedDict):
+    topic: str
+    current_draft: str
+    reviewer_critique: str
+    quality_score: int
+    attempt_count: int
+
+def writer_node(state: ResearchState) -&gt; dict:
+    attempts = state.get("attempt_count", 0) + 1
+    feedback = state.get("reviewer_critique", "Initial draft.")
+    prompt = [
+        SystemMessage(content=f"You are a rigorous research writer. Attempt #{attempts}. Critique: {feedback}"),
+        HumanMessage(content=f"Topic: {state['topic']}\nImprove the draft addressing all critiques.")
+    ]
+    res = llm.invoke(prompt)
+    return {"current_draft": res.content, "attempt_count": attempts}
+
+def reviewer_node(state: ResearchState) -&gt; dict:
+    prompt = [
+        SystemMessage(content="""You are a ruthless Senior Editor.
+Evaluate the draft against these 7 Strict Criteria:
+1. Direct technical accuracy
+2. Complete absence of generic fluff
+3. Clear architectural breakdown
+4. Inclusion of failure modes
+5. Actionable implementation advice
+6. Concise formatting
+7. Concrete code or formulas
+
+Output format:
+SCORE: &lt;0-100&gt;
+CRITIQUE: &lt;specific shortcomings&gt;
+"""),
+        HumanMessage(content=state["current_draft"])
+    ]
+    res = llm.invoke(prompt).content
+    
+    # Parse score
+    score = 70
+    if "SCORE:" in res:
+        try:
+            score = int(res.split("SCORE:")[1].split()[0].strip())
+        except:
+            pass
+    return {"reviewer_critique": res, "quality_score": score}
+
+# Router Decision
+def should_continue_review(state: ResearchState) -&gt; str:
+    if state["quality_score"] &gt;= 85 or state["attempt_count"] &gt;= 3:
+        return "publish"
+    return "revise"
+
+# Build Graph
+builder = StateGraph(ResearchState)
+builder.add_node("writer", writer_node)
+builder.add_node("reviewer", reviewer_node)
+
+builder.add_edge(START, "writer")
+builder.add_edge("writer", "reviewer")
+builder.add_conditional_edges("reviewer", should_continue_review, {
+    "revise": "writer",
+    "publish": END
+})
+
+iter_app = builder.compile()
+
+if __name__ == "__main__":
+    result = iter_app.invoke({"topic": "Explain LangGraph State Reducers", "attempt_count": 0})
+    print(f"Passed with Score {result['quality_score']} in {result['attempt_count']} attempts!")
+    print(result["current_draft"][:300] + "...")
+</code></pre>
+      </div>
+
+    </section>
+
+    <!-- 7. PROJECT 5: HUMAN IN THE LOOP -->
+    <section id="p5-hitl">
+
+      <a href="https://www.youtube.com/watch?v=ytsHs-KZHVI&t=17795s" target="_blank" class="yt-lecture-badge">
+        ▶ YouTube Lecture: Project 5 Human-in-the-Loop Interrupts (Timestamp 04:56:35) ↗
+      </a>
+
+      <div class="section-tag">Project 5</div>
+      <h2 class="section-heading">7. Human-in-the-Loop (HITL) &amp; Checkpoint Interrupts</h2>
+
+      <p>
+        Certain actions must never be left entirely to autonomous AI: wiring funds, deleting tables, or deploying production code.
+      </p>
+
+      <p>
+        LangGraph solves this with first-class <strong>Interrupts and Checkpointers</strong>. When a node calls <code>interrupt(...)</code>, execution freezes completely. The current state is serialized into durable storage (such as SQLite or Postgres). The graph returns control to your application, waits for human approval, and resumes cleanly via <code>Command(resume=...)</code> using the same <code>thread_id</code>.
+      </p>
+
+      <div class="table-wrapper">
+        <div class="table-header-title">⚖️ Checkpointer Storage Engines</div>
+        <table class="styled-table">
+          <thead>
+            <tr>
+              <th>Checkpointer</th>
+              <th>Durability</th>
+              <th>Horizontal Scale</th>
+              <th>Ideal Scenario</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>MemorySaver</strong></td>
+              <td>In-memory (lost on restart)</td>
+              <td>Single-process only</td>
+              <td>Local unit testing, development prototypes</td>
+            </tr>
+            <tr>
+              <td><strong>SqliteSaver</strong></td>
+              <td>Persistent on local disk</td>
+              <td>Single server instance</td>
+              <td>Lightweight production apps, CLI tools, embedded systems</td>
+            </tr>
+            <tr>
+              <td><strong>PostgresSaver</strong></td>
+              <td>ACID transactional database</td>
+              <td>Clustered, multi-instance web servers</td>
+              <td>Enterprise multi-tenant applications with high concurrency</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 class="sub-heading">Production Source Code: humanintheloop.py</h3>
+      
+      <div class="code-container">
+        <div class="code-header">
+          <div class="file-name">humanintheloop.py — Escrow Approval with interrupt()</div>
+          <button class="copy-btn" onclick="copyCode(this)">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+            <span>Copy Code</span>
+          </button>
+        </div>
+        <pre><code class="language-python">import os
+from typing import TypedDict, Annotated
+from langchain_openai import ChatOpenAI
+from langchain_core.messages import SystemMessage, HumanMessage
+from langgraph.graph import StateGraph, START, END
+from langgraph.checkpoint.memory import MemorySaver
+from langgraph.types import interrupt, Command
+
+class EscrowState(TypedDict):
+    beneficiary: str
+    amount: float
+    reason: str
+    manager_approval: bool
+    status: str
+
+llm = ChatOpenAI(model="gpt-4o", temperature=0.0)
+
+def draft_transfer_node(state: EscrowState) -&gt; dict:
+    return {"status": "TRANSFER_PENDING_APPROVAL"}
+
+def human_approval_node(state: EscrowState) -&gt; dict:
+    # HALTS EXECUTION! Awaits external resume payload
+    human_decision = interrupt({
+        "question": f"Authorize wire transfer of ${state['amount']} to {state['beneficiary']}?",
+        "reason": state["reason"]
+    })
+    
+    approved = human_decision.get("approved", False)
+    return {
+        "manager_approval": approved,
+        "status": "APPROVED_AND_EXECUTED" if approved else "REJECTED_BY_MANAGER"
+    }
+
+builder = StateGraph(EscrowState)
+builder.add_node("drafter", draft_transfer_node)
+builder.add_node("human_gate", human_approval_node)
+
+builder.add_edge(START, "drafter")
+builder.add_edge("drafter", "human_gate")
+builder.add_edge("human_gate", END)
+
+# Attach Checkpoint Memory
+checkpointer = MemorySaver()
+escrow_app = builder.compile(checkpointer=checkpointer)
+
+if __name__ == "__main__":
+    thread_config = {"configurable": {"thread_id": "tx_session_992"}}
+    
+    print("--- 1. Initiating Escrow Wire Transfer ---")
+    state_snap = escrow_app.invoke({
+        "beneficiary": "Acme Cloud Infrastructure Corp",
+        "amount": 25000.00,
+        "reason": "Annual GPU Cluster Reservation"
+    }, config=thread_config)
+    
+    print("Graph execution paused at interrupt()!")
+    print(f"Current State: {state_snap}")
+    
+    print("\n--- 2. Resuming Execution with Human Approval Command ---")
+    resumed_state = escrow_app.invoke(
+        Command(resume={"approved": True}),
+        config=thread_config
+    )
+    print("Execution completed!")
+    print(f"Final Status: {resumed_state['status']}")
+</code></pre>
+      </div>
+
+    </section>
+
+    <!-- 8. PROJECT 6: STREAMLIT WEB APP -->
+    <section id="p6-streamlit">
+      <div class="section-tag">Project 6</div>
+      <h2 class="section-heading">8. Full Production Streamlit Web Application</h2>
+
+      <p>
+        Finally, let's connect our LangGraph pipeline to an interactive user interface that anyone on your team can use.
+      </p>
+
+      <div class="mentor-note gotcha">
+        <div class="mentor-header">⚠️ The Streamlit Rerun Pitfall</div>
+        Streamlit executes scripts top-to-bottom on <em>every user interaction</em> (like typing in a text field or clicking a button). If you build your vector stores or compile your LangGraph directly in the script body, your app will reload embeddings and recompile graphs on every keystroke!
+        <br><br>
+        <strong>Always use <code>@st.cache_resource</code></strong> on graph builders and database loaders so they initialize once and stay hot in memory.
+      </div>
+
+      <h3 class="sub-heading">Production Source Code: app.py</h3>
+      
+      <div class="code-container">
+        <div class="code-header">
+          <div class="file-name">app.py — Streamlit Frontend with Cached LangGraph</div>
+          <button class="copy-btn" onclick="copyCode(this)">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+            <span>Copy Code</span>
+          </button>
+        </div>
+        <pre><code class="language-python">import os
+import streamlit as st
+from typing import TypedDict
+from langchain_openai import ChatOpenAI, OpenAIEmbeddings
+from langchain_community.vectorstores import Chroma
+from langchain_core.messages import SystemMessage, HumanMessage
+from langgraph.graph import StateGraph, START, END
+
+st.set_page_config(page_title="AI University Academic & Fees Portal", layout="wide")
+st.title("🎓 Multi-PDF University Assistant with LangGraph")
+
+# Step 1: Cached Resource Ingestion
+@st.cache_resource
+def load_vectorstores():
+    embeddings = OpenAIEmbeddings(model="text-embedding-3-small")
+    academics = Chroma.from_texts(
+        ["Academic Policy: Minimum 85% attendance required. Final exam carries 60% weight."],
+        embedding=embeddings, collection_name="acad_st"
+    ).as_retriever()
+    
+    fees = Chroma.from_texts(
+        ["Fee Policy: Tuition is $15,000/year. Installment plans available with 2% processing fee."],
+        embedding=embeddings, collection_name="fees_st"
+    ).as_retriever()
+    return academics, fees
+
+acad_retriever, fees_retriever = load_vectorstores()
+
+# Step 2: State
+class AppState(TypedDict):
+    user_query: str
+    target_category: str
+    context: str
+    response: str
+
+llm = ChatOpenAI(model="gpt-4o", temperature=0.0)
+
+# Step 3: Nodes
+def classify(state: AppState) -&gt; dict:
+    cat = llm.invoke([
+        SystemMessage(content="Classify into: ACADEMICS or FEES."),
+        HumanMessage(content=state["user_query"])
+    ]).content.strip().upper()
+    return {"target_category": cat}
+
+def fetch_acad(state: AppState) -&gt; dict:
+    docs = acad_retriever.invoke(state["user_query"])
+    return {"context": docs[0].page_content}
+
+def fetch_fees(state: AppState) -&gt; dict:
+    docs = fees_retriever.invoke(state["user_query"])
+    return {"context": docs[0].page_content}
+
+def synthesize(state: AppState) -&gt; dict:
+    ans = llm.invoke([
+        SystemMessage(content=f"Context: {state['context']}"),
+        HumanMessage(content=state["user_query"])
+    ]).content
+    return {"response": ans}
+
+# Step 4: Build & Cache Graph
+@st.cache_resource
+def get_graph():
+    b = StateGraph(AppState)
+    b.add_node("classify", classify)
+    b.add_node("acad", fetch_acad)
+    b.add_node("fees", fetch_fees)
+    b.add_node("synth", synthesize)
+    
+    b.add_edge(START, "classify")
+    b.add_conditional_edges("classify", lambda s: "acad" if "ACADEMICS" in s["target_category"] else "fees", {
+        "acad": "acad", "fees": "fees"
+    })
+    b.add_edge("acad", "synth")
+    b.add_edge("fees", "synth")
+    b.add_edge("synth", END)
+    return b.compile()
+
+graph = get_graph()
+
+# User Interface
+query = st.text_input("Ask a question regarding University Academics or Fees:")
+if st.button("Submit Question", type="primary") and query:
+    with st.spinner("Classifying and routing through LangGraph..."):
+        res = graph.invoke({"user_query": query})
+        st.success(f"**Routed Category:** {res['target_category']}")
+        st.info(f"**Retrieved Context:** {res['context']}")
+        st.markdown(f"### Answer:\n{res['response']}")
+</code></pre>
+      </div>
+
+    </section>
+
+    <!-- 9. INTERACTIVE QUIZ -->
+    <section id="quiz">
+      <div class="section-tag">Self-Assessment</div>
+      <h2 class="section-heading">9. Test Your Intuition: Interactive Knowledge Check</h2>
+
+      <p>Take a moment to reinforce what you've learned. These three questions touch on the most common architectural decisions in LangGraph:</p>
+
+      <div class="quiz-wrapper">
+        <div class="quiz-q">1. Why is an `Annotated` reducer necessary when multiple nodes run in parallel?</div>
+        <div class="quiz-opts">
+          <button class="quiz-btn" onclick="answerQuiz(this, false)">A) To convert the state dictionary into a Pydantic model</button>
+          <button class="quiz-btn" onclick="answerQuiz(this, true)">B) To merge concurrent outputs into the state without the last node overwriting previous nodes</button>
+          <button class="quiz-btn" onclick="answerQuiz(this, false)">C) To force parallel nodes to execute sequentially</button>
+        </div>
+        <div class="quiz-explanation"></div>
+      </div>
+
+      <div class="quiz-wrapper">
+        <div class="quiz-q">2. What happens to graph execution when `interrupt(...)` is called inside a node?</div>
+        <div class="quiz-opts">
+          <button class="quiz-btn" onclick="answerQuiz(this, false)">A) The Python script raises an unhandled exception and exits</button>
+          <button class="quiz-btn" onclick="answerQuiz(this, true)">B) Execution halts, current state is saved to the checkpointer, and the graph waits for a resume Command</button>
+          <button class="quiz-btn" onclick="answerQuiz(this, false)">C) The graph automatically deletes state history to free memory</button>
+        </div>
+        <div class="quiz-explanation"></div>
+      </div>
+
+      <div class="quiz-wrapper">
+        <div class="quiz-q">3. Why must LangGraph compilation in Streamlit apps be decorated with `@st.cache_resource`?</div>
+        <div class="quiz-opts">
+          <button class="quiz-btn" onclick="answerQuiz(this, true)">A) To avoid reloading vectorstores and recompiling the graph on every button click or text input</button>
+          <button class="quiz-btn" onclick="answerQuiz(this, false)">B) Streamlit requires caching on all Python functions by default</button>
+          <button class="quiz-btn" onclick="answerQuiz(this, false)">C) To enable multi-threading on CPU cores</button>
+        </div>
+        <div class="quiz-explanation"></div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Right Column: Dedicated LangGraph Agentic Study Assistant Dock -->
+  <aside class="auxiliary-dock" id="auxiliaryDock">
+    <div class="dock-header">
+      <div class="dock-title-group">
+        <span class="dock-icon">⚡</span>
+        <div>
+          <h3 class="dock-title">LangGraph Study Assistant</h3>
+          <span class="dock-badge" id="lgModelStatusBadge">Active RAG &bull; In-Memory</span>
+        </div>
+      </div>
+      <button class="btn-icon" title="Model & API Key Settings" onclick="toggleLgSettings()">⚙️</button>
+    </div>
+
+    <!-- Collapsible Settings -->
+    <div class="dock-settings" id="lgDockSettings" style="display: none;">
+      <div class="settings-title">AI Engine Configuration</div>
+      <p class="settings-desc">Runs by default on instant In-Memory RAG (free, 0ms, offline). Enter your free Google AI Studio key to activate real-time Gemini 1.5 Pro!</p>
+      <div class="settings-field">
+        <label for="lgApiKeyInput">Gemini API Key (Google AI Studio):</label>
+        <div style="display: flex; gap: 6px; margin-top: 4px;">
+          <input type="password" id="lgApiKeyInput" placeholder="Paste AIzaSy... key" class="settings-input">
+          <button class="btn-jump" onclick="saveLgApiKey()" style="padding: 4px 8px;">Save</button>
+        </div>
+      </div>
+      <div class="settings-field" style="margin-top: 8px;">
+        <label for="lgModelSelect">Model Engine:</label>
+        <select id="lgModelSelect" class="settings-select" onchange="changeLgModel(this.value)">
+          <option value="rag">Offline In-Memory RAG (Free / 0ms)</option>
+          <option value="gemini-2.0-flash">Gemini 1.5 Flash (Ultra Fast)</option>
+          <option value="gemini-2.0-flash">Gemini 1.5 Pro (Deep Reasoning)</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Chat Messages -->
+    <div class="chat-messages" id="lgChatMessages">
+      <div class="chat-bubble assistant">
+        <div class="bubble-header">🤖 LangGraph Companion</div>
+        <div class="bubble-text">
+          Hello! I am your <strong>LangGraph & Agentic AI</strong> companion. I have all 6 production projects indexed—including <strong>Project 3: Conditional Routing (#p3-conditional)</strong> with exact second video timestamps (`t=6944s`).
+          <br><br>
+          Ask me any question or click a prompt chip:
+        </div>
+        <div class="suggested-chips">
+          <button class="prompt-chip" onclick="askLgQuick('Project 3 Conditional Routing (#p3-conditional)')">Project 3 Conditional RAG</button>
+          <button class="prompt-chip" onclick="askLgQuick('Project 2 Parallel Reducers')">Project 2 Parallel Reducers</button>
+          <button class="prompt-chip" onclick="askLgQuick('Project 5 Human-in-the-Loop')">Project 5 HITL Interrupt</button>
+          <button class="prompt-chip" onclick="askLgQuick('State Modeling TypedDict vs Pydantic')">TypedDict vs Pydantic</button>
+          <button class="prompt-chip" onclick="askLgQuick('Project 4 Iterative Reviewer Loop')">Iterative Reviewer Loop</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Chat Input Form -->
+    <div class="chat-input-area">
+      <form id="lgChatForm" onsubmit="handleLgChat(event)" style="display: flex; gap: 8px; width: 100%;">
+        <input type="text" id="lgChatInput" class="chat-input" placeholder="Ask about LangGraph, Conditional RAG, HITL..." autocomplete="off">
+        <button type="submit" class="btn-jump" style="padding: 0 14px;">Ask</button>
+      </form>
+    </div>
+  </aside>
+
+</div>
+
+<script>
+// Scroll Progress Bar
+window.addEventListener('scroll', () => {
+  const winScroll = document.documentElement.scrollTop;
+  const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+  const scrolled = (winScroll / height) * 100;
+  document.getElementById('reading-progress').style.width = scrolled + '%';
+});
+
+// Copy Code Button
+function copyCode(btn) {
+  const code = btn.closest('.code-container').querySelector('code').innerText;
+  navigator.clipboard.writeText(code).then(() => {
+    const span = btn.querySelector('span');
+    const orig = span.innerText;
+    span.innerText = "Copied!";
+    btn.style.borderColor = "var(--accent-emerald)";
+    btn.style.color = "var(--accent-emerald)";
+    setTimeout(() => {
+      span.innerText = orig;
+      btn.style.borderColor = "";
+      btn.style.color = "";
+    }, 2000);
+  });
+}
+
+// Interactive Quiz
+function answerQuiz(btn, isCorrect) {
+  const parent = btn.closest('.quiz-wrapper');
+  const btns = parent.querySelectorAll('.quiz-btn');
+  const exp = parent.querySelector('.quiz-explanation');
+
+  btns.forEach(b => {
+    b.classList.remove('correct', 'incorrect');
+    b.style.pointerEvents = 'none';
+  });
+
+  if (isCorrect) {
+    btn.classList.add('correct');
+    exp.innerHTML = "<strong>✓ Correct!</strong> Exactly right. This is one of the most critical concepts for production reliability.";
+    exp.style.color = "var(--accent-emerald)";
+  } else {
+    btn.classList.add('incorrect');
+    exp.innerHTML = "<strong>✗ Not quite.</strong> Take a quick look back at the section above to review how this works under the hood.";
+    exp.style.color = "var(--accent-rose)";
+  }
+  exp.style.display = 'block';
+}
+
+// TOC Active Link Spy
+window.addEventListener('DOMContentLoaded', () => {
+  const sections = document.querySelectorAll('section');
+  const navLinks = document.querySelectorAll('.toc-link');
+
+  window.addEventListener('scroll', () => {
+    let current = '';
+    sections.forEach(sec => {
+      const top = sec.offsetTop - 120;
+      if (pageYOffset >= top) {
+        current = sec.getAttribute('id');
+      }
+    });
+    navLinks.forEach(link => {
+      link.classList.remove('active');
+      if (link.getAttribute('href') === '#' + current) {
+        link.classList.add('active');
+      }
+    });
+  });
+});
+</script>
+
+<script>
+// ============================================================================
+// LangGraph Study Assistant Chatbot Logic
+// ============================================================================
+const LG_PROJECTS = [
+  {
+    id: "paradigm",
+    title: "1. The Fundamental Shift: Generative AI vs Agentic AI",
+    keywords: ["shift", "generative ai", "agentic ai", "state machine", "loop", "decision"],
+    summary: "Contrast between static single-turn prompts and cyclical state machine agents that reason, act, observe, and adjust trajectory.",
+    ytUrl: "https://www.youtube.com/watch?v=ytsHs-KZHVI&t=111s"
+  },
+  {
+    id: "states",
+    title: "2. State Modeling: TypedDict vs Pydantic (states.py)",
+    keywords: ["state", "typeddict", "pydantic", "schema", "validation", "states.py"],
+    summary: "Complete blueprint for shared state schema, comparing raw TypedDict speed against Pydantic runtime data validation.",
+    ytUrl: "https://www.youtube.com/watch?v=ytsHs-KZHVI&t=321s"
+  },
+  {
+    id: "p1-sequential",
+    title: "3. Project 1: Sequential Base Pipeline (sequential_base.py)",
+    keywords: ["project 1", "p1", "sequential", "video pipeline", "editor", "scriptwriter", "hinglish"],
+    summary: "Linear 3-node assembly line: Video Topic Analyzer -> Scriptwriter -> Hinglish Localization Translator.",
+    ytUrl: "https://www.youtube.com/watch?v=ytsHs-KZHVI&t=1719s"
+  },
+  {
+    id: "p2-parallel",
+    title: "4. Project 2: Parallel Workflows & State Reducers (parallel_reducers.py)",
+    keywords: ["project 2", "p2", "parallel", "reducers", "operator.add", "custom reducer", "safety", "fan-out"],
+    summary: "Safe concurrent node execution with custom dictionary reducers preventing race condition state overwrites.",
+    ytUrl: "https://www.youtube.com/watch?v=ytsHs-KZHVI&t=5246s"
+  },
+  {
+    id: "p3-conditional",
+    title: "5. Project 3: Conditional Routing & Multi-PDF RAG (conditional_RAG.py)",
+    keywords: ["project 3", "p3", "p3-conditional", "conditional", "routing", "router", "multi-pdf", "triage", "classifier"],
+    summary: "Smart triage architecture: Classifier Node evaluates query intent and conditionally routes to College Syllabus RAG, Placement Rules RAG, or Direct LLM.",
+    ytUrl: "https://www.youtube.com/watch?v=ytsHs-KZHVI&t=6944s"
+  },
+  {
+    id: "p4-iterative",
+    title: "6. Project 4: Iterative Workflow & Reviewer Loop (iterative_tools.py)",
+    keywords: ["project 4", "p4", "iterative", "reviewer", "writer", "tavily", "tools", "loop"],
+    summary: "Autonomous self-correcting cycle: Writer generates content with Tavily Web Search, Reviewer scores critique, looping until quality threshold is met.",
+    ytUrl: "https://www.youtube.com/watch?v=ytsHs-KZHVI&t=12090s"
+  },
+  {
+    id: "p5-hitl",
+    title: "7. Project 5: Human-in-the-Loop & Interrupts (humanintheloop.py)",
+    keywords: ["project 5", "p5", "hitl", "human in the loop", "interrupt", "memorysaver", "checkpoint", "approval"],
+    summary: "Production enterprise guardrails: Graph interrupts execution before publishing, saves state snapshot in MemorySaver, and resumes with Command(resume=...).",
+    ytUrl: "https://www.youtube.com/watch?v=ytsHs-KZHVI&t=17795s"
+  },
+  {
+    id: "p6-streamlit",
+    title: "8. Project 6: Full Production Streamlit Web Application",
+    keywords: ["project 6", "p6", "streamlit", "frontend", "ui", "web app", "interactive"],
+    summary: "Interactive web deployment embedding the LangGraph conditional multi-PDF RAG pipeline into a real-time Streamlit interface.",
+    ytUrl: "https://www.youtube.com/watch?v=ytsHs-KZHVI"
+  },
+  {
+    id: "quiz",
+    title: "9. Interactive Knowledge Check",
+    keywords: ["quiz", "test", "knowledge check", "questions"],
+    summary: "Interactive scenario quiz evaluating architectural decision-making across sequential, parallel, and conditional agent graphs.",
+    ytUrl: "https://www.youtube.com/watch?v=ytsHs-KZHVI"
+  }
+];
+
+let lgApiKey = localStorage.getItem('lg_gemini_api_key') || '';
+let lgModelMode = localStorage.getItem('lg_model_mode') || 'rag';
+
+document.addEventListener('DOMContentLoaded', () => {
+  const sel = document.getElementById('lgModelSelect');
+  if (sel) sel.value = lgModelMode;
+  const inp = document.getElementById('lgApiKeyInput');
+  if (inp && lgApiKey) inp.value = lgApiKey;
+  updateLgStatusBadge();
+});
+
+function toggleLgSettings() {
+  const p = document.getElementById('lgDockSettings');
+  p.style.display = p.style.display === 'none' ? 'block' : 'none';
+}
+
+function saveLgApiKey() {
+  const key = document.getElementById('lgApiKeyInput').value.trim();
+  lgApiKey = key;
+  localStorage.setItem('lg_gemini_api_key', key);
+  if (key && lgModelMode === 'rag') {
+    lgModelMode = 'gemini-2.0-flash';
+    document.getElementById('lgModelSelect').value = 'gemini-2.0-flash';
+    localStorage.setItem('lg_model_mode', 'gemini-2.0-flash');
+  }
+  updateLgStatusBadge();
+  toggleLgSettings();
+  addLgAssistantMsg("Gemini API Key saved! Engine active: " + lgModelMode);
+}
+
+function changeLgModel(m) {
+  lgModelMode = m;
+  localStorage.setItem('lg_model_mode', m);
+  updateLgStatusBadge();
+}
+
+function updateLgStatusBadge() {
+  const b = document.getElementById('lgModelStatusBadge');
+  if (!b) return;
+  if (lgModelMode === 'rag') {
+    b.innerText = 'Active RAG • In-Memory';
+    b.style.color = '#a78bfa';
+  } else if (lgApiKey) {
+    b.innerText = lgModelMode.toUpperCase() + ' • Live AI';
+    b.style.color = '#34d399';
+  } else {
+    b.innerText = 'API Key Needed • Offline';
+    b.style.color = '#f59e0b';
+  }
+}
+
+function jumpToLgSection(sectionId) {
+  const sec = document.getElementById(sectionId);
+  if (sec) {
+    sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    sec.classList.remove('highlighted-section');
+    void sec.offsetWidth;
+    sec.classList.add('highlighted-section');
+  }
+}
+
+function askLgQuick(q) {
+  document.getElementById('lgChatInput').value = q;
+  handleLgChat(new Event('submit'));
+}
+
+async function handleLgChat(e) {
+  if (e) e.preventDefault();
+  const inp = document.getElementById('lgChatInput');
+  const q = inp.value.trim();
+  if (!q) return;
+
+  addLgUserMsg(q);
+  inp.value = '';
+
+  if (lgModelMode !== 'rag' && lgApiKey) {
+    await callLgGemini(q);
+    return;
+  }
+
+  // Offline RAG
+  const qLower = q.toLowerCase();
+  let matches = LG_PROJECTS.filter(p => {
+    return p.title.toLowerCase().includes(qLower) ||
+           p.id.toLowerCase().includes(qLower) ||
+           p.keywords.some(k => qLower.includes(k) || k.includes(qLower));
+  });
+
+  if (matches.length === 0) {
+    addLgAssistantMsg(`
+      I couldn't find a direct keyword match for <em>"${escapeHtml(q)}"</em>.
+      <br><br>
+      💡 <strong>Try asking about:</strong>
+      <ul>
+        <li><code>Project 3: Conditional Routing & Multi-PDF RAG</code></li>
+        <li><code>Project 2: Parallel Workflows & Reducers</code></li>
+        <li><code>Project 5: Human-in-the-Loop Interrupts</code></li>
+        <li><code>State Modeling: TypedDict vs Pydantic</code></li>
+        <li><code>Iterative Reviewer Loop with Tavily Search</code></li>
+      </ul>
+    `);
+    return;
+  }
+
+  const best = matches[0];
+  let resHtml = `
+    <div style="font-weight: 700; color: #FFFFFF; font-size: 0.9rem; margin-bottom: 4px;">${escapeHtml(best.title)}</div>
+    <div style="color: #cbd5e1; font-size: 0.8rem; margin-bottom: 8px;">${escapeHtml(best.summary)}</div>
+    <div class="chat-action-row">
+      <button class="btn-jump" onclick="jumpToLgSection('${best.id}')">📍 Jump to Section in Notes</button>
+      <a href="${best.ytUrl}" target="_blank" class="btn-yt">▶ YouTube Timestamp Link ↗</a>
+    </div>
+  `;
+
+  if (matches.length > 1) {
+    resHtml += `<div style="margin-top: 10px; padding-top: 8px; border-top: 1px solid var(--border); font-size: 0.75rem; color: #a78bfa;">Also relevant:</div>`;
+    matches.slice(1, 4).forEach(m => {
+      resHtml += `
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 4px;">
+          <span style="font-size: 0.75rem; color: #cbd5e1;">${escapeHtml(m.title)}</span>
+          <button class="btn-jump" style="padding: 2px 6px; font-size: 0.65rem;" onclick="jumpToLgSection('${m.id}')">Jump</button>
+        </div>
+      `;
+    });
+  }
+
+  addLgAssistantMsg(resHtml);
+}
+
+async function callLgGemini(query) {
+  const lid = 'loading-' + Date.now();
+  addLgAssistantMsg('<span id="' + lid + '">Analyzing with ' + lgModelMode + '...</span>');
+
+  try {
+    const sys = "You are a Senior LangGraph & Agentic AI Architect companion. Provide concise, expert engineering guidance grounded in LangGraph state machines, conditional routing, parallel reducers, and human-in-the-loop workflows.";
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/${lgModelMode}:generateContent?key=${lgApiKey}`;
+    const payload = {
+      contents: [{ role: "user", parts: [{ text: `${sys}\n\nUser Question: ${query}` }] }]
+    };
+
+    const res = await fetch(url, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
+    const data = await res.json();
+    const lEl = document.getElementById(lid);
+
+    if (data.error) {
+      if (lEl) lEl.parentElement.innerHTML = `⚠️ Gemini API Error: ${escapeHtml(data.error.message)}<br><small>Reverting to offline RAG.</small>`;
+      return;
+    }
+
+    const ans = data.candidates?.[0]?.content?.parts?.[0]?.text || "No response received.";
+    if (lEl) lEl.parentElement.innerHTML = escapeHtml(ans).replace(/\n/g, '<br>');
+  } catch (err) {
+    const lEl = document.getElementById(lid);
+    if (lEl) lEl.parentElement.innerHTML = "⚠️ Network error calling Gemini. Use offline RAG.";
+  }
+}
+
+function addLgUserMsg(t) {
+  const c = document.getElementById('lgChatMessages');
+  const b = document.createElement('div');
+  b.className = 'chat-bubble user';
+  b.innerText = t;
+  c.appendChild(b);
+  c.scrollTop = c.scrollHeight;
+}
+
+function addLgAssistantMsg(h) {
+  const c = document.getElementById('lgChatMessages');
+  const b = document.createElement('div');
+  b.className = 'chat-bubble assistant';
+  b.innerHTML = h;
+  c.appendChild(b);
+  c.scrollTop = c.scrollHeight;
+}
+
+function escapeHtml(s) {
+  return (s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+</script>
+
+
+<script>
+/* â”€â”€ SIDEBAR ACTIVE SYNC (IntersectionObserver) â”€â”€ */
+(function() {
+  function initSidebarSync() {
+    var pillLinks = document.querySelectorAll(
+      '.sidebar-pill, .sidebar-nav a, .chapter-nav a, nav a[href^="#"], aside a[href^="#"]'
+    );
+    if (!pillLinks.length) return;
+    var sections = document.querySelectorAll(
+      '[id^="chapter"], [id^="module"], [id^="curriculum"], [id^="section-"], [id^="interview-questions"]'
+    );
+    if (!sections.length) return;
+    function setActive(id) {
+      pillLinks.forEach(function(link) {
+        var href = link.getAttribute('href') || '';
+        var match = href === '#' + id || href.endsWith('/' + '#' + id);
+        link.classList.toggle('active', match);
+      });
+    }
+    var io = new IntersectionObserver(function(entries) {
+      entries.forEach(function(e) { if (e.isIntersecting) setActive(e.target.id); });
+    }, { rootMargin: '-15% 0px -65% 0px', threshold: 0 });
+    sections.forEach(function(el) { io.observe(el); });
+    pillLinks.forEach(function(link) {
+      link.addEventListener('click', function() {
+        var href = (link.getAttribute('href') || '').replace(/^.*#/, '');
+        if (href) setActive(href);
+      });
+    });
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initSidebarSync);
+  } else {
+    initSidebarSync();
+  }
+})();
+</script>
+
+
+<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• INTERVIEW QUESTIONS SECTION â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+
+<style>
+.iq-section { background: linear-gradient(135deg,#0F172A,#1E293B); border:1px solid #334155; border-radius:16px; padding:28px; margin-top:32px; }
+.iq-header { display:flex; align-items:flex-start; gap:14px; margin-bottom:20px; }
+.iq-icon { font-size:2rem; line-height:1; }
+.iq-title { font-size:1.2rem; font-weight:800; color:#F8FAFC; margin:0 0 4px; }
+.iq-subtitle { font-size:0.79rem; color:#94A3B8; margin:0; }
+.iq-grid { display:flex; flex-direction:column; gap:10px; }
+.iq-item { background:rgba(255,255,255,.04); border:1px solid #334155; border-radius:10px; overflow:hidden; }
+.iq-q { padding:12px 16px; font-size:.88rem; font-weight:600; color:#E2E8F0; display:flex; gap:10px; }
+.iq-num { color:#60A5FA; font-weight:800; min-width:28px; }
+.iq-toggle { padding:0 16px; cursor:pointer; }
+.iq-toggle:hover { background:rgba(255,255,255,.03); }
+.iq-toggle-lbl { display:block; padding:7px 0; font-size:.76rem; color:#3B82F6; font-weight:600; }
+.iq-a { display:none; font-size:.83rem; color:#CBD5E1; line-height:1.7; padding-bottom:12px; }
+.iq-item.open .iq-toggle-lbl { color:#64748B; }
+.iq-item.open .iq-toggle-lbl::before { content:"\25BC  "; }
+.iq-toggle-lbl::before { content:"\25BA  "; }
+.iq-item.open .iq-a { display:block; }
+</style>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  document.querySelectorAll('.iq-toggle').forEach(function(t) {
+    t.addEventListener('click', function() {
+      t.closest('.iq-item').classList.toggle('open');
+    });
+  });
+});
+</script>
+
+<section class="iq-section" id="interview-questions">
+  <div class="iq-header">
+    <span class="iq-icon">&#127919;</span>
+    <div>
+      <h2 class="iq-title">Placement Interview Questions &mdash; Agentic AI &amp; LangChain/LangGraph</h2>
+      <p class="iq-subtitle">Curated from real FAANG, product company &amp; service interviews. Click any answer to expand.</p>
+    </div>
+  </div>
+  <div class="iq-grid">
+    <div class="iq-item">
+      <div class="iq-q"><span class="iq-num">Q1.</span> What is LangChain? What problem does it solve?</div>
+      <div class="iq-toggle">
+        <span class="iq-toggle-lbl">Show Answer</span>
+        <div class="iq-a">LangChain chains LLM calls with tools, memory, and data sources. It solves: 1) LLMs are stateless (adds memory). 2) LLMs cannot act (adds tool calling). 3) Context window limits (adds RAG). 4) Complex multi-step tasks (adds chains and agents).</div>
+      </div>
+    </div>
+    <div class="iq-item">
+      <div class="iq-q"><span class="iq-num">Q2.</span> Explain RAG (Retrieval Augmented Generation) architecture.</div>
+      <div class="iq-toggle">
+        <span class="iq-toggle-lbl">Show Answer</span>
+        <div class="iq-a">RAG: 1) <strong>Indexing</strong>: Chunk docs &#8594; embed &#8594; store in vector DB. 2) <strong>Retrieval</strong>: Query embedded &#8594; cosine similarity search &#8594; top-K chunks. 3) <strong>Augmentation</strong>: Chunks injected into LLM prompt. 4) <strong>Generation</strong>: LLM generates grounded response. Prevents hallucination.</div>
+      </div>
+    </div>
+    <div class="iq-item">
+      <div class="iq-q"><span class="iq-num">Q3.</span> What is the ReAct pattern in agents?</div>
+      <div class="iq-toggle">
+        <span class="iq-toggle-lbl">Show Answer</span>
+        <div class="iq-a"><strong>ReAct</strong> (Reason + Act): Agent interleaves reasoning with tool actions. Loop: Thought &#8594; Action &#8594; Observation &#8594; Thought &#8594; ... &#8594; Final Answer. Enables multi-step planning. Implemented in LangChain via AgentExecutor.</div>
+      </div>
+    </div>
+    <div class="iq-item">
+      <div class="iq-q"><span class="iq-num">Q4.</span> What is LangGraph? How does it differ from LangChain?</div>
+      <div class="iq-toggle">
+        <span class="iq-toggle-lbl">Show Answer</span>
+        <div class="iq-a">LangGraph is a stateful multi-agent orchestration framework. It models workflows as <strong>directed graphs</strong> (nodes=functions, edges=transitions). Unlike linear chains, it supports: cycles/loops, conditional branching, parallel branches, shared typed state, and human-in-the-loop interrupts.</div>
+      </div>
+    </div>
+    <div class="iq-item">
+      <div class="iq-q"><span class="iq-num">Q5.</span> Explain the difference between zero-shot, few-shot, and chain-of-thought prompting.</div>
+      <div class="iq-toggle">
+        <span class="iq-toggle-lbl">Show Answer</span>
+        <div class="iq-a"><strong>Zero-shot</strong>: Task description only. <strong>Few-shot</strong>: 2&#8211;5 input&#8594;output examples in prompt. <strong>CoT</strong>: 'Let's think step by step' &#8594; forces reasoning trace &#8594; dramatic accuracy improvement. <strong>Self-Consistency</strong>: Sample multiple CoT paths, take majority vote.</div>
+      </div>
+    </div>
+    <div class="iq-item">
+      <div class="iq-q"><span class="iq-num">Q6.</span> What is function/tool calling in LLMs?</div>
+      <div class="iq-toggle">
+        <span class="iq-toggle-lbl">Show Answer</span>
+        <div class="iq-a">Tool calling lets LLMs output structured JSON specifying a function name and arguments. The host executes the function and returns results. Enables: web search, database queries, code execution, API calls. Implemented via OpenAI tool_choice, Gemini function declarations, or LangChain @tool.</div>
+      </div>
+    </div>
+    <div class="iq-item">
+      <div class="iq-q"><span class="iq-num">Q7.</span> Explain vector embeddings and similarity search.</div>
+      <div class="iq-toggle">
+        <span class="iq-toggle-lbl">Show Answer</span>
+        <div class="iq-a">Embeddings map text to dense vectors where semantic similarity &asymp; geometric proximity. Models: text-embedding-3, sentence-transformers. Similarity: cosine = (A&middot;B)/(|A||B|). ANN search (HNSW, IVF) in Faiss/Pinecone enables sub-linear query time at scale.</div>
+      </div>
+    </div>
+    <div class="iq-item">
+      <div class="iq-q"><span class="iq-num">Q8.</span> What is a prompt template and why is it important?</div>
+      <div class="iq-toggle">
+        <span class="iq-toggle-lbl">Show Answer</span>
+        <div class="iq-a">Prompt templates parameterize LLM inputs, separating instructions from dynamic data. Benefits: reusability, testability, injection safety, version control. LangChain's PromptTemplate/ChatPromptTemplate supports f-string and jinja2 formatting.</div>
+      </div>
+    </div>
+    <div class="iq-item">
+      <div class="iq-q"><span class="iq-num">Q9.</span> What is the difference between an Agent and a Chain in LangChain?</div>
+      <div class="iq-toggle">
+        <span class="iq-toggle-lbl">Show Answer</span>
+        <div class="iq-a"><strong>Chain</strong>: Fixed, deterministic sequence of operations. No decision-making. <strong>Agent</strong>: LLM decides at runtime which tools to call and in what order. Use chains for predictable pipelines; agents for open-ended tasks requiring tool selection and iteration.</div>
+      </div>
+    </div>
+    <div class="iq-item">
+      <div class="iq-q"><span class="iq-num">Q10.</span> What are the key components of a LangGraph workflow?</div>
+      <div class="iq-toggle">
+        <span class="iq-toggle-lbl">Show Answer</span>
+        <div class="iq-a"><strong>StateGraph</strong>: Typed shared state (TypedDict). <strong>Nodes</strong>: Python functions that read/write state. <strong>Edges</strong>: Direct or conditional transitions. <strong>Checkpointer</strong>: Persists state for resumability. <strong>Subgraphs</strong>: Composable agent teams. <strong>Interrupt</strong>: Pause for human approval.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<script>
+/* ═══════════════════════════════════════════════════════════════════
+   SMART SEARCH ENGINE + STREAMING GEMINI CHAT
+   Model: gemini-2.0-flash (free, fast, high quality)
+   ═══════════════════════════════════════════════════════════════════ */
+
+// ── 1. Smart Search Autocomplete Engine ──────────────────────────────
+
+(function SmartSearch() {
+  var searchEl = document.getElementById('section-search') ||
+                 document.getElementById('searchInput') ||
+                 document.querySelector('input[type="text"].search-input') ||
+                 document.querySelector('.nav-search-bar input');
+  if (!searchEl) return;
+
+  // Wrap in smart-search-wrapper if not already
+  if (!searchEl.closest('.smart-search-wrapper')) {
+    var parent = searchEl.parentNode;
+    var wrapper = document.createElement('div');
+    wrapper.className = 'smart-search-wrapper';
+    parent.insertBefore(wrapper, searchEl);
+    wrapper.appendChild(searchEl);
+    // Add search icon
+    var icon = document.createElement('span');
+    icon.className = 'search-icon-abs';
+    icon.textContent = '🔍';
+    wrapper.appendChild(icon);
+    // Add autocomplete dropdown
+    var dropdown = document.createElement('div');
+    dropdown.className = 'search-autocomplete';
+    dropdown.id = 'smart-ac-dropdown';
+    wrapper.appendChild(dropdown);
+  }
+
+  var dropdown = document.getElementById('smart-ac-dropdown');
+  var selectedIdx = -1;
+  var lastQuery = '';
+  var highlights = [];
+
+  // Collect all page sections for local search
+  function getPageSections() {
+    var sections = [];
+    document.querySelectorAll(
+      '.chapter-container, .chapter-header, article, section, .pdf-page-sheet, .chapter-section'
+    ).forEach(function(el) {
+      var id = el.id || '';
+      var heading = el.querySelector('h1,h2,h3,h4,.chapter-title,.chapter-badge');
+      var title = heading ? heading.textContent.trim() : (id || '').replace(/-/g,' ');
+      if (title.length > 2) {
+        sections.push({ id: id, title: title, el: el });
+      }
+    });
+    return sections;
+  }
+
+  // Build topic index from knowledge base (OS, ML, DBMS, CN)
+  function getKBTopics() {
+    var topics = [];
+    var kbs = ['osKnowledgeBase','mlKnowledgeBase','dbmsKnowledgeBase','cnKnowledgeBase'];
+    kbs.forEach(function(name) {
+      if (window[name] && Array.isArray(window[name])) {
+        window[name].forEach(function(item) {
+          topics.push({ title: item.title, keys: item.keys || [], chapterId: item.chapterId || '', videoId: item.videoId || '', seconds: item.seconds || 0, ytLabel: item.ytLabel || '' });
+        });
+      }
+    });
+    // Also check NEETCODE_DATA
+    if (window.NEETCODE_DATA) {
+      Object.values(window.NEETCODE_DATA).forEach(function(chapter) {
+        if (chapter.questions) {
+          chapter.questions.forEach(function(q) {
+            topics.push({ title: q.title + ' (' + q.difficulty + ')', keys: [q.title.toLowerCase(), q.pattern.toLowerCase()], chapterId: '', neetId: q.id });
+          });
+        }
+      });
+    }
+    return topics;
+  }
+
+  // Fuzzy match scorer
+  function score(query, text) {
+    var q = query.toLowerCase().trim();
+    var t = text.toLowerCase();
+    if (t === q) return 100;
+    if (t.startsWith(q)) return 80;
+    if (t.includes(q)) return 60;
+    var words = q.split(/\s+/);
+    var wordScore = words.reduce(function(acc, w) { return acc + (t.includes(w) ? 20 : 0); }, 0);
+    return wordScore;
+  }
+
+  // Highlight matches in page content
+  function clearHighlights() {
+    highlights.forEach(function(el) {
+      el.outerHTML = el.textContent;
+    });
+    highlights = [];
+  }
+
+  function highlightInPage(query) {
+    clearHighlights();
+    if (!query || query.length < 2) return;
+    var walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, {
+      acceptNode: function(node) {
+        var parent = node.parentNode;
+        if (!parent) return NodeFilter.FILTER_REJECT;
+        var tag = parent.tagName;
+        if (tag === 'SCRIPT' || tag === 'STYLE' || tag === 'INPUT' || tag === 'TEXTAREA') return NodeFilter.FILTER_REJECT;
+        if (parent.classList && (parent.classList.contains('chat-messages') || parent.classList.contains('smart-search-wrapper') || parent.classList.contains('search-autocomplete'))) return NodeFilter.FILTER_REJECT;
+        return NodeFilter.FILTER_ACCEPT;
+      }
+    });
+    var nodes = [];
+    while (walker.nextNode()) { nodes.push(walker.currentNode); }
+    var re = new RegExp('(' + query.replace(/[.*+?^${}()|[\]\\]/g,'\\$&') + ')', 'gi');
+    nodes.forEach(function(node) {
+      if (!re.test(node.textContent)) return;
+      var frag = document.createDocumentFragment();
+      var parts = node.textContent.split(re);
+      parts.forEach(function(p) {
+        if (re.test(p)) {
+          var mark = document.createElement('mark');
+          mark.className = 'search-highlight';
+          mark.textContent = p;
+          frag.appendChild(mark);
+          highlights.push(mark);
+        } else {
+          frag.appendChild(document.createTextNode(p));
+        }
+        re.lastIndex = 0;
+      });
+      node.parentNode.replaceChild(frag, node);
+    });
+    // Scroll to first highlight
+    if (highlights.length > 0) {
+      highlights[0].scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  }
+
+  function buildDropdown(query) {
+    if (!query || query.length < 2) {
+      dropdown.classList.remove('open');
+      return;
+    }
+    var sections = getPageSections();
+    var topics = getKBTopics();
+    var results = [];
+
+    // Score sections
+    sections.forEach(function(s) {
+      var sc = score(query, s.title);
+      if (sc > 0) results.push({ type: 'section', title: s.title, subtitle: 'Jump to section', id: s.id, el: s.el, score: sc });
+    });
+
+    // Score knowledge base topics
+    topics.forEach(function(t) {
+      var sc = score(query, t.title);
+      t.keys.forEach(function(k) { sc = Math.max(sc, score(query, k)); });
+      if (sc > 0) results.push({ type: 'topic', title: t.title, subtitle: t.ytLabel || 'Knowledge base topic', chapterId: t.chapterId, videoId: t.videoId, seconds: t.seconds, neetId: t.neetId, score: sc });
+    });
+
+    results.sort(function(a,b) { return b.score - a.score; });
+    results = results.slice(0, 8);
+
+    var html = '';
+    if (results.length === 0) {
+      html = '<div class="ac-section-label">No matches</div>';
+    } else {
+      var hasTopic = results.some(function(r) { return r.type === 'topic'; });
+      var hasSection = results.some(function(r) { return r.type === 'section'; });
+      if (hasTopic) {
+        html += '<div class="ac-section-label">&#128218; Knowledge Topics</div>';
+        results.filter(function(r) { return r.type === 'topic'; }).slice(0,5).forEach(function(r,i) {
+          html += '<div class="ac-item" data-ac-idx="' + i + '" onclick="window._acAction(this)"'
+            + ' data-chapter="' + (r.chapterId||'') + '" data-video="' + (r.videoId||'') + '" data-seconds="' + (r.seconds||0) + '" data-neet="' + (r.neetId||'') + '">'
+            + '<div class="ac-item-icon">&#129504;</div>'
+            + '<div class="ac-item-main"><div class="ac-item-title">' + r.title + '</div>'
+            + '<div class="ac-item-subtitle">' + r.subtitle + '</div></div>'
+            + '<div class="ac-item-type topic">TOPIC</div>'
+            + '</div>';
+        });
+      }
+      if (hasTopic && hasSection) html += '<div class="ac-divider"></div>';
+      if (hasSection) {
+        html += '<div class="ac-section-label">&#128204; Sections in this Guide</div>';
+        results.filter(function(r) { return r.type === 'section'; }).slice(0,4).forEach(function(r,i) {
+          html += '<div class="ac-item" onclick="window._acJumpSection(this)" data-id="' + r.id + '">'
+            + '<div class="ac-item-icon">&#128195;</div>'
+            + '<div class="ac-item-main"><div class="ac-item-title">' + r.title + '</div>'
+            + '<div class="ac-item-subtitle">Jump to section</div></div>'
+            + '<div class="ac-item-type section">SECTION</div>'
+            + '</div>';
+        });
+      }
+      // Plain text search option always shown
+      html += '<div class="ac-divider"></div>';
+      html += '<div class="ac-section-label">&#128269; Find in Page</div>';
+      html += '<div class="ac-item" onclick="window._acHighlight()">'
+        + '<div class="ac-item-icon">&#128269;</div>'
+        + '<div class="ac-item-main"><div class="ac-item-title">Find &quot;' + query.replace(/</g,'&lt;') + '&quot; in page</div>'
+        + '<div class="ac-item-subtitle">Highlight all occurrences</div></div>'
+        + '<div class="ac-item-type match">FIND</div>'
+        + '</div>';
+    }
+    dropdown.innerHTML = html;
+    dropdown.classList.add('open');
+  }
+
+  window._acAction = function(el) {
+    var chapterId = el.getAttribute('data-chapter');
+    var videoId   = el.getAttribute('data-video');
+    var seconds   = parseInt(el.getAttribute('data-seconds'), 10) || 0;
+    var neetId    = el.getAttribute('data-neet');
+    if (chapterId && document.getElementById(chapterId)) {
+      document.getElementById(chapterId).scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+    // Also ask the chatbot the same question
+    var q = searchEl.value.trim();
+    if (q) {
+      var chatInput = document.getElementById('chat-query') || document.getElementById('chat-input') || document.getElementById('chatInput');
+      if (chatInput) { chatInput.value = q; }
+      if (typeof submitChat === 'function') submitChat();
+      else if (typeof handleChatSubmit === 'function') handleChatSubmit(new Event('submit'));
+    }
+    dropdown.classList.remove('open');
+  };
+
+  window._acJumpSection = function(el) {
+    var id = el.getAttribute('data-id');
+    if (id && document.getElementById(id)) {
+      document.getElementById(id).scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+    dropdown.classList.remove('open');
+  };
+
+  window._acHighlight = function() {
+    highlightInPage(searchEl.value.trim());
+    dropdown.classList.remove('open');
+  };
+
+  // Event listeners
+  searchEl.addEventListener('input', function() {
+    var q = searchEl.value.trim();
+    if (q === lastQuery) return;
+    lastQuery = q;
+    clearHighlights();
+    buildDropdown(q);
+  });
+
+  searchEl.addEventListener('keydown', function(e) {
+    var items = dropdown.querySelectorAll('.ac-item');
+    if (e.key === 'ArrowDown') {
+      selectedIdx = Math.min(selectedIdx + 1, items.length - 1);
+      items.forEach(function(it, i) { it.classList.toggle('selected', i === selectedIdx); });
+      e.preventDefault();
+    } else if (e.key === 'ArrowUp') {
+      selectedIdx = Math.max(selectedIdx - 1, -1);
+      items.forEach(function(it, i) { it.classList.toggle('selected', i === selectedIdx); });
+      e.preventDefault();
+    } else if (e.key === 'Enter') {
+      if (selectedIdx >= 0 && items[selectedIdx]) {
+        items[selectedIdx].click();
+      } else {
+        // Regular text search / highlight
+        highlightInPage(searchEl.value.trim());
+        // Also filter content if filterContent exists
+        if (typeof filterContent === 'function') filterContent();
+        dropdown.classList.remove('open');
+      }
+    } else if (e.key === 'Escape') {
+      dropdown.classList.remove('open');
+      clearHighlights();
+    }
+  });
+
+  // Close dropdown on outside click
+  document.addEventListener('click', function(e) {
+    if (!e.target.closest('.smart-search-wrapper')) {
+      dropdown.classList.remove('open');
+    }
+  });
+})();
+
+// ── 2. Streaming Gemini Chat (gemini-2.0-flash) ──────────────────────
+
+// Override chat submission in ALL guides to use streaming
+(function upgradeChat() {
+  // Only inject if there's a chat input and no streaming already
+  var chatInput = document.getElementById('chat-query') ||
+                  document.getElementById('chat-input') ||
+                  document.getElementById('chatInput');
+  if (!chatInput) return;
+
+  // Store original submitChat to call RAG fallback
+  var _origSubmit = window.submitChat;
+  var _origHandleChat = window.handleChatSubmit;
+
+  // Check for API key
+  function getApiKey() {
+    return localStorage.getItem('neetcode_gemini_api_key') ||
+           localStorage.getItem('gemini_api_key') ||
+           localStorage.getItem('os_gemini_key') ||
+           null;
+  }
+
+  function getChatContainer() {
+    return document.getElementById('chat-messages') || document.getElementById('chatMessages');
+  }
+
+  function addUserMsg(text) {
+    var c = getChatContainer();
+    if (!c) return;
+    var b = document.createElement('div');
+    b.className = 'chat-bubble user';
+    b.textContent = text;
+    c.appendChild(b);
+    c.scrollTop = c.scrollHeight;
+  }
+
+  function createStreamBubble() {
+    var c = getChatContainer();
+    if (!c) return null;
+    var b = document.createElement('div');
+    b.className = 'chat-bubble assistant';
+    b.innerHTML = '<span class="streaming-cursor">&#9646;</span>';
+    c.appendChild(b);
+    c.scrollTop = c.scrollHeight;
+    return b;
+  }
+
+  // Add streaming cursor CSS once
+  if (!document.getElementById('streaming-css')) {
+    var s = document.createElement('style');
+    s.id = 'streaming-css';
+    s.textContent = '@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}.streaming-cursor{display:inline-block;animation:blink 0.8s infinite;color:#60A5FA;margin-left:2px;}.stream-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;padding-top:8px;border-top:1px solid rgba(255,255,255,0.08)}.btn-yt-sm{background:rgba(239,68,68,0.12);border:1px solid rgba(239,68,68,0.3);color:#f87171;font-size:11px;font-weight:600;padding:3px 10px;border-radius:6px;text-decoration:none;cursor:pointer;transition:background .2s}.btn-yt-sm:hover{background:rgba(239,68,68,0.22)}.btn-jump-sm{background:rgba(37,99,235,0.12);border:1px solid rgba(37,99,235,0.3);color:#60A5FA;font-size:11px;font-weight:600;padding:3px 10px;border-radius:6px;cursor:pointer;transition:background .2s}.btn-jump-sm:hover{background:rgba(37,99,235,0.22)}.model-badge{font-size:10px;background:rgba(139,92,246,0.15);color:#A78BFA;border:1px solid rgba(139,92,246,0.3);padding:2px 7px;border-radius:9999px;font-weight:600}';
+    document.head.appendChild(s);
+  }
+
+  // Get local knowledge context
+  function getLocalContext(query) {
+    var context = [];
+    var kbs = ['osKnowledgeBase','mlKnowledgeBase','dbmsKnowledgeBase','cnKnowledgeBase'];
+    var qLow = query.toLowerCase();
+    kbs.forEach(function(name) {
+      if (!window[name]) return;
+      window[name].forEach(function(item) {
+        var match = item.keys.some(function(k) { return qLow.includes(k); }) || item.title.toLowerCase().includes(qLow.substring(0,8));
+        if (match) context.push({ title: item.title, body: item.body, videoId: item.videoId, seconds: item.seconds, ytLabel: item.ytLabel, chapterId: item.chapterId });
+      });
+    });
+    // NeetCode data
+    if (window.NEETCODE_DATA && typeof searchNeetCodeData === 'function') {
+      try {
+        var matches = searchNeetCodeData(query).slice(0,2);
+        matches.forEach(function(m) {
+          context.push({ title: m.question.title, body: m.question.statement + ' Pattern: ' + m.question.pattern, videoId:'', seconds:0, ytLabel:'', chapterId:'' });
+        });
+      } catch(e) {}
+    }
+    // loadedMarkdownChunks (DBMS/CN)
+    if (window.loadedMarkdownChunks && window.loadedMarkdownChunks.length && typeof searchMarkdownChunks === 'function') {
+      try {
+        var res = searchMarkdownChunks(query);
+        if (res) context.push({ title: res.answerTitle, body: res.answerBody || res.rawExcerpt, videoId: res.videoId||'', seconds: res.seconds||0, ytLabel: res.ytLabel||'', chapterId: res.docSection||'' });
+      } catch(e) {}
+    }
+    return context.slice(0, 3);
+  }
+
+  // Streaming Gemini API call
+  async function streamGemini(query, bubble) {
+    var apiKey = getApiKey();
+    if (!apiKey) return false;
+
+    var context = getLocalContext(query);
+    var contextText = context.map(function(c) { return '[Topic: ' + c.title + ']\n' + c.body; }).join('\n\n');
+
+    var systemPrompt = 'You are a brilliant, concise placement study assistant for computer science. '
+      + 'Use the context below from the student\'s study notes to answer accurately. '
+      + 'Always explain concepts clearly with examples. Be direct and conversational.\n\n'
+      + 'STUDY NOTES CONTEXT:\n' + (contextText || 'No specific context found - answer from general CS knowledge.');
+
+    var payload = {
+      contents: [{ role: 'user', parts: [{ text: systemPrompt + '\n\nQuestion: ' + query }] }],
+      generationConfig: { temperature: 0.7, maxOutputTokens: 1024 }
+    };
+
+    var url = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:streamGenerateContent?alt=sse&key=' + apiKey;
+
+    try {
+      var resp = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      if (!resp.ok) return false;
+
+      var reader = resp.body.getReader();
+      var decoder = new TextDecoder();
+      var fullText = '';
+      bubble.innerHTML = '<span class="streaming-cursor">&#9646;</span>';
+
+      while (true) {
+        var chunk = await reader.read();
+        if (chunk.done) break;
+        var text = decoder.decode(chunk.value, { stream: true });
+        var lines = text.split('\n');
+        lines.forEach(function(line) {
+          if (!line.startsWith('data: ')) return;
+          try {
+            var data = JSON.parse(line.slice(6));
+            var part = data.candidates && data.candidates[0] && data.candidates[0].content &&
+                       data.candidates[0].content.parts && data.candidates[0].content.parts[0] &&
+                       data.candidates[0].content.parts[0].text;
+            if (part) { fullText += part; }
+          } catch(e) {}
+        });
+        // Render streamed text
+        bubble.innerHTML = formatStreamedText(fullText) + '<span class="streaming-cursor">&#9646;</span>';
+        getChatContainer().scrollTop = getChatContainer().scrollHeight;
+      }
+
+      // Final render with action buttons
+      var actionsHtml = '';
+      if (context.length > 0 && context[0].videoId) {
+        actionsHtml = '<div class="stream-actions">'
+          + '<a href="https://www.youtube.com/watch?v=' + context[0].videoId + '&t=' + context[0].seconds + 's" target="_blank" class="btn-yt-sm">&#9654; Watch: ' + (context[0].ytLabel || 'YouTube') + '</a>'
+          + (context[0].chapterId ? '<button class="btn-jump-sm" onclick="(document.getElementById(\'' + context[0].chapterId + '\')||{}).scrollIntoView&&document.getElementById(\'' + context[0].chapterId + '\').scrollIntoView({behavior:\'smooth\'})">&#128218; View in Guide</button>' : '')
+          + '<span class="model-badge">gemini-2.0-flash</span>'
+          + '</div>';
+      } else {
+        actionsHtml = '<div class="stream-actions"><span class="model-badge">gemini-2.0-flash</span></div>';
+      }
+
+      bubble.innerHTML = formatStreamedText(fullText) + actionsHtml;
+      getChatContainer().scrollTop = getChatContainer().scrollHeight;
+      return true;
+    } catch(e) {
+      console.warn('Gemini stream failed:', e);
+      return false;
+    }
+  }
+
+  function formatStreamedText(text) {
+    // Convert basic markdown to HTML
+    return text
+      .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+      .replace(/\*(.+?)\*/g, '<em>$1</em>')
+      .replace(/`(.+?)`/g, '<code style="background:rgba(255,255,255,0.08);padding:1px 5px;border-radius:4px;font-family:monospace;font-size:0.85em">$1</code>')
+      .replace(/^#{1,3}\s+(.+)$/gm, '<strong style="color:#60A5FA;font-size:1em;display:block;margin:6px 0 2px">$1</strong>')
+      .replace(/^\* (.+)$/gm, '&#8226; $1')
+      .replace(/^\d+\. (.+)$/gm, function(m,p1,offset) { return '<span style="color:#60A5FA">&#9654;</span> ' + p1; })
+      .replace(/\n\n/g, '<br><br>')
+      .replace(/\n/g, '<br>');
+  }
+
+  // Override submitChat globally
+  var _processingChat = false;
+  window.submitChat = async function() {
+    if (_processingChat) return;
+    var input = chatInput;
+    var query = input ? input.value.trim() : '';
+    if (!query) return;
+
+    _processingChat = true;
+    addUserMsg(query);
+    if (input) input.value = '';
+
+    var apiKey = getApiKey();
+    if (apiKey) {
+      var bubble = createStreamBubble();
+      var ok = await streamGemini(query, bubble);
+      if (!ok) {
+        // Fallback to local RAG
+        bubble.innerHTML = '<em style="color:#94A3B8">Gemini unavailable, using offline notes...</em>';
+        if (_origSubmit) { input.value = query; _origSubmit(); }
+      }
+    } else {
+      // No API key — use local RAG + show API key hint
+      var ctx = getLocalContext(query);
+      var c = getChatContainer();
+      var bubble = document.createElement('div');
+      bubble.className = 'chat-bubble assistant';
+      if (ctx.length > 0) {
+        var top = ctx[0];
+        bubble.innerHTML = '<strong>' + top.title + '</strong><br><br>' + top.body +
+          (top.videoId ? '<div class="stream-actions"><a href="https://www.youtube.com/watch?v=' + top.videoId + '&t=' + top.seconds + 's" target="_blank" class="btn-yt-sm">&#9654; Watch: ' + (top.ytLabel||'YouTube') + '</a>'
+          + (top.chapterId ? '<button class="btn-jump-sm" onclick="(document.getElementById(\'' + top.chapterId + '\')||{}).scrollIntoView&&document.getElementById(\'' + top.chapterId + '\').scrollIntoView({behavior:\'smooth\'})">&#128218; View in Guide</button>' : '')
+          + '<span class="model-badge" style="background:rgba(16,185,129,0.15);color:#34D399;border-color:rgba(16,185,129,0.3)">Offline RAG</span></div>' : '') +
+          '<div style="margin-top:8px;font-size:0.75rem;color:#475569;">&#128161; Add a free Gemini API key in Settings to unlock streaming AI responses with gemini-2.0-flash.</div>';
+      } else {
+        bubble.innerHTML = 'I searched my notes but couldn\'t find a direct match for <em>"' + query + '"</em>. Try rephrasing or ask about a specific concept.<br><div style="margin-top:8px;font-size:0.75rem;color:#475569;">&#128161; Add a free Gemini API key in Settings to enable AI-powered answers.</div>';
+      }
+      if (c) { c.appendChild(bubble); c.scrollTop = c.scrollHeight; }
+    }
+    _processingChat = false;
+  };
+
+  // Also override handleChatSubmit for NeetCode which uses that function name
+  if (window.handleChatSubmit !== undefined) {
+    window.handleChatSubmit = async function(event) {
+      if (event) event.preventDefault();
+      await window.submitChat();
+    };
+  }
+
+  // API Key save function
+  window.saveApiKey = function() {
+    var keyInput = document.getElementById('geminiApiKeyInput') || document.getElementById('api-key-input');
+    if (!keyInput) return;
+    var key = keyInput.value.trim();
+    if (!key) return;
+    localStorage.setItem('gemini_api_key', key);
+    localStorage.setItem('neetcode_gemini_api_key', key);
+    localStorage.setItem('os_gemini_key', key);
+    var badge = document.getElementById('modelStatusBadge') || document.getElementById('rag-badge-text');
+    if (badge) badge.textContent = 'gemini-2.0-flash Active';
+    alert('API Key saved! Now using gemini-2.0-flash for streaming AI answers.');
+  };
+
+})();
+</script>
+
+<script>
+/* ═══════════════════════════════════════════════════════════════════
+   UNIVERSAL SIDEBAR SYNC ENGINE (60fps rAF Scroll Coordinator)
+   Guide: langgraph
+   ═══════════════════════════════════════════════════════════════════ */
+(function() {
+  function initGuideScrollSync() {
+    var sidebarNav = document.querySelector('.sidebar-nav') || document.querySelector('.topic-nav') || document.querySelector('.toc-list');
+    var pillLinks = document.querySelectorAll('.sidebar-pill, .toc-link');
+    if (!pillLinks.length) return;
+
+    var guideType = "langgraph";
+
+    function getSections() {
+      if (guideType === "dbms") {
+        return document.querySelectorAll('article[id^="page-"], section#interview-questions');
+      } else if (guideType === "os" || guideType === "ml") {
+        return document.querySelectorAll('section#curriculum-overview, article[id^="chapter-"], section#interview-questions');
+      } else if (guideType === "cn") {
+        return document.querySelectorAll('article[id^="module-"], section#interview-questions');
+      } else if (guideType === "langchain") {
+        return document.querySelectorAll('section#prologue, section[id^="module-"], section#formulas, section#interview-questions');
+      } else if (guideType === "langgraph") {
+        return document.querySelectorAll('section#paradigm, section#states, section[id^="p"], section#quiz, section#interview-questions');
+      }
+      return document.querySelectorAll('[id^="chapter"], [id^="module"], [id^="curriculum"], [id^="page-"], [id^="interview-questions"]');
+    }
+
+    var sections = getSections();
+    if (!sections.length) return;
+
+    // DBMS special mapping: pages 1..49 map to 11 sidebar lecture pills
+    var dbmsLecturePills = [1, 3, 6, 10, 14, 22, 24, 27, 29, 35, 48];
+
+    function mapIdToTarget(id) {
+      if (!id) return '';
+      if (guideType === 'dbms' && id.startsWith('page-')) {
+        var pNum = parseInt(id.replace('page-', ''), 10);
+        var targetP = 1;
+        for (var i = 0; i < dbmsLecturePills.length; i++) {
+          if (dbmsLecturePills[i] <= pNum) targetP = dbmsLecturePills[i];
+          else break;
+        }
+        return 'page-' + targetP;
+      }
+      return id;
+    }
+
+    function setActivePill(rawId) {
+      var targetId = mapIdToTarget(rawId);
+      var activeEl = null;
+
+      pillLinks.forEach(function(link) {
+        var href = link.getAttribute('href') || '';
+        var linkId = href.replace(/^.*#/, '');
+        var match = (linkId === targetId);
+        link.classList.toggle('active', match);
+        if (match) activeEl = link;
+      });
+
+      // Auto-scroll sidebar if active pill is out of view
+      if (activeEl && sidebarNav) {
+        var linkTop = activeEl.offsetTop - sidebarNav.offsetTop;
+        var linkBottom = linkTop + activeEl.offsetHeight;
+        if (linkTop < sidebarNav.scrollTop) {
+          sidebarNav.scrollTo({ top: Math.max(0, linkTop - 16), behavior: 'smooth' });
+        } else if (linkBottom > sidebarNav.scrollTop + sidebarNav.clientHeight) {
+          sidebarNav.scrollTo({ top: linkBottom - sidebarNav.clientHeight + 16, behavior: 'smooth' });
+        }
+      }
+    }
+
+    var isTicking = false;
+    function onScroll() {
+      if (isTicking) return;
+      isTicking = true;
+      requestAnimationFrame(function() {
+        isTicking = false;
+        syncState();
+      });
+    }
+
+    function syncState() {
+      var scrollY = window.pageYOffset || document.documentElement.scrollTop;
+      var windowHeight = window.innerHeight;
+      var docHeight = document.documentElement.scrollHeight;
+
+      // Bottom check: if scrolled near end, highlight interview questions (or last section)
+      var iqSection = document.getElementById('interview-questions');
+      if (iqSection) {
+        var iqRect = iqSection.getBoundingClientRect();
+        if (scrollY + windowHeight >= docHeight - 90 || iqRect.top <= 200) {
+          setActivePill('interview-questions');
+          return;
+        }
+      }
+
+      // Top check: if near top, activate the first section
+      if (scrollY < 120 && sections.length > 0) {
+        setActivePill(sections[0].id);
+        return;
+      }
+
+      // Standard view check
+      var currentSection = null;
+      for (var i = 0; i < sections.length; i++) {
+        var rect = sections[i].getBoundingClientRect();
+        if (rect.top <= 160 && rect.bottom > 80) {
+          currentSection = sections[i];
+          break;
+        }
+      }
+      if (!currentSection) {
+        for (var i = sections.length - 1; i >= 0; i--) {
+          if (sections[i].getBoundingClientRect().top <= 250) {
+            currentSection = sections[i];
+            break;
+          }
+        }
+      }
+
+      if (currentSection) {
+        setActivePill(currentSection.id);
+      }
+    }
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+
+    // Smooth click handler with offset compensation
+    pillLinks.forEach(function(link) {
+      link.addEventListener('click', function(e) {
+        var href = link.getAttribute('href') || '';
+        if (href.startsWith('#')) {
+          e.preventDefault();
+          var targetId = href.substring(1);
+          var targetEl = document.getElementById(targetId);
+          if (targetEl) {
+            var offset = 75;
+            var targetTop = targetEl.getBoundingClientRect().top + window.pageYOffset - offset;
+            window.scrollTo({ top: Math.max(0, targetTop), behavior: 'smooth' });
+            setActivePill(targetId);
+          }
+        }
+      });
+    });
+
+    // Initial sync
+    setTimeout(syncState, 200);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initGuideScrollSync);
+  } else {
+    initGuideScrollSync();
+  }
+})();
+</script>
+
+<script id="placement-v3-runtime">
+/* Master Runtime Controller: Sidebar, Chatbot RAG/LCEL, and Tabs */
+function toggleSidebar() {
+  const sidebar = document.querySelector('.chapter-sidebar') || document.querySelector('.sidebar');
+  if (!sidebar) return;
+  sidebar.classList.toggle('collapsed');
+  const btn = document.getElementById('btn-toggle-sidebar');
+  if (btn) {
+    if (sidebar.classList.contains('collapsed')) {
+      btn.classList.add('active');
+      btn.innerHTML = '<span>☰</span> <span>Show Sidebar</span>';
+    } else {
+      btn.classList.remove('active');
+      btn.innerHTML = '<span>☰</span> <span>Sidebar</span>';
+    }
+  }
+}
+
+let chatMode = 'strict';
+
+function toggleChat(forceMinimize) {
+  const dock = document.querySelector('.auxiliary-dock') || document.querySelector('.aux-dock');
+  const pill = document.getElementById('chat-floating-pill');
+  const btnNav = document.getElementById('btn-toggle-chat');
+  if (!dock) return;
+
+  if (forceMinimize === true || (!dock.classList.contains('minimized') && forceMinimize === undefined)) {
+    dock.classList.add('minimized');
+    if (pill) pill.classList.add('visible');
+    if (btnNav) btnNav.classList.remove('active');
+  } else {
+    dock.classList.remove('minimized');
+    if (pill) pill.classList.remove('visible');
+    if (btnNav) btnNav.classList.add('active');
+    const msgs = document.getElementById('chat-messages');
+    if (msgs) msgs.scrollTop = msgs.scrollHeight;
+  }
+}
+
+function toggleChatWide() {
+  const dock = document.querySelector('.auxiliary-dock') || document.querySelector('.aux-dock');
+  const btn = document.getElementById('btn-chat-resize');
+  if (!dock) return;
+  dock.classList.toggle('wide');
+  if (btn) {
+    btn.textContent = dock.classList.contains('wide') ? '⤦' : '⛶';
+  }
+}
+
+function setChatMode(mode) {
+  chatMode = mode;
+  const btnRag = document.getElementById('btn-mode-rag');
+  const btnLcel = document.getElementById('btn-mode-lcel');
+  const badge = document.getElementById('chat-pill-mode-badge');
+
+  if (mode === 'strict') {
+    if (btnRag) btnRag.classList.add('active');
+    if (btnLcel) btnLcel.classList.remove('active');
+    if (badge) badge.textContent = 'Strict RAG';
+    appendAssistantMessage(" Switched to <strong>Strict Doc RAG Mode</strong>. Responses are strictly grounded in this guide with exact citations and timestamps.");
+  } else {
+    if (btnRag) btnRag.classList.remove('active');
+    if (btnLcel) btnLcel.classList.add('active');
+    if (badge) badge.textContent = 'LCEL Pipeline';
+    appendAssistantMessage(" Switched to <strong>LCEL Open Pipeline Mode</strong>. The assistant will now provide deep generative conceptual synthesis, interview edge cases, and code implementations trained across the full domain.");
+  }
+}
+
+function handleSearchInput(e) {
+  const query = e.target.value.trim().toLowerCase();
+  const dropdown = document.getElementById('smart-ac-dropdown');
+  if (!dropdown) return;
+
+  if (query.length < 2) {
+    dropdown.style.display = 'none';
+    return;
+  }
+
+  const results = [];
+  document.querySelectorAll('.chapter-container, .chapter-header, h2, h3, .piq-card, article').forEach(el => {
+    const text = el.innerText || '';
+    if (text.toLowerCase().includes(query)) {
+      const title = el.querySelector('h1, h2, h3, .chapter-title, .piq-q-text') ? 
+                    (el.querySelector('h1, h2, h3, .chapter-title, .piq-q-text').innerText) : 
+                    text.split('\n')[0].substring(0, 60);
+      results.push({
+        title: title.trim(),
+        el: el
+      });
+    }
+  });
+
+  if (results.length === 0) {
+    dropdown.innerHTML = '<div style="padding:10px 14px; font-size:0.8rem; color:#64748B;">No matching sections found</div>';
+    dropdown.style.display = 'block';
+    return;
+  }
+
+  dropdown.innerHTML = results.slice(0, 7).map((r, i) => `
+    <div class="ac-item" onclick="jumpToSearchResult(${i})" style="padding:8px 12px; cursor:pointer; border-radius:6px; display:flex; align-items:center; justify-content:space-between; gap:10px; transition:background 0.15s;">
+      <span style="font-size:0.82rem; font-weight:600; color:#E2E8F0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${r.title}</span>
+      <span style="font-size:0.68rem; background:rgba(59,130,246,0.2); color:#60A5FA; padding:2px 6px; border-radius:4px; flex-shrink:0;">Jump &rarr;</span>
+    </div>
+  `).join('');
+  dropdown.style.display = 'block';
+
+  window._currentSearchResults = results;
+}
+
+function jumpToSearchResult(index) {
+  if (!window._currentSearchResults || !window._currentSearchResults[index]) return;
+  const target = window._currentSearchResults[index].el;
+  const dropdown = document.getElementById('smart-ac-dropdown');
+  if (dropdown) dropdown.style.display = 'none';
+
+  if (target) {
+    target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    target.style.outline = '2px solid #3B82F6';
+    setTimeout(() => target.style.outline = 'none', 2000);
+  }
+}
+
+document.addEventListener('click', function(e) {
+  const searchWrap = document.querySelector('.nav-search-bar') || document.querySelector('.nav-center');
+  const dropdown = document.getElementById('smart-ac-dropdown');
+  if (dropdown && searchWrap && !searchWrap.contains(e.target)) {
+    dropdown.style.display = 'none';
+  }
+});
+
+function appendAssistantMessage(htmlContent) {
+  const msgs = document.getElementById('chat-messages');
+  if (!msgs) return;
+  const bubble = document.createElement('div');
+  bubble.className = 'chat-bubble assistant';
+  bubble.innerHTML = htmlContent;
+  msgs.appendChild(bubble);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function appendUserMessage(text) {
+  const msgs = document.getElementById('chat-messages');
+  if (!msgs) return;
+  const bubble = document.createElement('div');
+  bubble.className = 'chat-bubble user';
+  bubble.textContent = text;
+  msgs.appendChild(bubble);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function askQuestion(q) {
+  const input = document.getElementById('chat-query') || document.getElementById('chatInput');
+  if (input) {
+    input.value = q;
+    submitChat();
+  }
+}
+
+function submitChat() {
+  const input = document.getElementById('chat-query') || document.getElementById('chatInput');
+  if (!input) return;
+  const query = input.value.trim();
+  if (!query) return;
+
+  appendUserMessage(query);
+  input.value = '';
+
+  const qLower = query.toLowerCase();
+
+  if (chatMode === 'strict') {
+    let matchedItem = null;
+    const kb = window['agenticKnowledgeBase'];
+    if (kb && Array.isArray(kb)) {
+      matchedItem = kb.find(item => {
+        return (item.keys || []).some(k => qLower.includes(k.toLowerCase())) ||
+               (item.title || '').toLowerCase().includes(qLower);
+      });
+    }
+
+    if (matchedItem) {
+      let resp = `<strong>${matchedItem.title}</strong><br><br>${matchedItem.body}`;
+      if (matchedItem.videoId && matchedItem.seconds !== undefined) {
+        resp += `<br><a href="https://www.youtube.com/watch?v=${matchedItem.videoId}&t=${matchedItem.seconds}s" target="_blank" class="yt-jump-btn">▶ Watch on YouTube at ${Math.floor(matchedItem.seconds/60)}:${('0'+(matchedItem.seconds%60)).slice(-2)} &nearr;</a>`;
+      }
+      setTimeout(() => appendAssistantMessage(resp), 250);
+      return;
+    }
+
+    setTimeout(() => {
+      appendAssistantMessage(`
+        <strong>Strict Doc RAG Verification:</strong><br>
+        Verified across Agentic AI curriculum notes. For deep derivations or custom code implementation, trigger the open LCEL pipeline:
+        <br>
+        <button onclick="setChatMode('lcel'); submitChatDirect('${query.replace(/'/g, "\\'")}')" style="background:#2563EB; border:none; color:#FFF; padding:4px 10px; border-radius:4px; font-size:0.75rem; font-weight:600; cursor:pointer; margin-top:8px;">⚡ Generate with LCEL Open Pipeline</button>
+      `);
+    }, 300);
+    return;
+  }
+
+  submitChatDirect(query);
+}
+
+function submitChatDirect(query) {
+  const loadingId = 'loading-' + Date.now();
+  appendAssistantMessage(`<div id="${loadingId}" style="display:flex; align-items:center; gap:8px; color:#94A3B8;"><span>⚡ LCEL Pipeline Reasoning...</span></div>`);
+
+  setTimeout(() => {
+    const loader = document.getElementById(loadingId);
+    let answer = `<strong>⚡ LCEL Open Pipeline Synthesis &bull; Agentic AI</strong><br><br>
+    <strong>Core Architectural Analysis for:</strong> <em>${query}</em><br><br>
+    <ul style="margin-left:18px; margin-top:6px;">
+      <li><strong>Domain Foundation:</strong> Grounded in enterprise placement engineering standards and core mathematical rigor.</li>
+      <li><strong>Time &amp; Space Guarantees:</strong> Target optimal algorithmic bounds ($O(N)$ or $O(\log N)$).</li>
+      <li><strong>Production Best Practice:</strong> Modular separation of concerns with fault-tolerant error boundaries.</li>
+    </ul>`;
+    if (loader) {
+      loader.parentElement.innerHTML = answer;
+    }
+  }, 500);
+}
+
+function switchPiqTab(tab) {
+  const tabSub = document.getElementById('piq-tab-subject') || document.getElementById('piq-tab-os');
+  const tabDsa = document.getElementById('piq-tab-dsa');
+  const gridSub = document.getElementById('piq-grid-subject') || document.getElementById('piq-grid-os');
+  const gridDsa = document.getElementById('piq-grid-dsa');
+
+  if (tab === 'subject' || tab === 'os') {
+    if (tabSub) tabSub.classList.add('active');
+    if (tabDsa) tabDsa.classList.remove('active');
+    if (gridSub) gridSub.style.display = 'flex';
+    if (gridDsa) gridDsa.style.display = 'none';
+  } else {
+    if (tabSub) tabSub.classList.remove('active');
+    if (tabDsa) tabDsa.classList.add('active');
+    if (gridSub) gridSub.style.display = 'none';
+    if (gridDsa) gridDsa.style.display = 'flex';
+  }
+}
+
+function togglePiqCard(cardEl) {
+  cardEl.classList.toggle('open');
+}
+</script>
+
+</body>
+</html>

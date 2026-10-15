@@ -1,0 +1,128 @@
+<section class="chapter-content" id="chapter-9">
+  <div class="chapter-header">
+    <div class="chapter-badge">[Supplemental / Beyond Video Syllabus] &bull; Placement Accelerator</div>
+    <h2>Threads, IPC, File Systems, Disk Scheduling & Top 30 Interview Questions</h2>
+    <p class="chapter-meta">
+      <strong>Category:</strong> Supplemental High-Yield Placement Modules &bull;
+      <strong>Scope:</strong> Advanced Systems Interview Coverage & Bullseye Preparation
+    </p>
+  </div>
+
+  <div class="callout callout-info">
+    <h4>Why This Chapter is Critical</h4>
+    <p>While the video playlist covers core processes, scheduling, memory, deadlocks, and synchronization in masterclass depth, product companies (Google, Microsoft, Meta, Uber, Adobe) frequently test these four additional high-frequency pillars: Thread Models, Inter-Process Communication (IPC), Linux File Systems (Inodes), and Disk Scheduling algorithms.</p>
+  </div>
+
+  <h3>9.1 Threads vs. Processes</h3>
+  <p>A <strong>Thread</strong> is the fundamental unit of CPU utilization. It represents an independent thread of execution within a parent process.</p>
+  
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>Attribute</th>
+        <th>Process</th>
+        <th>Thread (Lightweight Process - LWP)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td><strong>Address Space</strong></td><td>Isolated private virtual address space.</td><td>Shares Code, Data, and Heap with peer threads in same process.</td></tr>
+      <tr><td><strong>Private State</strong></td><td>All memory segments, PCB, file table.</td><td>Private Stack, Program Counter (PC), and CPU Registers only.</td></tr>
+      <tr><td><strong>Creation Overhead</strong></td><td>High; involves page table creation and memory mapping.</td><td>Low (10x faster); only requires allocating a private stack.</td></tr>
+      <tr><td><strong>Context Switch Overhead</strong></td><td>High; requires TLB flush and page table switch.</td><td>Low; page tables remain unchanged, only registers and stack swapped.</td></tr>
+      <tr><td><strong>Communication</strong></td><td>Requires heavy IPC (Pipes, Sockets, Shared Memory).</td><td>Direct shared memory variables (requires synchronization locks).</td></tr>
+    </tbody>
+  </table>
+
+  <h4>User-Level Threads (ULT) vs. Kernel-Level Threads (KLT):</h4>
+  <ul>
+    <li><strong>User-Level Threads (Many-to-One Model):</strong> Managed completely by user-space runtime thread library (e.g., Green threads). Kernel is completely unaware of thread existence. Switching threads does not require kernel mode trap.
+      <br><em>Flaw:</em> If one ULT makes a blocking system call (e.g., disk read), the entire process and all peer threads block! Cannot run in parallel on multicore CPUs.</li>
+    <li><strong>Kernel-Level Threads (One-to-One Model):</strong> Supported and scheduled directly by the OS kernel (e.g., Linux <code>pthreads</code>, Windows threads). Each user thread maps to a distinct kernel thread. True multicore hardware parallelism; if one thread blocks, others continue executing. Modern standard.</li>
+  </ul>
+
+  <h3>9.2 Inter-Process Communication (IPC) Mechanisms</h3>
+  <p>Because processes run in isolated address spaces, they must use explicit IPC mechanisms to exchange data:</p>
+  <ol>
+    <li><strong>Ordinary Pipes:</strong> Unidirectional byte stream for parent-child processes. Controlled via file descriptors <code>fd[0]</code> (read) and <code>fd[1]</code> (write). Exists only while processes live.</li>
+    <li><strong>Named Pipes (FIFOs):</strong> Bidirectional pipe with a directory entry on disk (<code>mkfifo</code>). Unrelated processes can communicate by opening the FIFO file.</li>
+    <li><strong>Shared Memory:</strong> Fastest IPC mechanism. OS maps a common physical memory region into the virtual address spaces of both processes. Processes read and write at raw RAM bus speed without kernel intervention (requires semaphores to coordinate access).</li>
+    <li><strong>Message Queues:</strong> Kernel-managed linked list of messages. Processes deposit and retrieve structured messages. Asynchronous and safe, but requires kernel mode transitions.</li>
+    <li><strong>Network Sockets:</strong> Endpoint communication across network boundaries (TCP/IP) or local loopback (UNIX Domain Sockets). Universal for microservices and distributed systems.</li>
+  </ol>
+
+  <h3>9.3 Linux File System Architecture & Inodes</h3>
+  <p>The Linux Virtual File System (VFS) abstracts all physical storage devices as files ("Everything is a file" philosophy):</p>
+  <ul>
+    <li><strong>Superblock:</strong> Stores metadata about the overall filesystem (filesystem type, size, total block count, free block count, mount status).</li>
+    <li><strong>Inode (Index Node):</strong> The fundamental metadata record for an individual file. Stores:
+      <ul>
+        <li>File type and permissions (<code>rwxr-xr-x</code>).</li>
+        <li>Owner User ID (UID) and Group ID (GID).</li>
+        <li>File size in bytes.</li>
+        <li>Timestamps: Access time (<code>atime</code>), Modification time (<code>mtime</code>), Change time (<code>ctime</code>).</li>
+        <li>Direct and Indirect Block Pointers pointing to actual data blocks on disk.</li>
+        <li><em>Crucial Note:</em> The Inode does <strong>NOT</strong> store the file name! Directory entries map file names to Inode numbers.</li>
+      </ul>
+    </li>
+    <li><strong>Hard Link vs. Soft (Symbolic) Link:</strong>
+      <ul>
+        <li><em>Hard Link:</em> An additional directory entry pointing to the <strong>exact same Inode</strong>. Deleting the original file does not delete the data until all hard links (link count $== 0$) are removed. Cannot link across different filesystems.</li>
+        <li><em>Soft Link (Symlink):</em> A unique file with its own distinct Inode whose data block contains the string path of the target file. If original file is deleted, the symlink becomes a dangling/broken link. Works across filesystems.</li>
+      </ul>
+    </li>
+  </ul>
+
+  <h3>9.4 Disk Scheduling Algorithms</h3>
+  <p>Minimizes mechanical disk head movement (Seek Time) on traditional Hard Disk Drives (HDDs):</p>
+  <ul>
+    <li><strong>First-Come First-Served (FCFS):</strong> Requests serviced in order of arrival. Simple, but incurs massive head swings across the disk platters.</li>
+    <li><strong>Shortest Seek Time First (SSTF):</strong> Selects the request with the minimum seek time from the current head position. Minimizes average seek time, but causes <strong>Starvation</strong> for requests at extreme cylinder edges.</li>
+    <li><strong>SCAN (Elevator Algorithm):</strong> Disk arm moves in one direction servicing all requests until it hits the end cylinder of the disk, then reverses direction servicing requests on the way back. Eliminates starvation.</li>
+    <li><strong>C-SCAN (Circular SCAN):</strong> Moves in one direction servicing requests until reaching the end, then immediately returns to the beginning of the disk without servicing requests on the return trip. Provides uniform waiting time.</li>
+    <li><strong>LOOK and C-LOOK:</strong> Practical variants of SCAN and C-SCAN. The arm moves only as far as the <em>final request</em> in each direction, reversing without going all the way to the physical boundary cylinder of the disk.</li>
+  </ul>
+
+  <h3>9.5 Top 30 High-Frequency Placement Interview Questions</h3>
+  <div class="faq-list">
+    <div class="faq-item">
+      <h4>Q1: What is the main difference between a process and a thread?</h4>
+      <p>A process is an isolated program in execution with its own virtual address space, PCB, and resources. A thread is an execution unit within a process sharing the code, data, and heap segments, while maintaining its own private stack, registers, and program counter.</p>
+    </div>
+    <div class="faq-item">
+      <h4>Q2: What happens during a Context Switch?</h4>
+      <p>The OS saves the CPU registers, program counter, and stack pointer of the active process into its PCB in kernel memory, updates its state to Ready or Waiting, selects another process from the Ready Queue, switches memory page table registers (CR3), and restores the saved registers of the new process.</p>
+    </div>
+    <div class="faq-item">
+      <h4>Q3: Why is Peterson's Algorithm not sufficient on modern hardware?</h4>
+      <p>Modern multi-core processors use instruction pipelining, speculative execution, out-of-order execution, and store buffers, which can reorder read/write operations on memory, breaking software-only synchronization assumptions unless hardware memory fences/barriers are used.</p>
+    </div>
+    <div class="faq-item">
+      <h4>Q4: What is Belady's Anomaly and which algorithms exhibit it?</h4>
+      <p>Belady's Anomaly is the phenomenon where increasing the number of physical page frames allocated to a process paradoxically results in an increase in the number of page faults. It occurs in FIFO page replacement, but cannot occur in stack-based algorithms like LRU or Optimal.</p>
+    </div>
+    <div class="faq-item">
+      <h4>Q5: What are Coffman's four conditions for deadlock?</h4>
+      <p>Mutual Exclusion, Hold and Wait, No Preemption, and Circular Wait. Deadlock can arise if and only if all four conditions hold simultaneously.</p>
+    </div>
+    <div class="faq-item">
+      <h4>Q6: How does Copy-On-Write (COW) optimize fork()?</h4>
+      <p>During <code>fork()</code>, instead of duplicating physical RAM pages, the kernel shares pages between parent and child marked as read-only. When either process attempts to write, a page fault triggers the OS to duplicate that single page in RAM, saving immense CPU time and memory.</p>
+    </div>
+    <div class="faq-item">
+      <h4>Q7: What is Thrashing and how can the OS resolve it?</h4>
+      <p>Thrashing occurs when a process spends more time paging data between RAM and swap disk than executing instructions, collapsing CPU utilization. It is resolved using the Working Set Model by ensuring processes receive their complete working set of frames, or by suspending processes to reduce multiprogramming degree.</p>
+    </div>
+    <div class="faq-item">
+      <h4>Q8: Differentiate between Internal and External Fragmentation.</h4>
+      <p>Internal fragmentation occurs when allocated memory blocks exceed the memory requested by the process, wasting space inside the partition (common in Fixed Partitioning and Paging). External fragmentation occurs when total free memory is adequate but broken into non-contiguous scattered holes (common in Variable Partitioning and Segmentation).</p>
+    </div>
+    <div class="faq-item">
+      <h4>Q9: What is a Spinlock and when is it preferred over a Mutex?</h4>
+      <p>A spinlock busy-waits in a loop on the CPU until the lock becomes free. It is preferred over a Mutex on multicore systems when the critical section is extremely short, because the spinlock loop overhead is smaller than the costly kernel context switch required to put a thread to sleep and wake it back up.</p>
+    </div>
+    <div class="faq-item">
+      <h4>Q10: What is the difference between Zombie and Orphan processes?</h4>
+      <p>An Orphan process is running after its parent has terminated; it is adopted by PID 1 (<code>systemd</code>/<code>init</code>). A Zombie process has terminated via <code>exit()</code>, but its parent has not yet called <code>wait()</code>; it occupies a process table slot until harvested.</p>
+    </div>
+  </div>
+</section>

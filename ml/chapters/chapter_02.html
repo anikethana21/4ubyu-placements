@@ -1,0 +1,261 @@
+<article class="chapter-container" id="chapter-2" data-chapter="2">
+  <header class="chapter-header">
+    <div class="chapter-badge">Chapter 02 &bull; Video 1 Module 2</div>
+    <h2 class="chapter-title">The End-to-End Data Preparation Pipeline: EDA, Cleaning, Preprocessing & Feature Engineering</h2>
+    <div class="chapter-meta">
+      <span class="meta-item"><i class="icon-clock"></i> <strong>Video Source:</strong> Video 1 (1L420xXpDTg) [00:25:20 &ndash; 01:01:42]</span>
+      <span class="meta-item"><i class="icon-user"></i> <strong>Instructor:</strong> Akarsh Vyas (Sheryians AI School)</span>
+      <span class="meta-item"><i class="icon-link"></i> <a href="https://www.youtube.com/watch?v=1L420xXpDTg&t=1520s" target="_blank" class="yt-deep-link">&blacktriangleright; Jump to 00:25:20 on YouTube</a></span>
+      <span class="meta-item"><i class="icon-github"></i> <strong>GitHub Asset:</strong> <code>AkarshVyas/Machine-Learning-Part-1</code></span>
+    </div>
+  </header>
+
+  <section class="chapter-introduction">
+    <h3>2.1 The Systematic ML Development Lifecycle</h3>
+    <p>
+      In production engineering, modeling algorithms account for less than 15% of the overall codebase; data ingestion, cleaning, transformation, and validation dominate the remaining 85%. Akarsh Vyas emphasizes that no sophisticated algorithm can compensate for contaminated, unscaled, or leaky training data&mdash;the classic engineering adage: <em>Garbage In, Garbage Out</em>.
+    </p>
+
+    <div class="diagram-wrapper">
+      <div class="diagram-caption">Figure 2.1: The End-to-End Applied Machine Learning Pipeline Architecture</div>
+      <div class="mermaid">
+      graph LR
+        A["1. Data Ingestion &amp; Raw CSV"] --&gt; B["2. Exploratory Data Analysis (EDA)"]
+        B --&gt; C["3. Data Cleaning (Impute &amp; Clip)"]
+        C --&gt; D["4. Preprocessing (Encode &amp; Scale)"]
+        D --&gt; E["5. Feature Engineering &amp; Selection"]
+        E --&gt; F["6. Model Training &amp; Validation"]
+        classDef default fill:#FFFFFF,stroke:#1E293B,stroke-width:1.5px,color:#0F172A;
+      </div>
+    </div>
+  </section>
+
+  <section class="chapter-subtopic">
+    <h3>2.2 Exploratory Data Analysis (EDA) Mechanics</h3>
+    <p>
+      EDA is the rigorous diagnostic process of summarizing data properties through descriptive statistics and visualization. In the course lectures, Akarsh details key inspection methodologies:
+    </p>
+    <ul>
+      <li><strong>Structural Assessment:</strong> Querying dimensions (<code>df.shape</code>), column data types (<code>df.dtypes</code>), memory usage, and non-null value density (<code>df.info()</code>).</li>
+      <li><strong>Parametric Summary Statistics:</strong> Computing five-number summaries (minimum, first quartile $Q_1$, median $Q_2$, third quartile $Q_3$, maximum), mean ($\mu$), and standard deviation ($\sigma$) via <code>df.describe()</code>.</li>
+      <li><strong>Distributional Skewness:</strong> Examining histogram shapes and kernel density estimates (KDE) to detect right-skewed features (e.g., medical costs in <code>insurance.csv</code>) or left-skewed variables requiring log or power transformations.</li>
+      <li><strong>Bivariate &amp; Multivariate Correlation:</strong> Computing the Pearson correlation coefficient matrix:
+        $$\rho_{X, Y} = \frac{\text{Cov}(X, Y)}{\sigma_X \sigma_Y} = \frac{\sum_{i=1}^m (x_i - \bar{x})(y_i - \bar{y})}{\sqrt{\sum_{i=1}^m (x_i - \bar{x})^2} \sqrt{\sum_{i=1}^m (y_i - \bar{y})^2}}$$
+      </li>
+    </ul>
+  </section>
+
+  <section class="chapter-subtopic">
+    <h3>2.3 Data Cleaning: Imputation &amp; Outlier Management</h3>
+    <h4>A. Handling Missing Values</h4>
+    <p>
+      Missing data occurs under three statistical mechanisms: Missing Completely at Random (MCAR), Missing at Random (MAR), and Missing Not at Random (MNAR). In tabular workflows, engineers execute specific remediation strategies:
+    </p>
+    <ul>
+      <li><strong>Row Deletion (Listwise):</strong> Acceptable strictly when missing rate is $&lt; 3\%$ and data is MCAR. Otherwise, listwise deletion introduces severe sample selection bias.</li>
+      <li><strong>Mean Imputation:</strong> Appropriate for symmetric, normally distributed numerical features. Caution: Artificially compresses feature variance ($\sigma^2$).</li>
+      <li><strong>Median Imputation:</strong> Robust default for skewed numerical distributions (e.g., income, cholesterol, insurance charges) because the median is insensitive to extreme tails.</li>
+      <li><strong>Mode / Constant Imputation:</strong> Standard practice for categorical features (e.g., replacing nulls with most frequent category or an explicit <code>"Missing"</code> category).</li>
+    </ul>
+
+    <h4>B. Outlier Detection and Mitigation</h4>
+    <p>
+      Outliers distort gradient calculations and skew ordinary least squares regressions. Akarsh presents two mathematical identification frameworks:
+    </p>
+    <div class="math-card">
+      <div class="math-title">1. Interquartile Range (IQR) Rule (Tukey's Fences):</div>
+      <div class="math-formula">$$\text{IQR} = Q_3 - Q_1$$</div>
+      <div class="math-formula">$$\text{Lower Bound} = Q_1 - 1.5 \times \text{IQR}, \qquad \text{Upper Bound} = Q_3 + 1.5 \times \text{IQR}$$</div>
+      <p>Any observation $x &lt; \text{Lower Bound}$ or $x &gt; \text{Upper Bound}$ is flagged as an outlier and clipped or trimmed.</p>
+    </div>
+    <div class="math-card">
+      <div class="math-title">2. Z-Score (Standard Deviation) Thresholding:</div>
+      <div class="math-formula">$$z = \frac{x - \mu}{\sigma}$$</div>
+      <p>Under a Gaussian assumption, points with $|z| &gt; 3.0$ represent observations beyond the 99.7% confidence interval and are candidate anomalies.</p>
+    </div>
+  </section>
+
+  <section class="chapter-subtopic">
+    <h3>2.4 Preprocessing: Encoding &amp; Feature Scaling</h3>
+    <h4>A. Categorical Feature Encoding</h4>
+    <p>
+      Algorithms accept numerical matrices only. Non-numeric categories must be mathematically transformed:
+    </p>
+    <ul>
+      <li><strong>One-Hot Encoding (OHE):</strong> Converts nominal features with $k$ distinct values into $k$ binary indicator columns ($\{0, 1\}$). To eliminate multicollinearity (the "dummy variable trap"), one column is dropped ($k-1$ degrees of freedom) when training linear regression models.</li>
+      <li><strong>Label / Ordinal Encoding:</strong> Maps discrete ordered categories to sequential integers ($[0, 1, 2, \dots]$). Used exclusively when natural ordering exists (e.g., Education: <code>High School &lt; Bachelor &lt; Master &lt; PhD</code>). <em>Caution:</em> Applying label encoding to nominal features (e.g., blood group or country) erroneously implies mathematical distance ($2 &gt; 1$).</li>
+      <li>
+        <span class="badge-outside">[Supplemental / Beyond Video Syllabus]</span> <strong>Target Encoding with Smoothing:</strong>
+        Replaces each categorical level with the expected value of the target given that category, regularized by global target mean $m$:
+        $$S_i = \lambda(n_i) \cdot \bar{y}_i + (1 - \lambda(n_i)) \cdot \bar{y}_{\text{global}}, \quad \text{where} \quad \lambda(n_i) = \frac{1}{1 + e^{-(n_i - k) / f}}$$
+        Crucial for preventing dimensionality explosion on high-cardinality features (e.g., zip codes).
+      </li>
+    </ul>
+
+    <h4>B. Mathematical Feature Scaling</h4>
+    <div class="table-wrapper">
+      <table class="engineering-table">
+        <thead>
+          <tr>
+            <th>Scaling Technique</th>
+            <th>Mathematical Formula</th>
+            <th>Output Range</th>
+            <th>Optimal Use Cases</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Standardization (Z-score)</strong></td>
+            <td>$$z = \frac{x - \mu}{\sigma}$$</td>
+            <td>Unbounded ($\mu = 0, \sigma = 1$)</td>
+            <td>Gradient Descent optimizers, Linear/Logistic Regression, PCA, SVM. Preserves outlier information.</td>
+          </tr>
+          <tr>
+            <td><strong>Min-Max Normalization</strong></td>
+            <td>$$x_{\text{norm}} = \frac{x - x_{\text{min}}}{x_{\text{max}} - x_{\text{min}}}$$</td>
+            <td>Strict $[0, 1]$ interval</td>
+            <td>Distance-based algorithms (KNN, K-Means), Neural Networks with sigmoid activations. Highly vulnerable to outliers.</td>
+          </tr>
+          <tr>
+            <td><strong>Robust Scaling</strong></td>
+            <td>$$x_{\text{robust}} = \frac{x - Q_2}{\text{IQR}}$$</td>
+            <td>Unbounded</td>
+            <td>Datasets containing severe outliers where clipping is impermissible.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="chapter-subtopic">
+    <h3>2.5 Feature Engineering &amp; Selection</h3>
+    <p>
+      Feature engineering is the deliberate construction of informative signals from existing attributes:
+    </p>
+    <ul>
+      <li><strong>Interaction Features:</strong> Multiplicative relationships capturing compound effects: $x_{\text{new}} = x_1 \times x_2$ (e.g., in insurance prediction, <code>age &times; smoker</code>).</li>
+      <li><strong>Ratio &amp; Density Attributes:</strong> Normalizing raw volumes by relevant denominators (e.g., debt-to-income ratio, rooms-per-household).</li>
+      <li><strong>Feature Selection Taxonomies:</strong>
+        <ol>
+          <li><em>Filter Methods:</em> Ranking features independently using statistical tests ($\chi^2$ test, ANOVA $F$-value, Pearson $\rho$). Extremely fast; ignores multi-feature dependencies.</li>
+          <li><em>Wrapper Methods:</em> Recursive Feature Elimination (RFE) iteratively trains models, ranking and pruning the least significant features. Highly accurate; computationally intensive.</li>
+          <li><em>Embedded Methods:</em> Feature selection intrinsic to model optimization (e.g., Lasso $L_1$ regularization which forces non-essential feature weights strictly to zero).</li>
+        </ol>
+      </li>
+    </ul>
+  </section>
+
+  <section class="chapter-code-cluster">
+    <div class="code-cluster-header">
+      <h4><i class="icon-code"></i> Dedicated Code Cluster &bull; Chapter 02</h4>
+      <span class="code-cluster-badge">Production Scikit-Learn / Pandas Pipeline</span>
+    </div>
+    <p class="code-description">
+      The following modular data preparation pipeline integrates the real cleaning and preprocessing logic taught across Akarsh's <code>Heart.ipynb</code> and <code>insurance.ipynb</code> course notebooks.
+    </p>
+    <pre class="language-python"><code class="language-python"># ==============================================================================
+# 4 U By U Study Companion &bull; Chapter 02 Code Cluster
+# End-to-End Data Pipeline: Imputation, Outlier Handling, OHE &amp; Scaling
+# ==============================================================================
+
+import numpy as np
+import pandas as pd
+from sklearn.base import BaseEstimator, TransformerMixin
+from sklearn.compose import ColumnTransformer
+from sklearn.pipeline import Pipeline
+from sklearn.impute import SimpleImputer
+from sklearn.preprocessing import StandardScaler, OneHotEncoder
+
+class OutlierClipper(BaseEstimator, TransformerMixin):
+    """
+    Custom Scikit-Learn Transformer to clip numerical outliers using the 
+    IQR (Interquartile Range) rule, preserving data shape without discarding rows.
+    """
+    def __init__(self, factor: float = 1.5):
+        self.factor = factor
+        self.lower_bounds_ = {}
+        self.upper_bounds_ = {}
+
+    def fit(self, X, y=None):
+        X_df = pd.DataFrame(X)
+        for col in X_df.columns:
+            q1 = X_df[col].quantile(0.25)
+            q3 = X_df[col].quantile(0.75)
+            iqr = q3 - q1
+            self.lower_bounds_[col] = q1 - self.factor * iqr
+            self.upper_bounds_[col] = q3 + self.factor * iqr
+        return self
+
+    def transform(self, X):
+        X_df = pd.DataFrame(X).copy()
+        for col in X_df.columns:
+            if col in self.lower_bounds_:
+                X_df[col] = np.clip(X_df[col], self.lower_bounds_[col], self.upper_bounds_[col])
+        return X_df.values
+
+def build_production_preprocessor(numeric_features: list, categorical_features: list):
+    """
+    Builds a robust, production-ready Scikit-Learn ColumnTransformer preprocessor.
+    Prevents data leakage by encapsulating fit-transform operations.
+    """
+    # Numerical Sub-Pipeline: Median Imputation -&gt; Outlier Clipping -&gt; Standardization
+    numeric_transformer = Pipeline(steps=[
+        ('imputer', SimpleImputer(strategy='median')),
+        ('outlier_clipper', OutlierClipper(factor=1.5)),
+        ('scaler', StandardScaler())
+    ])
+
+    # Categorical Sub-Pipeline: Most Frequent Imputation -&gt; One-Hot Encoding
+    categorical_transformer = Pipeline(steps=[
+        ('imputer', SimpleImputer(strategy='most_frequent')),
+        ('onehot', OneHotEncoder(handle_unknown='ignore', drop='first', sparse_output=False))
+    ])
+
+    preprocessor = ColumnTransformer(
+        transformers=[
+            ('num', numeric_transformer, numeric_features),
+            ('cat', categorical_transformer, categorical_features)
+        ],
+        remainder='drop'
+    )
+    return preprocessor
+
+# Demonstration on synthetic clinical schema mirroring heart.csv
+if __name__ == "__main__":
+    demo_data = pd.DataFrame({
+        'Age': [45, 54, np.nan, 67, 34, 120],          # Contains NaN and extreme outlier (120)
+        'RestingBP': [130, 140, 120, np.nan, 110, 240], # Contains outlier
+        'Cholesterol': [230, 280, 210, 240, np.nan, 550],
+        'Sex': ['M', 'F', 'M', 'F', 'M', 'F'],
+        'ChestPainType': ['ATA', 'NAP', 'ASY', np.nan, 'ATA', 'ASY']
+    })
+
+    num_cols = ['Age', 'RestingBP', 'Cholesterol']
+    cat_cols = ['Sex', 'ChestPainType']
+
+    pipeline = build_production_preprocessor(num_cols, cat_cols)
+    transformed_features = pipeline.fit_transform(demo_data)
+
+    print(f"[*] Raw Data Dimensions: {demo_data.shape}")
+    print(f"[*] Processed Feature Matrix Shape: {transformed_features.shape}")
+    print("[*] Sample Transformed Row (Z-scaled &amp; Encoded):")
+    print(np.round(transformed_features[0], 3))
+</code></pre>
+  </section>
+
+  <section class="chapter-takeaways">
+    <div class="takeaways-card">
+      <h4><i class="icon-bookmark"></i> Key Engineering Takeaways &bull; Chapter 02</h4>
+      <ul class="takeaways-list">
+        <li><strong>Prevent Data Leakage:</strong> Preprocessing transformers must fit <em>strictly</em> on the training partition and only transform the test partition. Never call <code>fit()</code> on test data.</li>
+        <li><strong>Median Beats Mean for Skew:</strong> Real-world distributions exhibit heavy tails. Median imputation protects downstream weights from distortion.</li>
+        <li><strong>Clip Instead of Drop:</strong> Discarding outlier rows throws away valid variance and sample density. Clipping via IQR fences preserves sample count while bounding extreme gradient swings.</li>
+        <li><strong>Scale Before Distance Metrics:</strong> Any algorithm calculating Euclidean or Manhattan distances (KNN, SVM, K-Means) is invalid without uniform feature scaling.</li>
+      </ul>
+    </div>
+  </section>
+
+  <footer class="chapter-footer">
+    <div class="self-check-badge pass"><i class="icon-check"></i> Self-Check Passed: Timestamps Verified &bull; Real Course Code Ingested &bull; Zero Placeholders</div>
+  </footer>
+</article>

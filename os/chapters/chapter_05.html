@@ -1,0 +1,125 @@
+<section class="chapter-content" id="chapter-5">
+  <div class="chapter-header">
+    <div class="chapter-badge">Chapter 05 &bull; Video 3 Coverage</div>
+    <h2>Memory Management: Contiguous Allocation, Segmentation & Paging</h2>
+    <p class="chapter-meta">
+      <strong>Source Video:</strong> <a href="https://www.youtube.com/watch?v=X077mn-qghM" target="_blank">OS Memory Management Explained | Part 3</a> &bull;
+      <strong>Instructor:</strong> Vivek Gupta (Ex-Google, AlgoZenith) &bull;
+      <strong>Timeline:</strong> 00:00:00 &ndash; 00:33:37
+    </p>
+  </div>
+
+  <div class="callout callout-info">
+    <h4>Placement Benchmark: Memory Architecture & Math</h4>
+    <p>Memory management is one of the highest-yield interview sections. Interviewers focus heavily on: Internal vs. External Fragmentation, Dynamic Storage Allocation algorithms (First-Fit, Best-Fit, Worst-Fit), the exact math of Paging address translation (converting virtual addresses to page number and offset), and Page Table sizing.</p>
+  </div>
+
+  <h3>5.1 The Memory Hierarchy Pyramid</h3>
+  <p>Operating systems must reconcile the physical trade-off between access speed, manufacturing cost per bit, and storage capacity (<a href="https://www.youtube.com/watch?v=X077mn-qghM&t=119s" target="_blank" class="yt-timestamp">⏱️ 01:59</a>):</p>
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>Level</th>
+        <th>Typical Capacity</th>
+        <th>Access Latency</th>
+        <th>Managed By</th>
+        <th>Volatile?</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td><strong>CPU Registers</strong></td><td>~1 KB</td><td>&lt; 0.5 ns</td><td>Compiler / Assembler</td><td>Yes</td></tr>
+      <tr><td><strong>L1 / L2 Cache</strong></td><td>32 KB &ndash; 1 MB</td><td>1 &ndash; 4 ns</td><td>CPU Hardware Controller</td><td>Yes</td></tr>
+      <tr><td><strong>L3 Shared Cache</strong></td><td>16 &ndash; 64 MB</td><td>10 &ndash; 20 ns</td><td>CPU Hardware Controller</td><td>Yes</td></tr>
+      <tr><td><strong>Main Memory (RAM)</strong></td><td>16 &ndash; 128 GB</td><td>50 &ndash; 100 ns</td><td>Operating System (MMU)</td><td>Yes</td></tr>
+      <tr><td><strong>Solid State Drive (NVMe)</strong></td><td>512 GB &ndash; 4 TB</td><td>20 &ndash; 100 &mu;s</td><td>OS File System / I/O</td><td>No</td></tr>
+      <tr><td><strong>Mechanical Hard Disk</strong></td><td>4 &ndash; 20 TB</td><td>4 &ndash; 10 ms</td><td>OS File System / I/O</td><td>No</td></tr>
+    </tbody>
+  </table>
+
+  <h3>5.2 Address Binding: Compile-Time, Load-Time & Execution-Time</h3>
+  <p>Before a program can execute, its instructions and variables must be bound to physical memory addresses (<a href="https://www.youtube.com/watch?v=X077mn-qghM&t=876s" target="_blank" class="yt-timestamp">⏱️ 14:36</a>):</p>
+  <ul>
+    <li><strong>Compile-Time Binding:</strong> If it is known at compile time where the process will reside in memory, absolute physical code is generated (e.g., MS-DOS <code>.COM</code> files). If starting location changes, the entire code must be recompiled.</li>
+    <li><strong>Load-Time Binding:</strong> Compiler generates relocatable code. Final physical binding is delayed until the loader places the program into memory. If the process is swapped out and reloaded at a different physical base, addresses are invalid.</li>
+    <li><strong>Execution-Time (Run-Time) Binding:</strong> Binding is delayed until the exact instant the instruction is executed by the CPU. Requires hardware support: the <strong>Memory Management Unit (MMU)</strong> with dynamic relocation base and limit registers. This is the universal standard in all modern multi-tasking operating systems.</li>
+  </ul>
+
+  <h3>5.3 Contiguous Memory Allocation & Fragmentation</h3>
+  <p>In early multiprogramming systems, each process was loaded into a single contiguous block of physical RAM (<a href="https://www.youtube.com/watch?v=X077mn-qghM&t=1045s" target="_blank" class="yt-timestamp">⏱️ 17:25</a>):</p>
+
+  <h4>1. Fixed Partitioning (Multiprogramming with Fixed Tasks - MFT):</h4>
+  <ul>
+    <li>RAM is divided into fixed-sized partitions at boot time.</li>
+    <li><strong>Internal Fragmentation:</strong> Occurs when the memory allocated to a process is slightly larger than the memory requested by the process. The unused space within the allocated partition is wasted and cannot be used by other processes.</li>
+  </ul>
+
+  <h4>2. Variable Partitioning (Multiprogramming with Variable Tasks - MVT):</h4>
+  <ul>
+    <li>Partitions are created dynamically to match the exact size requested by incoming processes.</li>
+    <li><strong>External Fragmentation:</strong> As processes terminate and leave holes in RAM, the total free memory across the system is sufficient to satisfy an incoming request, but it is broken up into small, non-contiguous fragments.</li>
+    <li><strong>Compaction:</strong> Moving all allocated blocks to one end of memory to coalesce scattered holes into one large block. Heavy CPU and bus overhead; only possible if run-time dynamic relocation is supported.</li>
+  </ul>
+
+  <h4>Dynamic Storage Allocation Strategies:</h4>
+  <ul>
+    <li><strong>First-Fit:</strong> Allocate the <em>first</em> available hole that is large enough. Search stops immediately upon finding a valid hole. (Fastest, very efficient in practice).</li>
+    <li><strong>Best-Fit:</strong> Allocate the <em>smallest</em> hole that is large enough. Requires searching the entire free list (unless sorted). Leaves behind tiny, unusable leftover holes.</li>
+    <li><strong>Worst-Fit:</strong> Allocate the <em>largest</em> available hole. Requires searching entire list. Leaves behind largest leftover hole, which may be useful for subsequent allocations. (Performs worst in practice).</li>
+  </ul>
+
+  <h3>5.4 Segmentation: Programmer-Centric Logical Architecture</h3>
+  <p>A user program does not view memory as a linear array of bytes; rather, it views memory as a collection of variable-length logical segments: the main function, helper routines, stack, heap, and symbol tables (<a href="https://www.youtube.com/watch?v=X077mn-qghM&t=1292s" target="_blank" class="yt-timestamp">⏱️ 21:32</a>).</p>
+
+  <h4>Hardware Address Translation in Segmentation:</h4>
+  <p>A logical address is a tuple $\langle s, d \rangle$, where $s$ is the Segment Number and $d$ is the Segment Offset:</p>
+  <div class="mermaid">
+  graph TD
+    LogicalAddr["Logical Address: &lt;Segment s, Offset d&gt;"] --> Split[Split s and d]
+    Split --> CheckLimit{"Is d &lt; Limit?"}
+    CheckLimit -->|No| Trap["Trap: Segmentation Fault (Addressing Error)"]
+    CheckLimit -->|Yes| Adder["Adder: Base Address + d"]
+    Adder --> PhysicalMem["Physical Memory RAM Address"]
+    
+    ST["Segment Table (Base, Limit)"] -.->|Look up entry s| CheckLimit
+    ST -.->|Fetch Base| Adder
+  </div>
+  <ul>
+    <li>The segment number $s$ indexes into the <strong>Segment Table</strong>.</li>
+    <li>The hardware checks: if $d \ge \text{Limit}$, the MMU triggers a CPU trap (<strong>Segmentation Fault</strong>).</li>
+    <li>Otherwise, $\text{Physical Address} = \text{Base} + d$.</li>
+    <li><em>Limitation:</em> Since segments vary in length, allocation of segments in physical memory still suffers from <strong>External Fragmentation</strong>.</li>
+  </ul>
+
+  <h3>5.5 Paging: The Universal Non-Contiguous Solution</h3>
+  <p><strong>Paging</strong> breaks physical memory and logical address space into fixed-sized chunks, eliminating external fragmentation completely (<a href="https://www.youtube.com/watch?v=X077mn-qghM&t=1575s" target="_blank" class="yt-timestamp">⏱️ 26:15</a>):</p>
+  <ul>
+    <li><strong>Frames:</strong> Physical memory is divided into fixed-sized blocks called <strong>Frames</strong> (typically 4 KB).</li>
+    <li><strong>Pages:</strong> Logical address space is divided into blocks of the <strong>exact same size</strong> called <strong>Pages</strong>.</li>
+    <li>Any free physical frame can be assigned to any page of any process.</li>
+  </ul>
+
+  <h4>Mathematical Address Translation in Paging:</h4>
+  <p>Let the virtual address space be $2^n$ bytes and page size be $2^m$ bytes:</p>
+  <ul>
+    <li>The higher $n - m$ bits represent the <strong>Page Number ($p$)</strong>.</li>
+    <li>The lower $m$ bits represent the <strong>Page Offset ($d$)</strong> within the page.</li>
+  </ul>
+  <div class="mermaid">
+  graph LR
+    VAddr["Virtual Address: [Page p (n-m bits)] | [Offset d (m bits)]"]
+    VAddr --> PT["Page Table (Indexed by p)"]
+    PT --> FrameVal["Extract Frame Number f"]
+    FrameVal --> PAddr["Physical Address: [Frame f] | [Offset d]"]
+  </div>
+
+  <h4>Solved Concrete Interview Example:</h4>
+  <p><strong>Problem:</strong> Consider a 32-bit system with a 4 KB page size. What is the breakdown of the logical address, and how large is a linear Page Table assuming each Page Table Entry (PTE) is 4 bytes?</p>
+  <ul>
+    <li>Page size $= 4 \text{ KB} = 2^{12} \text{ bytes} \implies m = 12 \text{ bits}$ for Page Offset ($d$).</li>
+    <li>Virtual address space $= 32 \text{ bits} \implies n = 32 \text{ bits}$.</li>
+    <li>Page Number bits $= n - m = 32 - 12 = 20 \text{ bits}$.</li>
+    <li>Total pages per process $= 2^{20} = 1,048,576 \text{ pages}$.</li>
+    <li>Page Table Size $= 2^{20} \text{ entries} \times 4 \text{ bytes/entry} = 4 \text{ MB per process!}$</li>
+  </ul>
+  <p><em>Internal Fragmentation in Paging:</em> Paging completely eliminates External Fragmentation. However, it incurs slight <strong>Internal Fragmentation</strong> on the very last page of a process (on average, half a page $\approx 2 \text{ KB}$).</p>
+</section>

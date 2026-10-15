@@ -1,0 +1,1516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>4 U By U &bull; Computer Networks Masterclass & Placement Blueprint</title>
+  <meta name="description" content="Comprehensive Computer Networks placement study blueprint featuring Kunal Kushwaha's full OSI course, Gate Smashers placement revision, and an intelligent timeline-redirecting study assistant.">
+  
+  <!-- Modern Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --bg-canvas: #070A12;
+      --bg-surface: #0E1424;
+      --bg-card: #151D33;
+      --bg-card-hover: #1C2745;
+      --text-main: #F8FAFC;
+      --text-muted: #94A3B8;
+      --text-dim: #64748B;
+      --border-color: #24304F;
+      --border-focus: #3B82F6;
+      --blue-600: #2563EB;
+      --blue-500: #3B82F6;
+      --blue-400: #60A5FA;
+      --cyan-400: #38BDF8;
+      --emerald-500: #10B981;
+      --amber-500: #F59E0B;
+      --purple-500: #8B5CF6;
+      --rose-500: #F43F5E;
+      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      --font-mono: 'Fira Code', Consolas, Monaco, monospace;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.3);
+      --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.4);
+      --shadow-xl: 0 20px 25px -5px rgba(0,0,0,0.6);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background-color: var(--bg-canvas);
+      color: var(--text-main);
+      font-family: var(--font-sans);
+      font-size: 14.5px;
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Top Navigation Bar */
+    .top-navbar {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      background: rgba(14, 20, 36, 0.95);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-color);
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      box-shadow: var(--shadow-md);
+    }
+
+    .brand-group {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .brand-logo {
+      font-weight: 800;
+      font-size: 19px;
+      letter-spacing: -0.5px;
+      color: #FFFFFF;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .brand-pill {
+      background: linear-gradient(135deg, var(--blue-600), #1D4ED8);
+      color: #FFFFFF;
+      font-size: 10.5px;
+      font-weight: 700;
+      padding: 3px 9px;
+      border-radius: 9999px;
+      letter-spacing: 0.6px;
+      text-transform: uppercase;
+    }
+
+    .nav-search-bar {
+      display: flex;
+      align-items: center;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 8px;
+      padding: 6px 14px;
+      width: 350px;
+      transition: all 0.2s ease;
+    }
+
+    .nav-search-bar:focus-within {
+      background: rgba(255, 255, 255, 0.14);
+      border-color: var(--blue-500);
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25);
+    }
+
+    .nav-search-bar input {
+      background: transparent;
+      border: none;
+      outline: none;
+      color: #FFFFFF;
+      font-size: 13.5px;
+      width: 100%;
+    }
+
+    .nav-controls {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .btn-nav {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.18);
+      color: #E2E8F0;
+      padding: 7px 14px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+
+    .btn-nav:hover {
+      background: rgba(255,255,255,0.16);
+      color: #FFFFFF;
+      border-color: var(--blue-400);
+    }
+
+    .btn-nav.primary {
+      background: var(--blue-600);
+      border-color: var(--blue-500);
+      color: #FFFFFF;
+    }
+
+        /* Master Layout (3-Column Architecture) */
+    .master-layout {
+      display: flex;
+      max-width: 1780px;
+      margin: 16px auto;
+      padding: 0 20px;
+      gap: 20px;
+    }
+
+    /* Left Column: Vertical Chapter Sidebar */
+    .chapter-sidebar {
+      flex: 0 0 260px;
+      position: sticky;
+      top: 76px;
+      height: calc(100vh - 96px);
+      overflow-y: auto;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .sidebar-header {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--blue-400);
+      letter-spacing: 0.8px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border-color);
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .sidebar-nav {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .sidebar-pill {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 12px;
+      border-radius: 8px;
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 500;
+      border: 1px solid transparent;
+      transition: all 0.2s ease;
+    }
+
+    .sidebar-pill:hover {
+      background: var(--bg-card);
+      color: #FFFFFF;
+      border-color: var(--border-color);
+    }
+
+    .sidebar-pill.active {
+      background: rgba(37, 99, 235, 0.15);
+      border-color: var(--blue-500);
+      color: #FFFFFF;
+      font-weight: 600;
+    }
+
+    .sidebar-pill .pill-badge {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--blue-400);
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
+    .sidebar-pill.active .pill-badge {
+      background: var(--blue-600);
+      color: #FFFFFF;
+    }
+
+    .sidebar-pill .pill-label {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* Center Column: Primary Study Document */
+    .notes-column {
+      flex: 1 1 55%;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    /* Right Column: Dedicated Full-Height Study Assistant Dock */
+    .auxiliary-dock {
+      flex: 0 0 350px;
+      position: sticky;
+      top: 76px;
+      height: calc(100vh - 96px);
+      display: flex;
+      flex-direction: column;
+    }
+
+    @media (max-width: 1400px) {
+      .chapter-sidebar { display: none; }
+    }
+
+    @media (max-width: 1100px) {
+      .master-layout { flex-direction: column; }
+      .auxiliary-dock { position: static; height: auto; }
+    }
+
+/* Document Cards */
+    .module-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 36px 40px;
+      box-shadow: var(--shadow-sm);
+      scroll-margin-top: 80px;
+    }
+
+    .module-header {
+      border-bottom: 2px solid var(--border-color);
+      padding-bottom: 18px;
+      margin-bottom: 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .module-badge {
+      font-size: 11px;
+      font-family: var(--font-mono);
+      font-weight: 700;
+      padding: 3px 9px;
+      border-radius: 6px;
+      background: rgba(59, 130, 246, 0.15);
+      border: 1px solid rgba(59, 130, 246, 0.35);
+      color: var(--blue-400);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .module-title {
+      font-size: 22px;
+      font-weight: 800;
+      color: #FFFFFF;
+      letter-spacing: -0.4px;
+      margin-top: 6px;
+    }
+
+    .video-pill-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(239, 68, 68, 0.15);
+      border: 1px solid rgba(239, 68, 68, 0.35);
+      color: #FCA5A5;
+      font-size: 11.5px;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 6px;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+
+    .video-pill-link:hover {
+      background: #DC2626;
+      color: #FFFFFF;
+      transform: translateY(-1px);
+    }
+
+    .notes-content h3 {
+      font-size: 16px;
+      font-weight: 700;
+      color: #F1F5F9;
+      margin-top: 22px;
+      margin-bottom: 10px;
+    }
+
+    .notes-content h4 {
+      font-size: 14.5px;
+      font-weight: 600;
+      color: var(--blue-400);
+      margin-top: 16px;
+      margin-bottom: 6px;
+    }
+
+    .notes-content p {
+      color: #CBD5E1;
+      margin-bottom: 14px;
+    }
+
+    .notes-content ul, .notes-content ol {
+      margin-left: 22px;
+      margin-bottom: 16px;
+      color: #CBD5E1;
+    }
+
+    .notes-content li {
+      margin-bottom: 6px;
+    }
+
+    .notes-content code {
+      background: #0A0F1D;
+      border: 1px solid var(--border-color);
+      color: var(--cyan-400);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-family: var(--font-mono);
+      font-size: 12.5px;
+    }
+
+    .notes-content pre {
+      background: #0A0F1D;
+      border: 1px solid var(--border-color);
+      color: #E2E8F0;
+      padding: 16px;
+      border-radius: 8px;
+      font-family: var(--font-mono);
+      font-size: 13px;
+      line-height: 1.5;
+      overflow-x: auto;
+      margin: 14px 0;
+    }
+
+    .diagram-panel {
+      background: #0A0F1D;
+      border: 1.5px dashed var(--border-color);
+      border-radius: 8px;
+      padding: 18px;
+      margin: 18px 0;
+      font-family: var(--font-mono);
+      font-size: 12.5px;
+      color: #94A3B8;
+      line-height: 1.6;
+      overflow-x: auto;
+    }
+
+    .table-container {
+      overflow-x: auto;
+      margin: 16px 0;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13.5px;
+    }
+
+    th, td {
+      border: 1px solid var(--border-color);
+      padding: 8px 12px;
+      text-align: left;
+    }
+
+    th {
+      background: #111A30;
+      color: #FFFFFF;
+      font-weight: 700;
+    }
+
+    td {
+      background: var(--bg-card);
+      color: #CBD5E1;
+    }
+
+    /* Chatbot Dock Card (Full Height) */
+    .chatbot-dock-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      box-shadow: var(--shadow-xl);
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      height: 100%;
+      overflow: hidden;
+    }
+
+    .dock-header {
+      background: #0B1020;
+      border-bottom: 1px solid var(--border-color);
+      padding: 14px 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .dock-title-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .dock-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: #FFFFFF;
+      letter-spacing: -0.2px;
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid rgba(16, 185, 129, 0.35);
+      color: var(--emerald-500);
+      font-size: 10.5px;
+      font-weight: 600;
+      padding: 2px 7px;
+      border-radius: 9999px;
+    }
+
+    .status-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--emerald-500);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(1.1); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+
+    .md-folder-bar {
+      background: rgba(21, 29, 51, 0.8);
+      border-bottom: 1px solid var(--border-color);
+      padding: 8px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .md-active-file {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-family: var(--font-mono);
+      font-size: 11.5px;
+      color: var(--blue-400);
+    }
+
+    .chat-messages {
+      flex: 1;
+      padding: 16px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      font-size: 13.5px;
+      scrollbar-width: thin;
+      scrollbar-color: var(--border-color) transparent;
+    }
+
+    .chat-bubble {
+      padding: 12px 16px;
+      border-radius: 10px;
+      line-height: 1.55;
+      max-width: 94%;
+      animation: fadeIn 0.2s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .chat-bubble.assistant {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      color: #F1F5F9;
+      align-self: flex-start;
+    }
+
+    .chat-bubble.user {
+      background: linear-gradient(135deg, var(--blue-600), #1D4ED8);
+      color: #FFFFFF;
+      align-self: flex-end;
+    }
+
+    /* Redirection Action Bar in Assistant Bubbles */
+    .bubble-actions-bar {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .btn-yt-redirect {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: rgba(239, 68, 68, 0.2);
+      border: 1px solid rgba(239, 68, 68, 0.45);
+      color: #FCA5A5;
+      font-size: 11.5px;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 6px;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+
+    .btn-yt-redirect:hover {
+      background: #DC2626;
+      color: #FFFFFF;
+      transform: translateY(-1px);
+    }
+
+    .btn-guide-jump {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: rgba(59, 130, 246, 0.2);
+      border: 1px solid rgba(59, 130, 246, 0.45);
+      color: #93C5FD;
+      font-size: 11.5px;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-guide-jump:hover {
+      background: var(--blue-600);
+      color: #FFFFFF;
+      transform: translateY(-1px);
+    }
+
+    .raw-md-toggle {
+      font-size: 11px;
+      color: var(--text-dim);
+      cursor: pointer;
+      text-decoration: underline;
+      margin-top: 6px;
+    }
+
+    .raw-md-box {
+      display: none;
+      background: #0A0F1D;
+      border: 1px solid var(--border-color);
+      color: #94A3B8;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      padding: 8px 10px;
+      border-radius: 6px;
+      margin-top: 6px;
+      white-space: pre-wrap;
+      max-height: 140px;
+      overflow-y: auto;
+    }
+
+    .suggested-prompts {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 10px;
+    }
+
+    .prompt-chip {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      color: #93C5FD;
+      font-size: 11px;
+      padding: 4px 9px;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .prompt-chip:hover {
+      background: var(--blue-600);
+      color: #FFFFFF;
+      border-color: var(--blue-500);
+      transform: translateY(-1px);
+    }
+
+    .chat-input-bar {
+      display: flex;
+      align-items: center;
+      border-top: 1px solid var(--border-color);
+      padding: 10px 14px;
+      background: #0B1020;
+      gap: 8px;
+    }
+
+    .chat-input-bar input {
+      flex: 1;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 9px 14px;
+      font-size: 13.5px;
+      color: #FFFFFF;
+      outline: none;
+      transition: border 0.15s;
+    }
+
+    .chat-input-bar input:focus {
+      border-color: var(--blue-500);
+    }
+
+    .chat-input-bar button {
+      background: var(--blue-600);
+      color: #FFFFFF;
+      border: none;
+      border-radius: 8px;
+      padding: 9px 18px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 13px;
+      transition: background 0.15s;
+    }
+
+    .chat-input-bar button:hover {
+      background: #1D4ED8;
+    }
+
+    #md-file-input { display: none; }
+  
+/* ==========================================================================
+   AUTHENTIC DOCUMENT WHITE SHEET THEME (Matching DBMS Benchmark)
+   ========================================================================== */
+.module-card {
+  background: #FFFFFF !important;
+  color: #111827 !important;
+  border-radius: 8px !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  padding: 44px 50px !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 1px 3px rgba(0, 0, 0, 0.3) !important;
+  margin-bottom: 24px !important;
+  scroll-margin-top: 80px;
+}
+
+.module-header {
+  border-bottom: 2px solid #E5E7EB !important;
+  padding-bottom: 18px !important;
+  margin-bottom: 24px !important;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.module-badge {
+  background: #EFF6FF !important;
+  color: #1D4ED8 !important;
+  border: 1px solid #BFDBFE !important;
+}
+
+.module-title {
+  color: #111827 !important;
+  font-weight: 800 !important;
+}
+
+.module-card h3 {
+  color: #111827 !important;
+  border-bottom: 1px solid #E5E7EB !important;
+  padding-bottom: 8px;
+  margin: 24px 0 12px 0;
+}
+
+.module-card h4 {
+  color: #1E3A8A !important;
+  margin: 16px 0 8px 0;
+}
+
+.module-card p, .module-card li {
+  color: #374151 !important;
+}
+
+.data-table, .engineering-table {
+  background: #FFFFFF !important;
+  border: 1px solid #E2E8F0 !important;
+}
+
+.data-table th, .engineering-table th {
+  background: #0F172A !important;
+  color: #FFFFFF !important;
+}
+
+.data-table td, .engineering-table td {
+  border-bottom: 1px solid #E2E8F0 !important;
+  color: #1F2937 !important;
+}
+
+.data-table tr:nth-child(even) td, .engineering-table tr:nth-child(even) td {
+  background: #F8FAFC !important;
+}
+
+.diagram-wrapper, .mermaid {
+  background: #FFFFFF !important;
+  border: 1px solid #E2E8F0 !important;
+}
+
+.callout {
+  background-color: #EFF6FF !important;
+  border-left: 4px solid #2563EB !important;
+  border: 1px solid #DBEAFE !important;
+  color: #1E3A8A !important;
+}
+
+</style>
+</head>
+<body>
+
+  <!-- Top Sticky Navigation Bar -->
+  <header class="top-navbar">
+    <div class="brand-group">
+      <a href="../index.html" class="brand-logo">
+        <span style="color:#60A5FA;">4 U By U</span>
+        <span style="font-weight:400; color:#94A3B8;">&bull; Computer Networks</span>
+      </a>
+      <span class="brand-pill">Placement Masterclass</span>
+    </div>
+
+    <div class="nav-search-bar">
+      <input type="text" id="guide-search" placeholder="Search OSI, TCP handshake, Subnetting, DNS, HTTP..." oninput="handleSearch()">
+    </div>
+
+    <div class="nav-controls">
+      <a href="../os/index.html" class="btn-nav">OS Guide</a>
+      <a href="../dbms/index.html" class="btn-nav">DBMS Guide</a>
+      <a href="../ml/index.html" class="btn-nav">ML Guide</a>
+      <button class="btn-nav primary" onclick="triggerMdUpload()">📂 Load .MD</button>
+      <input type="file" id="md-file-input" accept=".md,.markdown,.txt" onchange="loadCustomMarkdownFile(event)">
+    </div>
+  </header>
+
+  <!-- Master Layout -->
+  <div class="master-layout">
+    <!-- Left Column: Module Navigation Sidebar -->
+    <aside class="chapter-sidebar" id="chapter-sidebar">
+      <div class="sidebar-header">
+        <span>🌐 MODULE OUTLINE</span>
+      </div>
+      <nav class="sidebar-nav">
+        <a href="#module-1" class="sidebar-pill active">
+          <span class="pill-badge">01</span>
+          <span class="pill-label">Network Fundamentals</span>
+        </a>
+        <a href="#module-2" class="sidebar-pill">
+          <span class="pill-badge">02</span>
+          <span class="pill-label">OSI vs TCP/IP Models</span>
+        </a>
+        <a href="#module-3" class="sidebar-pill">
+          <span class="pill-badge">03</span>
+          <span class="pill-label">Physical & Data Link</span>
+        </a>
+        <a href="#module-4" class="sidebar-pill">
+          <span class="pill-badge">04</span>
+          <span class="pill-label">Network Layer & Routing</span>
+        </a>
+        <a href="#module-5" class="sidebar-pill">
+          <span class="pill-badge">05</span>
+          <span class="pill-label">Transport: TCP & UDP</span>
+        </a>
+        <a href="#module-6" class="sidebar-pill">
+          <span class="pill-badge">06</span>
+          <span class="pill-label">Application Protocols</span>
+        </a>
+        <a href="#module-7" class="sidebar-pill">
+          <span class="pill-badge">07</span>
+          <span class="pill-label">URL to Rendered Page</span>
+        </a>
+        <a href="#module-8" class="sidebar-pill">
+          <span class="pill-badge">08</span>
+          <span class="pill-label">Placement Top Questions</span>
+        </a>
+      </nav>
+    </aside>
+
+    <!-- Left Column: Primary Comprehensive Study Guide -->
+    <main class="notes-column" id="notes-stream">
+
+      <!-- MODULE 1 -->
+      <article class="module-card" id="module-1">
+        <div class="module-header">
+          <div>
+            <span class="module-badge">Module 01</span>
+            <h2 class="module-title">Network Fundamentals &amp; Topologies</h2>
+          </div>
+          <a href="https://www.youtube.com/watch?v=IPvYjXCsTg8&t=0s" target="_blank" class="video-pill-link">
+            <span>&#9654;</span> Kunal Kushwaha &bull; 0:00
+          </a>
+        </div>
+        <div class="notes-content">
+          <p>A computer network is an interconnection of autonomous computing devices (nodes/hosts) connected via transmission media (guided cables or wireless RF) and communicating using a common set of protocols.</p>
+          
+          <h3>Core Performance Metrics</h3>
+          <ul>
+            <li><strong>Bandwidth:</strong> Theoretical maximum data carrying capacity of a link (bps, Mbps, Gbps).</li>
+            <li><strong>Throughput:</strong> Actual volume of successful data delivered per unit time.</li>
+            <li><strong>Latency (Delay):</strong> $T_{\text{total}} = T_{\text{propagation}} + T_{\text{transmission}} + T_{\text{queuing}} + T_{\text{processing}}$.</li>
+            <li><strong>Jitter:</strong> Variance in packet arrival latency (critical for VoIP and live gaming).</li>
+          </ul>
+
+          <h3>Network Classifications by Geographic Scale</h3>
+          <ul>
+            <li><strong>LAN (Local Area Network):</strong> Single building or campus. High bandwidth (100 Mbps to 10 Gbps), low latency, privately owned (Ethernet 802.3, Wi-Fi 802.11).</li>
+            <li><strong>MAN (Metropolitan Area Network):</strong> Spans an entire city/metro region (Cable TV networks, city-wide municipal fiber).</li>
+            <li><strong>WAN (Wide Area Network):</strong> Spans countries or continents. Interconnects heterogeneous LANs via telecom carriers, routers, and submarine optical fiber cables. The Internet is the premier public WAN.</li>
+          </ul>
+
+          <h3>Network Topologies</h3>
+          <ul>
+            <li><strong>Bus Topology:</strong> Single central backbone cable with terminators. Single point of failure; collisions occur under high load.</li>
+            <li><strong>Star Topology:</strong> Nodes connect to a central switch/hub. Modern standard; single link break doesn't affect others.</li>
+            <li><strong>Ring Topology:</strong> Circular loop; tokens pass unidirectionally. Zero collisions; break halts loop unless dual ring deployed.</li>
+            <li><strong>Mesh Topology (Full Mesh):</strong> Every node connects directly to every other node.<br>
+              <strong>Number of duplex links:</strong> <code>N(N - 1) / 2</code>.<br>
+              <strong>Ports per device:</strong> <code>N - 1</code>. Ultimate redundancy; high cabling cost.
+            </li>
+          </ul>
+        </div>
+      </article>
+
+      <!-- MODULE 2 -->
+      <article class="module-card" id="module-2">
+        <div class="module-header">
+          <div>
+            <span class="module-badge">Module 02</span>
+            <h2 class="module-title">OSI 7-Layer vs TCP/IP 5-Layer Models</h2>
+          </div>
+          <a href="https://www.youtube.com/watch?v=IPvYjXCsTg8&t=3993s" target="_blank" class="video-pill-link">
+            <span>&#9654;</span> Kunal Kushwaha &bull; 1:06:33
+          </a>
+        </div>
+        <div class="notes-content">
+          <p>Network communications rely on layered architectural abstractions to modularize protocol development and decouple physical hardware from software logic.</p>
+          
+          <div class="diagram-panel">
+[ Layer 7: Application  ] -> UI, HTTP/HTTPS, DNS, SMTP, SSH (Data/Message)<br>
+[ Layer 6: Presentation ] -> Encryption/Decryption, Compression, Character Sets (Data)<br>
+[ Layer 5: Session      ] -> Dialog control, checkpointing, session tokens (Data)<br>
+[ Layer 4: Transport    ] -> End-to-End Reliability, Port Addressing (Segments / Datagrams)<br>
+[ Layer 3: Network      ] -> Logical IP Routing, Path Determination (Packets)<br>
+[ Layer 2: Data Link    ] -> Hop-to-Hop Framing, MAC Addressing, Error Detection (Frames)<br>
+[ Layer 1: Physical     ] -> Bitstream Transmission, Voltage, Radio Waves (Bits)
+          </div>
+
+          <h3>Data Encapsulation &amp; Protocol Data Units (PDUs)</h3>
+          <ul>
+            <li><strong>Application Data:</strong> Raw user payload generated by browser or client.</li>
+            <li><strong>Segment (Layer 4):</strong> Adds TCP/UDP header (Source Port, Destination Port, Sequence Numbers).</li>
+            <li><strong>Packet (Layer 3):</strong> Adds IP header (Source IP, Destination IP, TTL).</li>
+            <li><strong>Frame (Layer 2):</strong> Adds Ethernet header (Source MAC, Destination MAC) and Frame Check Sequence (CRC) trailer.</li>
+            <li><strong>Bits (Layer 1):</strong> Encoded into physical signals across wire or fiber.</li>
+          </ul>
+
+          <div class="table-container">
+            <table>
+              <tr><th>Dimension</th><th>OSI 7-Layer Reference Model</th><th>TCP/IP Model (Internet Standard)</th></tr>
+              <tr><td>Origin</td><td>ISO theoretical standard (1984)</td><td>DoD DARPA real-world implementation (ARPANET)</td></tr>
+              <tr><td>Number of Layers</td><td>7 Layers</td><td>4 or 5 Layers</td></tr>
+              <tr><td>Session &amp; Presentation</td><td>Explicit dedicated layers (L5, L6)</td><td>Integrated directly into Application Layer (L7)</td></tr>
+              <tr><td>Protocol Design</td><td>Model defined before protocols</td><td>Protocols (TCP, IP) designed before model</td></tr>
+            </table>
+          </div>
+        </div>
+      </article>
+
+      <!-- MODULE 3 -->
+      <article class="module-card" id="module-3">
+        <div class="module-header">
+          <div>
+            <span class="module-badge">Module 03</span>
+            <h2 class="module-title">Physical &amp; Data Link Layers</h2>
+          </div>
+          <a href="https://www.youtube.com/watch?v=skvCwFPZ7zM&t=520s" target="_blank" class="video-pill-link">
+            <span>&#9654;</span> Gate Smashers &bull; 8:40
+          </a>
+        </div>
+        <div class="notes-content">
+          <h3>Hardware Devices Hierarchy</h3>
+          <ul>
+            <li><strong>Hub (Layer 1):</strong> Multiport repeater. Blindly broadcasts bits to all ports. 1 collision domain, 1 broadcast domain.</li>
+            <li><strong>Switch (Layer 2):</strong> Intelligent frame forwarder. Inspects destination MAC and maintains CAM table via source learning. Isolates collision domains per port! (1 broadcast domain).</li>
+            <li><strong>Router (Layer 3):</strong> Inspects destination IP addresses. Forwards packets across distinct subnets using routing tables. Isolates broadcast domains!</li>
+            <li><strong>Gateway:</strong> Protocol translator operating up to Layer 7 to bridge heterogeneous networks.</li>
+          </ul>
+
+          <h3>Error Detection &amp; Flow Control</h3>
+          <ul>
+            <li><strong>48-bit MAC Address:</strong> 6 bytes in hex (e.g. <code>00:1A:2B:3C:4D:5E</code>). First 24 bits = OUI (vendor), last 24 bits = NIC serial.</li>
+            <li><strong>CRC (Cyclic Redundancy Check):</strong> Polynomial division ($GF(2)$ arithmetic) appending Frame Check Sequence (FCS) to detect burst errors.</li>
+            <li><strong>Sliding Window Protocols:</strong>
+              <ul>
+                <li><strong>Go-Back-N (GBN):</strong> Window size $N$. Discards out-of-order frames. On timeout, retransmits all $N$ frames from the lost frame.</li>
+                <li><strong>Selective Repeat (SR):</strong> Receiver buffers out-of-order frames. Sender retransmits only the lost frame. Optimal bandwidth utilization.</li>
+              </ul>
+            </li>
+            <li><strong>CSMA/CD vs CSMA/CA:</strong>
+              <ul>
+                <li><strong>CSMA/CD:</strong> Collision Detection for wired Ethernet. Detects collision, sends jam signal, applies binary exponential backoff.</li>
+                <li><strong>CSMA/CA:</strong> Collision Avoidance for wireless Wi-Fi (802.11). Uses RTS/CTS and inter-frame spaces since radios cannot detect collisions while transmitting.</li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+      </article>
+
+      <!-- MODULE 4 -->
+      <article class="module-card" id="module-4">
+        <div class="module-header">
+          <div>
+            <span class="module-badge">Module 04</span>
+            <h2 class="module-title">Network Layer: IPv4, IPv6, Subnetting &amp; Routing</h2>
+          </div>
+          <a href="https://www.youtube.com/watch?v=IPvYjXCsTg8&t=12270s" target="_blank" class="video-pill-link">
+            <span>&#9654;</span> Kunal Kushwaha &bull; 3:24:30
+          </a>
+        </div>
+        <div class="notes-content">
+          <h3>IPv4 Addressing &amp; Classes</h3>
+          <p>32-bit logical address formatted as 4 octets (e.g. <code>192.168.1.1</code>). Total space: $2^{32} \approx 4.29$ billion.</p>
+          
+          <div class="table-container">
+            <table>
+              <tr><th>Class</th><th>First Octet Range</th><th>Default Mask</th><th>Network / Host Bits</th><th>Usable Hosts</th></tr>
+              <tr><td>Class A</td><td>1 &ndash; 126</td><td>255.0.0.0 (/8)</td><td>8 Net / 24 Host</td><td>$2^{24} - 2 = 16,777,214$</td></tr>
+              <tr><td>Class B</td><td>128 &ndash; 191</td><td>255.255.0.0 (/16)</td><td>16 Net / 16 Host</td><td>$2^{16} - 2 = 65,534$</td></tr>
+              <tr><td>Class C</td><td>192 &ndash; 223</td><td>255.255.255.0 (/24)</td><td>24 Net / 8 Host</td><td>$2^8 - 2 = 254$</td></tr>
+              <tr><td>Class D</td><td>224 &ndash; 239</td><td>N/A</td><td>Multicast Group Addressing</td><td>N/A</td></tr>
+              <tr><td>Class E</td><td>240 &ndash; 255</td><td>N/A</td><td>Experimental &amp; R&amp;D</td><td>N/A</td></tr>
+            </table>
+          </div>
+
+          <h3>Private IP Ranges (RFC 1918)</h3>
+          <ul>
+            <li><code>10.0.0.0/8</code> (Class A: <code>10.0.0.0</code> &ndash; <code>10.255.255.255</code>)</li>
+            <li><code>172.16.0.0/12</code> (Class B: <code>172.16.0.0</code> &ndash; <code>172.31.255.255</code>)</li>
+            <li><code>192.168.0.0/16</code> (Class C: <code>192.168.0.0</code> &ndash; <code>192.168.255.255</code>)</li>
+          </ul>
+
+          <h3>Subnetting Math (CIDR)</h3>
+          <p><strong>Example:</strong> Given block <code>192.168.1.0/27</code>:</p>
+          <ul>
+            <li>Subnet mask: 27 ones &rarr; <code>255.255.255.224</code>.</li>
+            <li>Host bits $H = 32 - 27 = 5$.</li>
+            <li>Total IPs per subnet = $2^5 = 32$.</li>
+            <li><strong>Usable hosts:</strong> $32 - 2 = 30$ hosts (subtract Network ID and Broadcast).</li>
+            <li>Block 1: <code>192.168.1.0</code> (Net ID) to <code>192.168.1.31</code> (Broadcast). Usable: <code>.1</code> to <code>.30</code>.</li>
+          </ul>
+
+          <h3>IPv4 vs IPv6 Comparison</h3>
+          <ul>
+            <li><strong>IPv4:</strong> 32 bits, dotted decimal, 20-60 byte header, header checksum present, router-level fragmentation.</li>
+            <li><strong>IPv6:</strong> 128 bits, hexadecimal colons, fixed 40-byte header, zero header checksum (accelerates routing), fragmentation only by sender.</li>
+          </ul>
+
+          <h3>Routing Algorithms</h3>
+          <ul>
+            <li><strong>Distance Vector (Bellman-Ford):</strong> Routers share routing tables with immediate neighbors (RIP, max 15 hops). Suffers from count-to-infinity problem.</li>
+            <li><strong>Link State (Dijkstra):</strong> Routers flood link states (LSAs) to all routers. Every router constructs full topology map (OSPF, IS-IS).</li>
+            <li><strong>BGP (Border Gateway Protocol):</strong> Path vector routing protocol running between Autonomous Systems on the global Internet.</li>
+          </ul>
+        </div>
+      </article>
+
+      <!-- MODULE 5 -->
+      <article class="module-card" id="module-5">
+        <div class="module-header">
+          <div>
+            <span class="module-badge">Module 05</span>
+            <h2 class="module-title">Transport Layer: TCP, UDP, Handshakes &amp; Congestion</h2>
+          </div>
+          <a href="https://www.youtube.com/watch?v=IPvYjXCsTg8&t=11350s" target="_blank" class="video-pill-link">
+            <span>&#9654;</span> Kunal Kushwaha &bull; 3:09:10
+          </a>
+        </div>
+        <div class="notes-content">
+          <h3>TCP vs UDP Master Comparison</h3>
+          <div class="table-container">
+            <table>
+              <tr><th>Parameter</th><th>TCP (Transmission Control Protocol)</th><th>UDP (User Datagram Protocol)</th></tr>
+              <tr><td>Connection</td><td>Connection-Oriented (3-way handshake)</td><td>Connectionless (No handshake)</td></tr>
+              <tr><td>Reliability</td><td>100% Reliable (Guaranteed ACKs &amp; Retransmission)</td><td>Unreliable (Best-effort delivery)</td></tr>
+              <tr><td>Ordering</td><td>Strictly ordered via Sequence numbers</td><td>Unordered packets</td></tr>
+              <tr><td>Header Size</td><td>20 &ndash; 60 bytes</td><td>Fixed 8 bytes</td></tr>
+              <tr><td>Flow &amp; Congestion Control</td><td>Yes (Sliding window, AIMD, Slow Start)</td><td>None (Transmits at app rate)</td></tr>
+              <tr><td>Use Cases</td><td>Web (HTTP/HTTPS), File transfers, Email, SSH</td><td>VoIP, Live Streaming, Gaming, DNS queries</td></tr>
+            </table>
+          </div>
+
+          <h3>TCP 3-Way Handshake Architecture</h3>
+          <div class="diagram-panel">
+CLIENT                                              SERVER<br>
+  |                                                   | (Server in LISTEN state)<br>
+  |  Step 1: SYN (Seq = X)                            |<br>
+  |-------------------------------------------------->| (Server enters SYN-RCVD)<br>
+  |                                                   |<br>
+  |  Step 2: SYN-ACK (Seq = Y, Ack = X + 1)           |<br>
+  |<--------------------------------------------------|<br>
+(Client enters ESTABLISHED)                           |<br>
+  |                                                   |<br>
+  |  Step 3: ACK (Seq = X + 1, Ack = Y + 1)           |<br>
+  |-------------------------------------------------->| (Server enters ESTABLISHED)<br>
+  |<br>
+  [ FULL-DUPLEX BIDIRECTIONAL DATA STREAM ACTIVE ]
+          </div>
+
+          <h3>TCP 4-Way Connection Teardown &amp; TIME-WAIT</h3>
+          <p>Both endpoints must independently close their transmission channels via <code>FIN &rarr; ACK</code>. The initiating side remains in <strong>TIME-WAIT for $2 \times \text{MSL}$</strong> (Maximum Segment Lifetime, 60–120s) to guarantee the final ACK reached the peer and prevent stale duplicated segments from colliding with a new connection.</p>
+
+          <h3>Flow Control vs Congestion Control</h3>
+          <ul>
+            <li><strong>Flow Control (Receiver Protection):</strong> Governed by receiver's advertised window (<code>rwnd</code>). Prevents fast sender from overflowing slow receiver's buffer.</li>
+            <li><strong>Congestion Control (Network Protection):</strong> Governed by sender's calculated congestion window (<code>cwnd</code>). Effective transmission window = $\min(\text{cwnd}, \text{rwnd})$.
+              <ul>
+                <li><strong>Slow Start:</strong> $cwnd$ doubles exponentially ($2^k$) every RTT until <code>ssthresh</code>.</li>
+                <li><strong>Congestion Avoidance (AIMD):</strong> Linear growth (increases $cwnd$ by 1 MSS per RTT).</li>
+                <li><strong>Loss Recovery:</strong> Reno halves $cwnd$ on 3 duplicate ACKs (Fast Recovery); Tahoe drops $cwnd = 1$ MSS on any loss.</li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+      </article>
+
+      <!-- MODULE 6 -->
+      <article class="module-card" id="module-6">
+        <div class="module-header">
+          <div>
+            <span class="module-badge">Module 06</span>
+            <h2 class="module-title">Application Layer: DNS, HTTP/1-3, HTTPS &amp; DHCP</h2>
+          </div>
+          <a href="https://www.youtube.com/watch?v=IPvYjXCsTg8&t=8340s" target="_blank" class="video-pill-link">
+            <span>&#9654;</span> Kunal Kushwaha &bull; 2:19:00
+          </a>
+        </div>
+        <div class="notes-content">
+          <h3>DNS (Domain Name System &bull; Port 53)</h3>
+          <ul>
+            <li>Hierarchical distributed database mapping FQDNs (e.g. <code>google.com</code>) to IP addresses.</li>
+            <li>Uses <strong>UDP port 53</strong> for fast single-roundtrip lookups; falls back to TCP for zone transfers or packets $> 512$ bytes.</li>
+            <li><strong>Hierarchy:</strong> Root Servers (13 Anycast clusters) &rarr; TLD Servers (<code>.com</code>, <code>.in</code>) &rarr; Authoritative Nameservers.</li>
+            <li><strong>Query Types:</strong>
+              <ul>
+                <li><em>Recursive:</em> Client asks Local Resolver to return the final answer.</li>
+                <li><em>Iterative:</em> Resolver queries each hierarchy level sequentially, receiving referral pointers.</li>
+              </ul>
+            </li>
+            <li><strong>Records:</strong> <code>A</code> (IPv4), <code>AAAA</code> (IPv6), <code>CNAME</code> (canonical alias), <code>MX</code> (mail server), <code>NS</code> (nameserver), <code>TXT</code> (SPF/DKIM/DMARC).</li>
+          </ul>
+
+          <h3>HTTP Evolution: HTTP/1.1 vs HTTP/2 vs HTTP/3</h3>
+          <div class="table-container">
+            <table>
+              <tr><th>Protocol</th><th>Transport</th><th>Key Mechanism</th><th>Head-of-Line (HOL) Blocking</th></tr>
+              <tr><td>HTTP/1.1</td><td>TCP</td><td>Text-based; Keep-Alive pipelining</td><td>Severe application-level HOL blocking</td></tr>
+              <tr><td>HTTP/2</td><td>TCP</td><td>Binary framing; Multiplexed streams; HPACK</td><td>Eliminated at app level; <strong>persists at TCP level</strong></td></tr>
+              <tr><td>HTTP/3</td><td>QUIC over UDP</td><td>QUIC streams; QPACK; 0-RTT handshakes</td><td><strong>Completely eliminated!</strong> Dropped packet in 1 stream doesn't stall others</td></tr>
+            </table>
+          </div>
+
+          <h3>HTTPS &amp; TLS 1.3 Handshake</h3>
+          <p>HTTPS runs HTTP over TLS on TCP port 443. Guarantees Confidentiality (AES-GCM), Integrity (HMAC), and Authentication (X.509 digital certificates). TLS 1.3 negotiates symmetric keys in just <strong>1 RTT</strong> using Diffie-Hellman Key Exchange.</p>
+
+          <h3>DHCP (Dynamic Host Configuration Protocol)</h3>
+          <p>Automatic network configuration via <strong>DORA Sequence</strong> (UDP ports 67/68):</p>
+          <ol>
+            <li><strong>Discover:</strong> Client broadcasts to find DHCP server.</li>
+            <li><strong>Offer:</strong> Server proposes available IP address.</li>
+            <li><strong>Request:</strong> Client formally requests the offered IP.</li>
+            <li><strong>Acknowledge:</strong> Server confirms lease, default gateway, and DNS IP.</li>
+          </ol>
+        </div>
+      </article>
+
+      <!-- MODULE 7 -->
+      <article class="module-card" id="module-7">
+        <div class="module-header">
+          <div>
+            <span class="module-badge">Module 07</span>
+            <h2 class="module-title">Master Interview Question: "URL to Rendered Page"</h2>
+          </div>
+          <a href="https://www.youtube.com/watch?v=skvCwFPZ7zM&t=1510s" target="_blank" class="video-pill-link">
+            <span>&#9654;</span> Gate Smashers &bull; 25:10
+          </a>
+        </div>
+        <div class="notes-content">
+          <p><strong>Question:</strong> <em>"What happens step-by-step when you type https://www.google.com into your browser and press Enter?"</em></p>
+          
+          <ol>
+            <li><strong>URL Parsing &amp; HSTS Check:</strong> Browser parses protocol (HTTPS), domain (<code>www.google.com</code>), port 443. Checks HSTS preload list to enforce encrypted connection.</li>
+            <li><strong>DNS Resolution Pipeline:</strong>
+              <ul>
+                <li>Checks Browser DNS cache &rarr; OS DNS cache &rarr; local <code>hosts</code> file.</li>
+                <li>Sends UDP port 53 query to configured DNS Resolver (<code>8.8.8.8</code>).</li>
+                <li>Resolver queries Root (<code>.</code>) &rarr; TLD (<code>.com</code>) &rarr; Authoritative server for <code>google.com</code>.</li>
+                <li>Receives <code>A</code> record IP: <code>142.250.190.46</code>.</li>
+              </ul>
+            </li>
+            <li><strong>ARP Resolution:</strong> Host checks local ARP cache for router MAC address. If missing, broadcasts ARP request to default gateway to obtain router MAC.</li>
+            <li><strong>TCP 3-Way Handshake:</strong> Client initiates <code>SYN</code> &rarr; Server replies <code>SYN-ACK</code> &rarr; Client completes with <code>ACK</code> to establish full-duplex socket on port 443.</li>
+            <li><strong>TLS 1.3 Cryptographic Handshake:</strong> Negotiates cipher suites, validates server's X.509 certificate via Certificate Authorities, derives shared symmetric encryption key.</li>
+            <li><strong>HTTP GET Request:</strong> Client transmits encrypted <code>GET / HTTP/2</code> request with cookies and headers.</li>
+            <li><strong>Server Infrastructure Processing:</strong> Reverse proxy (Nginx/Envoy) terminates TLS, load balances request across backend clusters, queries databases, and streams back <code>HTTP 200 OK</code> with HTML body.</li>
+            <li><strong>Browser Critical Rendering Path:</strong> Browser parses HTML into DOM tree, parses CSS into CSSOM tree, merges into Render Tree, executes Layout (geometry calculation), and executes Paint (rasterizing pixels onto screen).</li>
+          </ol>
+        </div>
+      </article>
+
+      <!-- MODULE 8 -->
+      <article class="module-card" id="module-8">
+        <div class="module-header">
+          <div>
+            <span class="module-badge">Module 08</span>
+            <h2 class="module-title">Top High-Yield Placement Interview Questions</h2>
+          </div>
+          <a href="https://www.youtube.com/playlist?list=PLUDPUBNI7KL4" target="_blank" class="video-pill-link">
+            <span>&#9654;</span> Gate Smashers Playlist
+          </a>
+        </div>
+        <div class="notes-content">
+          <h4>1. Why does TCP use a 3-way handshake instead of a 2-way handshake?</h4>
+          <p>Two messages cannot verify bidirectional channel health. If a delayed duplicated SYN arrives from an old dead connection, a 2-way handshake forces the server to allocate resources and assume active connection while client is idle. The 3rd ACK verifies the client genuinely intended to open the connection.</p>
+
+          <h4>2. What is the difference between Flow Control and Congestion Control?</h4>
+          <p>Flow control protects the receiver from being overwhelmed by a fast sender (governed by <code>rwnd</code>). Congestion control protects the intermediate network routers from collapsing under heavy traffic (governed by <code>cwnd</code>).</p>
+
+          <h4>3. Why does DNS use UDP instead of TCP?</h4>
+          <p>DNS queries are tiny ($< 512$ bytes). TCP requires 3-way handshake (1 RTT) + teardown. UDP resolves queries in a single instantaneous roundtrip without keeping connection state on high-load servers.</p>
+
+          <h4>4. What is the difference between Hub, Switch, and Router?</h4>
+          <p>Hub (L1) broadcasts blindly to all ports (1 collision domain). Switch (L2) forwards frames using MAC addresses, isolating collision domains per port. Router (L3) forwards packets between distinct subnets using IP addresses, isolating broadcast domains.</p>
+
+          <h4>5. Why does HTTP/3 replace TCP with QUIC over UDP?</h4>
+          <p>In HTTP/2, multiplexed streams share a single TCP connection. If a single packet drops, TCP freezes ALL streams until retransmitted (TCP Head-of-Line blocking). QUIC over UDP handles streams independently: loss in stream A never blocks stream B.</p>
+        </div>
+      </article>
+
+    </main>
+
+    <!-- Right Column: Dedicated 100% Full-Height Study Assistant Dock -->
+    <aside class="auxiliary-dock">
+      
+      <div class="chatbot-dock-card">
+        <div class="dock-header">
+          <div class="dock-title-group">
+            <span class="dock-title">CN Study Assistant</span>
+            <span class="status-badge">
+              <span class="status-dot"></span>
+              <span id="rag-badge-text">Folder RAG Ready</span>
+            </span>
+          </div>
+          <button class="btn-nav" style="padding:4px 8px; font-size:11px;" onclick="triggerMdUpload()">📂 Change .MD</button>
+        </div>
+
+        <div class="md-folder-bar">
+          <span class="md-active-file" id="active-md-label">📄 Source: ./CN_NOTES.md (8 Modules Indexed)</span>
+          <span style="font-size:11px; cursor:pointer;" onclick="reloadMarkdownFile()" title="Reload from folder">&#8635; Refresh</span>
+        </div>
+
+        <!-- Chat Stream -->
+        <div class="chat-messages" id="chat-messages">
+          <div class="chat-bubble assistant">
+            Hello! I am your Computer Networks placement assistant powered by reading <code>CN_NOTES.md</code> in your open folder. Every answer includes a direct YouTube timeline link to the exact second in the lecture and a document anchor to jump directly to that section in the guide!
+            
+            <div class="suggested-prompts">
+              <span class="prompt-chip" onclick="askQuestion('Explain the TCP 3-Way Handshake step by step.')">TCP 3-Way Handshake?</span>
+              <span class="prompt-chip" onclick="askQuestion('What happens when you type https://www.google.com in a browser and hit Enter?')">URL to Page Render?</span>
+              <span class="prompt-chip" onclick="askQuestion('Compare OSI 7-Layer and TCP/IP 5-Layer models.')">OSI vs TCP/IP?</span>
+              <span class="prompt-chip" onclick="askQuestion('What is the difference between Flow Control and Congestion Control?')">Flow vs Congestion?</span>
+              <span class="prompt-chip" onclick="askQuestion('Why does HTTP/3 switch from TCP to QUIC over UDP?')">Why HTTP/3 uses UDP?</span>
+              <span class="prompt-chip" onclick="askQuestion('How does Subnetting and CIDR calculation work?')">Subnetting &amp; CIDR Math?</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Input Bar -->
+        <div class="chat-input-bar">
+          <input type="text" id="chat-input" placeholder="Ask any Computer Networks placement question..." onkeypress="if(event.key==='Enter') submitChat()">
+          <button onclick="submitChat()">Ask</button>
+        </div>
+      </div>
+
+    </aside>
+  </div>
+
+  <!-- Embedded Markdown Raw Content for Instant Standalone Local Loading -->
+  <script type="text/markdown" id="embedded-md-content">
+# Computer Networks Masterclass Knowledge Base
+Module 1: Network Fundamentals & Topologies
+Bandwidth, throughput, latency formula T_total = T_prop + T_trans + T_queue + T_proc, jitter. Classifications: PAN, LAN (802.3 Ethernet, 802.11 Wi-Fi), MAN, WAN. Topologies: Bus (single backbone, collisions), Star (switch hub, robust), Ring (token passing), Full Mesh (N*(N-1)/2 links, N-1 ports per node, high redundancy), Tree.
+Module 2: OSI 7-Layer vs TCP/IP Model
+Layer 7 Application (UI, HTTP, DNS), Layer 6 Presentation (encryption, compression, encoding), Layer 5 Session (dialogue, checkpoints), Layer 4 Transport (ports, end-to-end reliability), Layer 3 Network (logical IP routing), Layer 2 Data Link (MAC framing, error detection), Layer 1 Physical (bits, voltage). PDUs: Data -> Segment -> Packet -> Frame -> Bits. Encapsulation top-down, decapsulation bottom-up.
+Module 3: Physical & Data Link Layers
+Hub (Layer 1, 1 collision domain), Switch (Layer 2, CAM table MAC learning, isolates collision domains), Router (Layer 3, IP routing, isolates broadcast domains). 48-bit MAC address (24-bit OUI + 24-bit NIC). CRC polynomial division. Sliding window: Go-Back-N (retransmit all from loss) vs Selective Repeat (buffer out-of-order, retransmit only loss). CSMA/CD (Ethernet collision detection, binary exponential backoff) vs CSMA/CA (Wi-Fi collision avoidance, RTS/CTS).
+Module 4: Network Layer (IPv4, IPv6, Subnetting & Routing)
+IPv4 32 bits, classes A (1-126, /8), B (128-191, /16), C (192-223, /24). RFC 1918 Private ranges: 10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16. CIDR subnetting: 192.168.1.0/27 -> 255.255.255.224, 30 usable hosts. NAT/PAT maps private IP:port to public IP:port. IPv6: 128 bits, 40-byte fixed header, zero checksum, sender-only fragmentation. Routing: Distance Vector (RIP, Bellman-Ford, count-to-infinity) vs Link State (OSPF, Dijkstra shortest path) vs BGP (Path vector across AS).
+Module 5: Transport Layer (TCP, UDP, Handshakes & Congestion)
+Ports: Well-known (0-1023), Registered (1024-49151), Ephemeral (49152-65535). TCP vs UDP: TCP is connection-oriented, reliable, ordered, 20-60B header. UDP is connectionless, unreliable, 8B header. TCP 3-Way Handshake: SYN(X) -> SYN-ACK(Y, X+1) -> ACK(X+1, Y+1). TCP 4-Way Teardown: FIN -> ACK -> FIN -> ACK. TIME-WAIT 2*MSL (60-120s) prevents stale packet collision. Flow control: advertised receiver window (rwnd). Congestion control: sender window (cwnd), Slow start (exponential doubling), Congestion avoidance (AIMD linear), Reno halves cwnd on 3 dup ACKs, Tahoe drops to 1.
+Module 6: Application Layer Protocols
+DNS: Port 53, UDP for queries, TCP for zone transfer >512B. Hierarchical: Root -> TLD -> Authoritative. Recursive vs Iterative queries. Records: A, AAAA, CNAME, MX, NS, TXT. HTTP/1.1 (plain text, persistent Keep-Alive, app HOL blocking), HTTP/2 (binary framing, multiplexing, HPACK, TCP HOL blocking), HTTP/3 (QUIC over UDP, QPACK, zero HOL blocking, 0-RTT connection). HTTPS TLS 1.3 1-RTT handshake with symmetric AES session keys. DHCP DORA: Discover, Offer, Request, Acknowledge (UDP 67/68).
+Module 7: Master Interview Question: URL to Page Render
+1. URL parsing & HSTS. 2. DNS resolution (browser cache -> OS cache -> hosts file -> local resolver -> Root -> TLD -> Auth IP 142.250.190.46). 3. ARP resolution for default gateway MAC. 4. TCP 3-way handshake on port 443. 5. TLS 1.3 handshake with certificate validation & symmetric key derivation. 6. HTTP GET request. 7. Server processing behind Nginx reverse proxy & DB. 8. Browser critical rendering path: DOM + CSSOM -> Render Tree -> Layout -> Paint.
+Module 8: Top Placement Questions
+3-way handshake prevents old duplicate SYN ghost connections. Flow control protects receiver buffer, congestion control protects intermediate network. DNS uses UDP for zero connection overhead. Hub vs Switch vs Router collision/broadcast domains. HTTP/3 QUIC eliminates TCP Head-of-line blocking.
+  </script>
+
+  <!-- Interactive JavaScript Engine -->
+  <script>
+    let loadedMarkdownChunks = [];
+    let currentMdFilename = 'CN_NOTES.md';
+
+    // 1. Guide Navigation
+    function jumpToSection(sectionId) {
+      const el = document.getElementById(sectionId);
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }
+
+    // 2. Real-Time Search & Filter
+    function handleSearch() {
+      const query = document.getElementById('guide-search').value.toLowerCase().trim();
+      document.querySelectorAll('.module-card').forEach(card => {
+        const text = card.innerText.toLowerCase();
+        if (query === '' || text.includes(query)) {
+          card.style.display = 'block';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    }
+
+    // 3. Folder Markdown Loader Engine
+    async function initMarkdownReader() {
+      try {
+        const response = await fetch('./CN_NOTES.md');
+        if (response.ok) {
+          const mdText = await response.text();
+          parseAndIndexMarkdown(mdText, 'CN_NOTES.md (Live Folder File)');
+          return;
+        }
+      } catch (err) {
+        console.log('Fetch from folder restricted by browser protocol, switching to embedded indexed fallback.');
+      }
+
+      const embedded = document.getElementById('embedded-md-content').textContent;
+      parseAndIndexMarkdown(embedded, 'CN_NOTES.md (Embedded Fallback)');
+    }
+
+    function triggerMdUpload() {
+      document.getElementById('md-file-input').click();
+    }
+
+    function loadCustomMarkdownFile(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const text = e.target.result;
+        parseAndIndexMarkdown(text, file.name);
+      };
+      reader.readAsText(file);
+    }
+
+    function reloadMarkdownFile() {
+      initMarkdownReader();
+    }
+
+    function parseAndIndexMarkdown(rawText, sourceName) {
+      currentMdFilename = sourceName;
+      document.getElementById('active-md-label').innerText = '📄 Source: ' + sourceName;
+      document.getElementById('rag-badge-text').innerText = 'MD Indexed (' + sourceName + ')';
+
+      const sections = rawText.split(/(?=(?:^|\n)#{1,3}\s+)/);
+      loadedMarkdownChunks = [];
+
+      sections.forEach((sec, idx) => {
+        const trimmed = sec.trim();
+        if (trimmed.length > 20) {
+          const lines = trimmed.split('\n');
+          const title = lines[0].replace(/^#+\s*/, '');
+
+          // Map section to video timestamp & document anchor
+          let ytVideoId = 'IPvYjXCsTg8';
+          let ytSeconds = 0;
+          let ytLabel = 'Kunal Kushwaha &bull; 0:00';
+          let docSection = 'module-1';
+
+          const tLower = trimmed.toLowerCase();
+          if (tLower.includes('module 1') || tLower.includes('topology') || tLower.includes('lan')) {
+            ytVideoId = 'IPvYjXCsTg8'; ytSeconds = 3347; ytLabel = 'Topologies &bull; 55:47'; docSection = 'module-1';
+          } else if (tLower.includes('module 2') || tLower.includes('osi') || tLower.includes('encapsulation')) {
+            ytVideoId = 'IPvYjXCsTg8'; ytSeconds = 3993; ytLabel = 'OSI 7 Layers &bull; 1:06:33'; docSection = 'module-2';
+          } else if (tLower.includes('module 3') || tLower.includes('data link') || tLower.includes('mac') || tLower.includes('csma')) {
+            ytVideoId = 'skvCwFPZ7zM'; ytSeconds = 520; ytLabel = 'Gate Smashers &bull; 8:40 (DLL/MAC)'; docSection = 'module-3';
+          } else if (tLower.includes('module 4') || tLower.includes('subnet') || tLower.includes('ipv4') || tLower.includes('routing')) {
+            ytVideoId = 'IPvYjXCsTg8'; ytSeconds = 12270; ytLabel = 'IP & Routing &bull; 3:24:30'; docSection = 'module-4';
+          } else if (tLower.includes('module 5') || tLower.includes('tcp') || tLower.includes('handshake') || tLower.includes('congestion')) {
+            ytVideoId = 'IPvYjXCsTg8'; ytSeconds = 11350; ytLabel = 'TCP 3-Way Handshake &bull; 3:09:10'; docSection = 'module-5';
+          } else if (tLower.includes('module 6') || tLower.includes('dns') || tLower.includes('http') || tLower.includes('dhcp')) {
+            ytVideoId = 'IPvYjXCsTg8'; ytSeconds = 8340; ytLabel = 'DNS Deep Dive &bull; 2:19:00'; docSection = 'module-6';
+          } else if (tLower.includes('module 7') || tLower.includes('url to') || tLower.includes('google.com')) {
+            ytVideoId = 'skvCwFPZ7zM'; ytSeconds = 1510; ytLabel = 'Gate Smashers &bull; 25:10 (URL Flow)'; docSection = 'module-7';
+          } else if (tLower.includes('module 8') || tLower.includes('placement') || tLower.includes('interview')) {
+            ytVideoId = 'skvCwFPZ7zM'; ytSeconds = 120; ytLabel = 'Gate Smashers &bull; High-Yield Q&As'; docSection = 'module-8';
+          }
+
+          loadedMarkdownChunks.push({
+            id: idx,
+            title: title,
+            content: trimmed,
+            videoId: ytVideoId,
+            seconds: ytSeconds,
+            ytLabel: ytLabel,
+            docSection: docSection
+          });
+        }
+      });
+    }
+
+    // 4. Intelligent Assistant RAG Retrieval Engine
+    function askQuestion(promptText) {
+      document.getElementById('chat-input').value = promptText;
+      submitChat();
+    }
+
+    function submitChat() {
+      const input = document.getElementById('chat-input');
+      const query = input.value.trim();
+      if (!query) return;
+
+      const container = document.getElementById('chat-messages');
+
+      // User Bubble
+      const userBubble = document.createElement('div');
+      userBubble.className = 'chat-bubble user';
+      userBubble.innerText = query;
+      container.appendChild(userBubble);
+      input.value = '';
+      container.scrollTop = container.scrollHeight;
+
+      // Assistant Response
+      setTimeout(() => {
+        const result = searchMarkdownChunks(query);
+        const botBubble = document.createElement('div');
+        botBubble.className = 'chat-bubble assistant';
+
+        let html = `<strong>${result.answerTitle}</strong><br><br>${result.answerBody}`;
+        
+        // DUAL REDIRECTION BAR (Exact YouTube Timeline Link + Document Guide Anchor)
+        html += `
+          <div class="bubble-actions-bar">
+            <a href="https://www.youtube.com/watch?v=${result.videoId}&t=${result.seconds}s" target="_blank" class="btn-yt-redirect">
+              &#9654; Watch on YouTube (${result.ytLabel})
+            </a>
+            <button class="btn-guide-jump" onclick="jumpToSection('${result.docSection}')">
+              📄 View in Guide (${result.docSection.toUpperCase()})
+            </button>
+          </div>
+          <div class="raw-md-toggle" onclick="toggleRawMd(this)">Toggle Raw Markdown from ${currentMdFilename}</div>
+          <div class="raw-md-box">${escapeHtml(result.rawExcerpt)}</div>
+        `;
+
+        botBubble.innerHTML = html;
+        container.appendChild(botBubble);
+        container.scrollTop = container.scrollHeight;
+      }, 300);
+    }
+
+    function searchMarkdownChunks(query) {
+      const qLower = query.toLowerCase();
+      const terms = qLower.split(/\s+/).filter(w => w.length > 2);
+
+      let bestChunk = null;
+      let highestScore = -1;
+
+      loadedMarkdownChunks.forEach(chunk => {
+        let score = 0;
+        const cLower = chunk.content.toLowerCase();
+        const tLower = chunk.title.toLowerCase();
+
+        terms.forEach(term => {
+          if (tLower.includes(term)) score += 8;
+          if (cLower.includes(term)) score += 3;
+        });
+
+        // Boosters
+        if (qLower.includes('handshake') && cLower.includes('3-way handshake')) score += 25;
+        if ((qLower.includes('url') || qLower.includes('browser')) && cLower.includes('url to')) score += 25;
+        if (qLower.includes('osi') && cLower.includes('osi 7-layer')) score += 25;
+        if (qLower.includes('subnet') && cLower.includes('cidr')) score += 25;
+        if (qLower.includes('http/3') && cLower.includes('quic')) score += 25;
+        if (qLower.includes('dns') && cLower.includes('domain name system')) score += 25;
+        if (qLower.includes('congestion') && cLower.includes('congestion control')) score += 25;
+        if (qLower.includes('mesh') && cLower.includes('mesh topology')) score += 25;
+
+        if (score > highestScore) {
+          highestScore = score;
+          bestChunk = chunk;
+        }
+      });
+
+      if (!bestChunk || highestScore <= 0) {
+        return {
+          answerTitle: "Computer Networks Placement Notes",
+          answerBody: "Here is the relevant excerpt retrieved from <code>" + currentMdFilename + "</code>. Click below to watch the exact lecture segment or view the chapter.",
+          videoId: "IPvYjXCsTg8",
+          seconds: 0,
+          ytLabel: "Kunal Kushwaha &bull; Introduction",
+          docSection: "module-1",
+          rawExcerpt: loadedMarkdownChunks[0] ? loadedMarkdownChunks[0].content : "No content."
+        };
+      }
+
+      let summary = bestChunk.content.split('\n').slice(1, 12).join('<br>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+      return {
+        answerTitle: bestChunk.title,
+        answerBody: summary,
+        videoId: bestChunk.videoId,
+        seconds: bestChunk.seconds,
+        ytLabel: bestChunk.ytLabel,
+        docSection: bestChunk.docSection,
+        rawExcerpt: bestChunk.content
+      };
+    }
+
+    function toggleRawMd(el) {
+      const box = el.nextElementSibling;
+      box.style.display = (box.style.display === 'block') ? 'none' : 'block';
+    }
+
+    function escapeHtml(text) {
+      return text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      initMarkdownReader();
+    });
+  </script>
+</body>
+</html>
+

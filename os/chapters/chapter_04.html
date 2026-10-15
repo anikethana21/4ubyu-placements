@@ -1,0 +1,87 @@
+<section class="chapter-content" id="chapter-4">
+  <div class="chapter-header">
+    <div class="chapter-badge">Chapter 04 &bull; Video 2 Coverage</div>
+    <h2>Multilevel Queues, Multicore Systems & Multiprocessor Scheduling</h2>
+    <p class="chapter-meta">
+      <strong>Source Video:</strong> <a href="https://www.youtube.com/watch?v=8WxLX-hfZTo" target="_blank">OS Scheduling & Multicore Systems | Part 2</a> &bull;
+      <strong>Instructor:</strong> Vivek Gupta (Ex-Google, AlgoZenith) &bull;
+      <strong>Timeline:</strong> 00:36:29 &ndash; 00:55:33
+    </p>
+  </div>
+
+  <div class="callout callout-info">
+    <h4>Placement Relevance: System Architecture & Modern Concurrency</h4>
+    <p>Top tech companies expect candidates to comprehend how CPU scheduling scales beyond single-core setups to modern multi-socket, multicore machines. Key questions involve Multilevel Feedback Queue (MLFQ) parameter design, CPU Cache Affinity (Soft vs Hard), NUMA architectural bottlenecks, and Load Balancing mechanics (Push vs Pull migration).</p>
+  </div>
+
+  <h3>4.1 Multilevel Queue (MLQ) Scheduling</h3>
+  <p>In real-world operating systems, processes differ drastically in their behavioral demands. Interactive foreground UI tasks require rapid response times, while background batch computational tasks require maximum throughput without user interruption (<a href="https://www.youtube.com/watch?v=8WxLX-hfZTo&t=2189s" target="_blank" class="yt-timestamp">⏱️ 36:29</a>).</p>
+
+  <p><strong>Multilevel Queue Scheduling</strong> partitions the single Ready Queue into multiple distinct prioritized queues:</p>
+  <div class="mermaid">
+  graph TD
+    P[Incoming Processes] --> Q1["Queue 1: System Processes (Highest Priority - FCFS/Priority)"]
+    P --> Q2["Queue 2: Interactive UI Processes (Medium-High - Round Robin q=8ms)"]
+    P --> Q3["Queue 3: Interactive Editing Processes (Medium - Round Robin q=16ms)"]
+    P --> Q4["Queue 4: Batch Processing Jobs (Lowest Priority - FCFS)"]
+    
+    Q1 --> CPU[Physical CPU Core]
+    Q2 -.->|Only runs if Q1 empty| CPU
+    Q3 -.->|Only runs if Q1, Q2 empty| CPU
+    Q4 -.->|Only runs if Q1, Q2, Q3 empty| CPU
+  </div>
+
+  <ul>
+    <li>Processes are permanently assigned to one queue based on their inherent characteristics (e.g., memory size, process priority, or type).</li>
+    <li>Each queue executes its own independent scheduling algorithm (e.g., Round Robin for foreground, FCFS for background).</li>
+    <li><strong>Inter-Queue Scheduling:</strong> Typically implemented as strict fixed-priority preemptive scheduling (e.g., Queue 1 preempts Queue 2). If foreground queues are constantly saturated, background batch queues suffer severe <strong>Starvation</strong>.</li>
+  </ul>
+
+  <h3>4.2 Multilevel Feedback Queue (MLFQ) Scheduling</h3>
+  <p>To eliminate process starvation and avoid requiring upfront knowledge of process CPU burst lengths, modern OS kernels implement the <strong>Multilevel Feedback Queue (MLFQ)</strong>. MLFQ allows processes to dynamically migrate between queues based on their observed runtime behavior.</p>
+
+  <h4>The 5 Fundamental Rules of MLFQ:</h4>
+  <ol>
+    <li><strong>Rule 1:</strong> If $\text{Priority}(A) > \text{Priority}(B)$, process $A$ runs and process $B$ does not.</li>
+    <li><strong>Rule 2:</strong> If $\text{Priority}(A) = \text{Priority}(B)$, processes $A$ and $B$ run in Round Robin using the time quantum of that queue.</li>
+    <li><strong>Rule 3:</strong> When a new job enters the system, it is placed at the highest priority queue (assuming it is short/interactive).</li>
+    <li><strong>Rule 4 (Demotion):</strong> Once a process uses up its allocated time allotment at a given priority level (regardless of how many times it yielded the CPU for I/O), its priority is demoted down by one level. (Prevents gaming the scheduler with tiny I/O bursts).</li>
+    <li><strong>Rule 5 (Priority Boost):</strong> After some fixed global time period $S$, all processes in the system are moved to the topmost priority queue. (Solves Starvation for CPU-bound batch jobs and adapts if a batch job transitions into an interactive phase).</li>
+  </ol>
+
+  <h3>4.3 Multiprocessor & Multicore Architecture Overview</h3>
+  <p>Modern computers feature multiple CPUs, multicore dies, and hyper-threaded execution pipelines (<a href="https://www.youtube.com/watch?v=8WxLX-hfZTo&t=2448s" target="_blank" class="yt-timestamp">⏱️ 40:48</a>):</p>
+  <ul>
+    <li><strong>Asymmetric Multiprocessing (AMP):</strong> One master CPU core handles all OS kernel data structures, scheduling, and I/O processing, while worker cores execute only user code. Eliminates data sharing bottlenecks but creates a master CPU bottleneck.</li>
+    <li><strong>Symmetric Multiprocessing (SMP):</strong> Each processor core is self-scheduling. All cores access common ready queues or run private per-core run-queues. Standard architecture in modern Linux, Windows, and macOS.</li>
+    <li><strong>Hardware Multithreading (Hyper-Threading / SMT):</strong> A single physical core provides multiple architectural hardware threads (e.g., 2 virtual cores per physical core). Hardware threads share execution units (ALU, FPU) and caches, interleaving instruction streams whenever one thread stalls on a memory fetch latency.</li>
+  </ul>
+
+  <h3>4.4 Processor Affinity: Soft vs. Hard Affinity</h3>
+  <p>When a process executes on CPU Core 0, its memory footprint (data, variables, stack) is heavily populated into Core 0's private L1 and L2 caches. If the scheduler moves this process to Core 1 on the next time slice, Core 0's cache becomes useless, and the process experiences heavy memory bus latency reloading its cache lines on Core 1.</p>
+  <ul>
+    <li><strong>Processor Affinity:</strong> The OS scheduler attempts to keep a process running on the exact same physical core to exploit warm hardware cache lines.</li>
+    <li><strong>Soft Affinity:</strong> The kernel has a strong policy preference to keep a process on its current core, but permits migration if workload imbalance demands it.</li>
+    <li><strong>Hard Affinity:</strong> The system guarantees that a process will execute <em>strictly</em> on a user-specified subset of cores (e.g., using Linux <code>sched_setaffinity()</code> system call). Frequently configured in high-frequency trading (HFT) and real-time telecom engines.</li>
+  </ul>
+
+  <h3>4.5 Non-Uniform Memory Access (NUMA) Architecture</h3>
+  <p>In multi-socket enterprise servers, memory access latency is non-uniform. Each CPU socket has its own directly attached local RAM bank, connected to other CPU sockets via high-speed interconnects (e.g., Intel UPI, AMD Infinity Fabric):</p>
+  <div class="mermaid">
+  graph LR
+    CPU0["CPU Socket 0 (Cores 0-31)"] --- RAM0["Local Memory Node 0 (Fast ~60ns)"]
+    CPU1["CPU Socket 1 (Cores 32-63)"] --- RAM1["Local Memory Node 1 (Fast ~60ns)"]
+    CPU0 <-->|Interconnect UPI: Slower ~120ns| CPU1
+    CPU0 -.->|Remote Access: High Latency| RAM1
+    CPU1 -.->|Remote Access: High Latency| RAM0
+  </div>
+  <p><strong>NUMA-Aware Scheduling:</strong> The scheduler must allocate memory from the local memory node of the CPU currently executing the thread, and strictly avoid migrating threads across sockets to prevent severe memory bus bottlenecks.</p>
+
+  <h3>4.6 Load Balancing: Push vs. Pull Migration</h3>
+  <p>To maximize parallelism on SMP systems with private per-core run-queues, the kernel must continuously balance workload across cores:</p>
+  <ul>
+    <li><strong>Push Migration:</strong> A dedicated kernel daemon (e.g., <code>ksoftirqd</code> in Linux) periodically monitors the load on all processor cores. If an imbalance exceeds a threshold, it forcibly pushes processes from an overloaded queue into an underloaded or idle core's queue.</li>
+    <li><strong>Pull Migration:</strong> An idle processor core that finishes all tasks in its private queue actively reaches into the queue of a busy core and pulls a waiting process into its own queue.</li>
+    <li><em>Trade-off with Processor Affinity:</em> Aggressive load balancing destroys cache affinity, whereas strict affinity causes load imbalance. Modern schedulers (like Linux Completely Fair Scheduler / CFS) balance these with hierarchical scheduling domains.</li>
+  </ul>
+</section>

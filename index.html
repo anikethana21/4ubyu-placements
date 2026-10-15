@@ -1,0 +1,374 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>4 U By U &bull; Placement Engineering Masterclasses</title>
+  <meta name="description" content="Central Hub for 4 U By U placement preparation study blueprints: DBMS, Operating Systems, and Machine Learning.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --bg: #0B0F19;
+      --card-bg: #111827;
+      --card-hover: #1F2937;
+      --border: #1F2937;
+      --border-hover: #3B82F6;
+      --text: #F9FAFB;
+      --text-muted: #9CA3AF;
+      --blue: #2563EB;
+      --blue-light: #60A5FA;
+      --emerald: #10B981;
+      --purple: #8B5CF6;
+      --amber: #F59E0B;
+      --font-sans: 'Inter', -apple-system, sans-serif;
+      --font-mono: 'Fira Code', monospace;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: var(--font-sans);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .header {
+      padding: 40px 24px;
+      text-align: center;
+      border-bottom: 1px solid var(--border);
+      background: radial-gradient(circle at top, #1E293B 0%, #0B0F19 70%);
+    }
+
+    .badge {
+      display: inline-block;
+      background: rgba(37, 99, 235, 0.2);
+      border: 1px solid rgba(59, 130, 246, 0.4);
+      color: var(--blue-light);
+      font-size: 12px;
+      font-weight: 700;
+      padding: 4px 12px;
+      border-radius: 9999px;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+
+    h1 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 38px;
+      font-weight: 800;
+      letter-spacing: -1px;
+      margin-bottom: 12px;
+    }
+
+    h1 span {
+      background: linear-gradient(135deg, #60A5FA, #3B82F6, #1D4ED8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .subtitle {
+      color: var(--text-muted);
+      font-size: 16px;
+      max-width: 680px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+
+    .grid-container {
+      max-width: 1200px;
+      margin: 48px auto;
+      padding: 0 24px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+      gap: 28px;
+      flex: 1;
+    }
+
+    .module-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 32px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: all 0.25s ease;
+      text-decoration: none;
+      color: inherit;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .module-card:hover {
+      border-color: var(--border-hover);
+      background: var(--card-hover);
+      transform: translateY(-4px);
+      box-shadow: 0 16px 32px rgba(0, 0, 0, 0.4);
+    }
+
+    .card-tag {
+      font-size: 11px;
+      font-family: var(--font-mono);
+      font-weight: 600;
+      padding: 3px 8px;
+      border-radius: 6px;
+      display: inline-block;
+      margin-bottom: 14px;
+    }
+
+    .tag-dbms { background: rgba(245, 158, 11, 0.15); color: #FBBF24; border: 1px solid rgba(245, 158, 11, 0.3); }
+    .tag-os { background: rgba(16,185,129,0.15); color: #34D399; border: 1px solid rgba(16,185,129,0.3); }
+    .tag-ml { background: rgba(244,63,94,0.15); color: #FB7185; border: 1px solid rgba(244,63,94,0.3); }
+    .tag-cn { background: rgba(6,182,212,0.15); color: #22D3EE; border: 1px solid rgba(6,182,212,0.3); }
+
+    .card-title {
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 12px;
+      color: #FFFFFF;
+    }
+
+    .card-desc {
+      color: var(--text-muted);
+      font-size: 14px;
+      line-height: 1.6;
+      margin-bottom: 24px;
+      flex: 1;
+    }
+
+    .card-features {
+      list-style: none;
+      margin-bottom: 24px;
+      font-size: 13px;
+      color: #D1D5DB;
+    }
+
+    .card-features li {
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .card-features li::before {
+      content: "\2713 "; color: var(--blue-light);
+      font-weight: bold;
+    }
+
+    .card-btn {
+      background: var(--blue);
+      color: #FFFFFF;
+      font-weight: 600;
+      font-size: 13.5px;
+      padding: 10px 18px;
+      border-radius: 8px;
+      text-align: center;
+      transition: background 0.2s;
+    }
+
+    .module-card:hover .card-btn {
+      background: #1D4ED8;
+    }
+
+    .footer {
+      border-top: 1px solid var(--border);
+      padding: 24px;
+      text-align: center;
+      font-size: 12.5px;
+      color: var(--text-muted);
+    }
+  
+    /* Module-specific card accent borders */
+    a[href*="cn/"]:hover { border-color: #06B6D4 !important; box-shadow: 0 16px 32px rgba(6,182,212,0.12), 0 0 0 1px rgba(6,182,212,0.2) !important; }
+    a[href*="dbms/"]:hover { border-color: #F59E0B !important; box-shadow: 0 16px 32px rgba(245,158,11,0.12), 0 0 0 1px rgba(245,158,11,0.2) !important; }
+    a[href*="/os/"]:hover { border-color: #10B981 !important; box-shadow: 0 16px 32px rgba(16,185,129,0.12), 0 0 0 1px rgba(16,185,129,0.2) !important; }
+    a[href*="/ml/"]:hover { border-color: #F43F5E !important; box-shadow: 0 16px 32px rgba(244,63,94,0.12), 0 0 0 1px rgba(244,63,94,0.2) !important; }
+    a[href*="neetcode/"]:hover { border-color: #EF4444 !important; box-shadow: 0 16px 32px rgba(239,68,68,0.12), 0 0 0 1px rgba(239,68,68,0.2) !important; }
+    a[href*="agentic-ai/"]:hover { border-color: #6366F1 !important; box-shadow: 0 16px 32px rgba(99,102,241,0.12), 0 0 0 1px rgba(99,102,241,0.2) !important; }
+    a[href*="/nlp/"]:hover { border-color: #8B5CF6 !important; box-shadow: 0 16px 32px rgba(139,92,246,0.12), 0 0 0 1px rgba(139,92,246,0.2) !important; }
+    a[href*="deeplearning/"]:hover { border-color: #EC4899 !important; box-shadow: 0 16px 32px rgba(236,72,153,0.12), 0 0 0 1px rgba(236,72,153,0.2) !important; }
+    
+    /* Card btn per module */
+    a[href*="cn/"] .card-btn { background: #0891B2; }
+    a[href*="dbms/"] .card-btn { background: #D97706; }
+    a[href*="/os/"] .card-btn { background: #059669; }
+    a[href*="/ml/"] .card-btn { background: #E11D48; }
+    a[href*="neetcode/"] .card-btn { background: #DC2626; }
+    a[href*="agentic-ai/"] .card-btn { background: #4F46E5; }
+    a[href*="/nlp/"] .card-btn { background: #7C3AED; }
+    a[href*="deeplearning/"] .card-btn { background: #DB2777; }
+    
+    a[href*="cn/"]:hover .card-btn { background: #06B6D4; }
+    a[href*="dbms/"]:hover .card-btn { background: #F59E0B; }
+    a[href*="/os/"]:hover .card-btn { background: #10B981; }
+    a[href*="/ml/"]:hover .card-btn { background: #F43F5E; }
+    a[href*="neetcode/"]:hover .card-btn { background: #EF4444; }
+    a[href*="agentic-ai/"]:hover .card-btn { background: #6366F1; }
+    a[href*="/nlp/"]:hover .card-btn { background: #8B5CF6; }
+    a[href*="deeplearning/"]:hover .card-btn { background: #EC4899; }
+    
+    /* Card features checkmark color per module */
+    a[href*="cn/"] .card-features li::before { color: #22D3EE; }
+    a[href*="dbms/"] .card-features li::before { color: #FBBF24; }
+    a[href*="/os/"] .card-features li::before { color: #34D399; }
+    a[href*="/ml/"] .card-features li::before { color: #FB7185; }
+    a[href*="neetcode/"] .card-features li::before { color: #FCA5A5; }
+    a[href*="agentic-ai/"] .card-features li::before { color: #A5B4FC; }
+    a[href*="/nlp/"] .card-features li::before { color: #C4B5FD; }
+    a[href*="deeplearning/"] .card-features li::before { color: #F9A8D4; }
+
+  </style>
+</head>
+<body>
+
+  <header class="header">
+    <div class="badge">4 U By U Placement Suite</div>
+    <h1>Engineering Masterclasses <span>&bull; 4 U By U</span></h1>
+    <p class="subtitle">Curated, comprehensive technical study guides with deep video timestamps, mathematical rigor, architectural diagrams, scrollable PDF viewers, and in-memory RAG study assistants.</p>
+  </header>
+
+  <main class="grid-container">
+
+    <!-- CN Card -->
+    <a href="./cn/index.html" class="module-card">
+      <div>
+        <span class="card-tag tag-cn">NEW &bull; 8 MODULES &bull; DUAL REDIRECT ASSISTANT</span>
+        <h2 class="card-title">Computer Networks</h2>
+        <p class="card-desc">Kunal Kushwaha &amp; Gate Smashers placement masterclass covering OSI 7 layers, TCP/IP, Subnetting, TCP 3-way handshake, HTTP/1-3, QUIC, DNS, and URL-to-render breakdown.</p>
+        <ul class="card-features">
+          <li>Deep YouTube exact second timeline redirects</li>
+          <li>In-document anchor jumps for all modules</li>
+          <li>Subnet CIDR math, CSMA/CD, BGP/OSPF, TLS 1.3</li>
+          <li>Top 30 Gate Smashers Placement Interview Q&amp;As</li>
+        </ul>
+      </div>
+      <div class="card-btn">Open CN Guide &rarr;</div>
+    </a>
+    
+    <!-- DBMS Card -->
+    <a href="./dbms/index.html" class="module-card">
+      <div>
+        <span class="card-tag tag-dbms">49-PAGE GUIDE</span>
+        <h2 class="card-title">Database Management Systems</h2>
+        <p class="card-desc">Complete 49-page CodeHelp notes with an authentic scrollable PDF document viewer and an intelligent assistant reading raw markdown from the open folder.</p>
+        <ul class="card-features">
+          <li>Scrollable multi-page PDF layout with zoom & jump</li>
+          <li>Folder-aware Markdown Reader Assistant (RAG)</li>
+          <li>ACID, Three-Schema, Normalisation (1NF-BCNF)</li>
+          <li>7 Evolutionary Database Scaling Patterns & CAP Theorem</li>
+        </ul>
+      </div>
+      <div class="card-btn">Open DBMS Guide &rarr;</div>
+    </a>
+
+    <!-- OS Card -->
+    <a href="./os/index.html" class="module-card">
+      <div>
+        <span class="card-tag tag-os">5 HOURS &bull; 9 CHAPTERS</span>
+        <h2 class="card-title">Operating Systems</h2>
+        <p class="card-desc">Vivek Gupta's placement course covering CPU scheduling, memory management, demand paging, Banker's algorithm, and Peterson's synchronization proof.</p>
+        <ul class="card-features">
+          <li>Deep YouTube timeline redirects &amp; doc jumps</li>
+          <li>MathJax equations for EMAT and burst estimation</li>
+          <li>Gate Smashers placement interview Q&amp;A addendum</li>
+          <li>Dedicated full-height Study Assistant dock</li>
+        </ul>
+      </div>
+      <div class="card-btn">Open OS Guide &rarr;</div>
+    </a>
+
+    <!-- ML Card -->
+    <a href="./ml/index.html" class="module-card">
+      <div>
+        <span class="card-tag tag-ml">13 HOURS &bull; 8 CHAPTERS</span>
+        <h2 class="card-title">Machine Learning</h2>
+        <p class="card-desc">Akarsh Vyas's full masterclass covering regression, classification, bias-variance tradeoffs, ensemble techniques, clustering, and PCA dimensionality reduction.</p>
+        <ul class="card-features">
+          <li>Zero-truncation derivations & verified code blocks</li>
+          <li>Direct YouTube timeline deep-links &amp; doc jump buttons</li>
+          <li>Interactive Bergstra-Bengio & Log-Loss proofs</li>
+          <li>Dedicated full-height Study Assistant dock</li>
+        </ul>
+      </div>
+      <div class="card-btn">Open ML Guide &rarr;</div>
+    </a>
+
+      <!-- NeetCode 150 Card -->
+    <a href="./neetcode/index.html" class="module-card">
+      <div>
+        <span class="card-tag" style="background: rgba(239, 68, 68, 0.15); color: #FCA5A5; border: 1px solid rgba(239, 68, 68, 0.3);">18 TOPICS &bull; 150 PROBLEMS &bull; DSA ASSISTANT</span>
+        <h2 class="card-title">NeetCode 150 Master Guide</h2>
+        <p class="card-desc">Complete curriculum covering Arrays, Two Pointers, Sliding Window, Trees, Graphs, Dynamic Programming, and Backtracking with canonical Python solutions, progressive hints, and an in-memory DSA study assistant.</p>
+        <ul class="card-features">
+          <li>150 Curated problems with intuitive mental analogies</li>
+          <li>Step-by-step progressive hints & canonical Python solutions</li>
+          <li>Time & space complexity derivations for every question</li>
+          <li>Dedicated DSA Assistant with instant RAG & Gemini 1.5 Pro support</li>
+        </ul>
+      </div>
+      <div class="card-btn">Open NeetCode Guide &rarr;</div>
+    </a>
+
+      <!-- Agentic AI & LangChain / LangGraph Card -->
+    <a href="./agentic-ai/index.html" class="module-card">
+      <div>
+        <span class="card-tag" style="background: rgba(6, 182, 212, 0.15); color: #67E8F9; border: 1px solid rgba(6, 182, 212, 0.3);">LANGCHAIN &bull; LANGGRAPH &bull; 8 PROJECTS</span>
+        <h2 class="card-title">Agentic AI Engineering</h2>
+        <p class="card-desc">Production Masterclass covering LangChain LCEL, 5 Pillars of RAG, Multi-Agent Systems with .pkl caching, and LangGraph State Machines with conditional routing and human-in-the-loop.</p>
+        <ul class="card-features">
+          <li>Complete Multi-Agent Research System (Module 4)</li>
+          <li>LangGraph Project 3 Conditional Routing & Multi-PDF RAG</li>
+          <li>Deep YouTube exact second timestamp redirects (t=6944s)</li>
+          <li>Dedicated In-Memory Study Assistants with Gemini 1.5 Pro</li>
+        </ul>
+      </div>
+      <div class="card-btn">Open Agentic AI Hub &rarr;</div>
+    </a>
+
+    <!-- Natural Language Processing (Dual Track) Card -->
+    <a href="./nlp/index.html" class="module-card">
+      <div>
+        <span class="card-tag" style="background: rgba(139, 92, 246, 0.15); color: #C4B5FD; border: 1px solid rgba(139, 92, 246, 0.3);">DUAL TRACK &bull; FOUNDATIONS + CAMPUSX</span>
+        <h2 class="card-title">Natural Language Processing</h2>
+        <p class="card-desc">Comprehensive Dual-Track NLP Masterclass: Sheryians foundational pipeline with real-time Emotion Detection project (t=6137s) + CampusX complete 6-stage enterprise curriculum.</p>
+        <ul class="card-features">
+          <li>Track 1: 10-Step Preprocessing, BoW, TF-IDF, Naive Bayes & Emotion Project</li>
+          <li>Track 2: Word2Vec (CBOW/Skip-gram), Average/TF-IDF Word2Vec, HMM/Viterbi POS</li>
+          <li>Deep Attention & Transformer Architectures + Quora Duplicate Project</li>
+          <li>Interactive Video Player (Base vs Playlist) + Dual-Track Gemini RAG Assistant</li>
+        </ul>
+      </div>
+      <div class="card-btn">Open NLP Masterclass &rarr;</div>
+    </a>
+
+    <!-- Deep Learning Masterclass Card -->
+    <a href="./deeplearning/index.html" class="module-card">
+      <div>
+        <span class="card-tag" style="background: rgba(236, 72, 153, 0.15); color: #F472B6; border: 1px solid rgba(236, 72, 153, 0.3);">4-PART MASTERCLASS &bull; SHERYIANS AI SCHOOL</span>
+        <h2 class="card-title">Deep Learning Engineering</h2>
+        <p class="card-desc">End-to-End Deep Learning curriculum from foundational Artificial Neural Networks to modern Transformers and Multi-Head Self-Attention mechanisms.</p>
+        <ul class="card-features">
+          <li>Part 1: ANN, Perceptron, Backpropagation Calculus & Keras Implementation</li>
+          <li>Part 2: CNN, Convolutions, Kernels, Feature Maps & Computer Vision</li>
+          <li>Part 3: RNN, LSTM, GRU, BPTT & Sequence-to-Sequence Modeling</li>
+          <li>Part 4: Transformers, Scaled Dot-Product Attention, Encoder-Decoder Stack</li>
+        </ul>
+      </div>
+      <div class="card-btn">Open Deep Learning Guide &rarr;</div>
+    </a>
+
+  </main>
+
+  <footer class="footer">
+    4 U By U &bull; Placement Engineering Suite &bull; Built with high fidelity & zero data loss
+  </footer>
+
+</body>
+</html>

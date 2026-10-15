@@ -1,0 +1,266 @@
+<article class="chapter-container" id="chapter-5" data-chapter="5">
+  <header class="chapter-header">
+    <div class="chapter-badge">Chapter 05 &bull; Video 3 Module 1</div>
+    <h2 class="chapter-title">Supervised Classification & Decision Boundary Theory: Logistic Regression, KNN & Naive Bayes</h2>
+    <div class="chapter-meta">
+      <span class="meta-item"><i class="icon-clock"></i> <strong>Video Source:</strong> Video 3 (omGvjpmPDoY) [00:00:00 &ndash; 02:05:38]</span>
+      <span class="meta-item"><i class="icon-user"></i> <strong>Instructor:</strong> Akarsh Vyas (Sheryians AI School)</span>
+      <span class="meta-item"><i class="icon-link"></i> <a href="https://www.youtube.com/watch?v=omGvjpmPDoY&t=0s" target="_blank" class="yt-deep-link">&blacktriangleright; Jump to 00:00:00 on YouTube</a></span>
+      <span class="meta-item"><i class="icon-github"></i> <strong>GitHub Asset:</strong> <code>AkarshVyas/Machine-Learning-Part-3</code></span>
+    </div>
+  </header>
+
+  <section class="chapter-introduction">
+    <h3>5.1 The Classification Paradigm</h3>
+    <p>
+      In Part 3, Akarsh transitions to Supervised Classification, where the target label is categorical ($y \in \{0, 1\}$ for binary classification, or $y \in \{c_1, c_2, \dots, c_K\}$ for multi-class problems). The fundamental goal is discovering a mathematical <strong>decision boundary</strong> that partitions feature space into distinct class territories.
+    </p>
+
+    <h4>Why Linear Regression Fails for Classification Tasks:</h4>
+    <ul>
+      <li><strong>Unbounded Predictions:</strong> Linear regression produces outputs across $(-\infty, +\infty)$, making it impossible to interpret predictions rigorously as calibrated probabilities ($p \in [0, 1]$).</li>
+      <li><strong>Sensitivity to Outliers:</strong> Adding an extreme positive observation far along the feature axis pulls the linear regression slope upward, shifting the decision threshold ($y=0.5$) drastically and causing extensive misclassification among closer points.</li>
+    </ul>
+  </section>
+
+  <section class="chapter-subtopic">
+    <h3>5.2 Logistic Regression &amp; Log Loss Optimization</h3>
+    <h4>A. The Sigmoid Activation Function</h4>
+    <p>
+      To map any arbitrary linear score $z = \mathbf{\theta}^T \mathbf{x} \in (-\infty, +\infty)$ into a strictly bounded probability interval $(0, 1)$, Logistic Regression passes the linear combination through the <strong>Sigmoid (Logistic) Function</strong>:
+    </p>
+    <div class="math-card">
+      <div class="math-title">The Sigmoid Function $\sigma(z)$:</div>
+      <div class="math-formula">$$\sigma(z) = \frac{1}{1 + e^{-z}} = \frac{e^z}{e^z + 1}$$</div>
+      <p>Properties of the Sigmoid:</p>
+      <ul>
+        <li>As $z \to +\infty$, $\sigma(z) \to 1.0$ (High certainty of Class 1).</li>
+        <li>As $z \to -\infty$, $\sigma(z) \to 0.0$ (High certainty of Class 0).</li>
+        <li>At $z = 0$, $\sigma(z) = 0.5$ (The formal decision boundary).</li>
+      </ul>
+    </div>
+
+    <h4>B. The Odds Ratio &amp; Logit Formulation</h4>
+    <p>
+      The odds of an event is the ratio of probability of occurrence to non-occurrence: $\text{Odds} = \frac{p}{1 - p}$. Taking the natural logarithm yields the <strong>Logit function</strong>:
+    </p>
+    <div class="math-card">
+      <div class="math-formula">$$\ln\left(\frac{p}{1 - p}\right) = \mathbf{\theta}^T \mathbf{x} = \theta_0 + \theta_1 x_1 + \dots + \theta_n x_n$$</div>
+      <p>Thus, Logistic Regression is fundamentally a linear model in log-odds space.</p>
+    </div>
+
+    <h4>C. Derivation of the Log Loss (Binary Cross-Entropy) Cost Function</h4>
+    <p>
+      If we mistakenly apply Mean Squared Error (MSE) to a sigmoid hypothesis, the resulting error surface becomes non-convex with numerous local minima and flat plateau saddle points where gradients vanish. To restore strict convexity, we derive <strong>Log Loss</strong> via Maximum Likelihood Estimation (MLE):
+    </p>
+    <div class="math-card">
+      <div class="math-title">The Log Loss (Binary Cross-Entropy) Objective Function:</div>
+      <div class="math-formula">$$J(\mathbf{\theta}) = -\frac{1}{m} \sum_{i=1}^m \left[ y^{(i)} \ln\left(h_\mathbf{\theta}(\mathbf{x}^{(i)})\right) + (1 - y^{(i)}) \ln\left(1 - h_\mathbf{\theta}(\mathbf{x}^{(i)})\right) \right]$$</div>
+      <p>Penalization Mechanics:</p>
+      <ul>
+        <li>If true label $y = 1$: Loss simplifies to $-\ln(\hat{y})$. If $\hat{y} = 1$, loss is $0$; if $\hat{y} \to 0$, loss approaches $+\infty$.</li>
+        <li>If true label $y = 0$: Loss simplifies to $-\ln(1 - \hat{y})$. If $\hat{y} = 0$, loss is $0$; if $\hat{y} \to 1$, loss approaches $+\infty$.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="chapter-subtopic">
+    <h3>5.3 K-Nearest Neighbors (KNN): Instance-Based Learning</h3>
+    <p>
+      K-Nearest Neighbors is a non-parametric, memory-based "lazy learner." Unlike eager algorithms (which distill data into parameters during training), KNN stores the entire training dataset in memory. Training complexity is $\mathcal{O}(1)$; inference complexity is $\mathcal{O}(m \cdot d)$ per query point.
+    </p>
+
+    <div class="diagram-wrapper">
+      <div class="diagram-caption">Figure 5.1: K-Nearest Neighbors Decision Logic in 2D Feature Space</div>
+      <div class="mermaid">
+      graph TD
+        A["New Unlabeled Query Point x_query"] --&gt; B["Compute Metric Distances d(x_query, x_i) to All Stored Samples"]
+        B --&gt; C["Sort Distances &amp; Select Top K Closest Neighbors"]
+        C --&gt; D["Perform Plurality / Majority Vote Across K Neighbors"]
+        D --&gt; E["Assign Majority Class Label &bull; Probabilities = Count / K"]
+        classDef default fill:#FFFFFF,stroke:#1E293B,stroke-width:1.5px,color:#0F172A;
+      </div>
+    </div>
+
+    <h4>A. Distance Metrics</h4>
+    <ul>
+      <li><strong>Euclidean Distance ($L_2$ Norm):</strong> $d(\mathbf{u}, \mathbf{v}) = \sqrt{\sum_{j=1}^n (u_j - v_j)^2}$. Standard geometric straight-line metric.</li>
+      <li><strong>Manhattan Distance ($L_1$ Norm):</strong> $d(\mathbf{u}, \mathbf{v}) = \sum_{j=1}^n |u_j - v_j|$. Grid-based taxicab distance; more robust in moderately higher dimensions.</li>
+      <li><strong>Minkowski Distance ($L_p$ Metric):</strong> $d(\mathbf{u}, \mathbf{v}) = \left(\sum_{j=1}^n |u_j - v_j|^p\right)^{1/p}$. Generalization ($p=1 \to$ Manhattan, $p=2 \to$ Euclidean).</li>
+    </ul>
+
+    <h4>B. Tuning Hyperparameter $K$:</h4>
+    <ul>
+      <li><strong>Small $K$ (e.g., $K=1$):</strong> Highly complex, jagged decision boundaries. Highly sensitive to noise and mislabeled points; extreme high variance (overfitting).</li>
+      <li><strong>Large $K$ (e.g., $K \to m$):</strong> Smooth, over-generalized boundary; simply predicts the dominant prior class everywhere; high bias (underfitting).</li>
+      <li><em>Rule of Thumb:</em> Choose an odd integer (e.g., $K=3, 5, 7$) in binary classification to eliminate tie-breaking deadlocks.</li>
+    </ul>
+  </section>
+
+  <section class="chapter-subtopic">
+    <h3>5.4 Naive Bayes: Probabilistic Independence Modeling</h3>
+    <p>
+      Naive Bayes is anchored in Bayes' Theorem of conditional probability:
+    </p>
+    <div class="math-card">
+      <div class="math-formula">$$P(y \mid \mathbf{x}) = \frac{P(\mathbf{x} \mid y) \cdot P(y)}{P(\mathbf{x})} = \frac{P(x_1, x_2, \dots, x_n \mid y) \cdot P(y)}{P(\mathbf{x})}$$</div>
+    </div>
+
+    <h4>The "Naive" Assumption:</h4>
+    <p>
+      Evaluating the joint likelihood $P(x_1, \dots, x_n \mid y)$ is computationally intractable in high dimensions. The algorithm makes the "naive" assumption that <strong>all features are conditionally independent given the class label $y$</strong>:
+    </p>
+    <div class="math-card">
+      <div class="math-formula">$$P(x_1, x_2, \dots, x_n \mid y) = \prod_{j=1}^n P(x_j \mid y)$$</div>
+      <div class="math-formula">$$\hat{y} = \arg\max_y P(y) \prod_{j=1}^n P(x_j \mid y)$$</div>
+    </div>
+
+    <h4>Taxonomy of Naive Bayes Implementations:</h4>
+    <ul>
+      <li><strong>Gaussian Naive Bayes (<code>GaussianNB</code>):</strong> Assumes continuous numerical features follow a normal Gaussian distribution:
+        $$P(x_j \mid y) = \frac{1}{\sqrt{2\pi \sigma_{y,j}^2}} \exp\left( -\frac{(x_j - \mu_{y,j})^2}{2\sigma_{y,j}^2} \right)$$
+      </li>
+      <li><strong>Multinomial Naive Bayes (<code>MultinomialNB</code>):</strong> Formulated for discrete word frequency count vectors in Natural Language Processing (NLP) and spam filtering.</li>
+      <li><strong>Bernoulli Naive Bayes (<code>BernoulliNB</code>):</strong> Optimized for binary indicator features (presence/absence of keywords).</li>
+    </ul>
+
+    <p>
+      <em>Laplace (Additive) Smoothing:</em> If a specific feature value never appears with a class in the training partition, its likelihood becomes zero ($P(x_j \mid y) = 0$), collapsing the entire product to zero. Laplace smoothing adds an artificial count $\alpha$ (typically $\alpha=1.0$) to every numerator to safeguard inference.
+    </p>
+  </section>
+
+  <section class="chapter-subtopic">
+    <h3>5.5 Advanced Classification Engineering: Imbalanced Data &amp; Multi-Class Strategies</h3>
+    <p>
+      <span class="badge-outside">[Supplemental / Beyond Video Syllabus]</span>
+    </p>
+    <h4>A. Handling Severe Class Imbalance:</h4>
+    <ul>
+      <li><strong>SMOTE (Synthetic Minority Over-sampling Technique):</strong> Rather than naive duplication of minority rows, SMOTE synthesizes new instances along feature line segments connecting $k$-nearest minority neighbors:
+        $$x_{\text{new}} = x_i + \lambda \cdot (x_{\text{neighbor}} - x_i), \quad \lambda \in [0, 1]$$
+      </li>
+      <li><strong>Algorithmic Cost Weighting:</strong> Passing <code>class_weight='balanced'</code> penalizes classification errors inversely proportional to class frequencies:
+        $$w_c = \frac{m}{K \cdot m_c}$$
+      </li>
+    </ul>
+
+    <h4>B. Multi-Class Decomposition Strategies:</h4>
+    <ul>
+      <li><strong>One-vs-Rest (OvR / One-vs-All):</strong> Trains $K$ distinct binary classifiers, where each classifier separates class $k$ from the remaining $K-1$ classes combined. The class with the highest probability wins.</li>
+      <li><strong>Softmax Regression (Multinomial Logistic):</strong> Generalizes the sigmoid function across $K$ classes simultaneously:
+        $$P(y = k \mid \mathbf{x}) = \frac{e^{\mathbf{\theta}_k^T \mathbf{x}}}{\sum_{j=1}^K e^{\mathbf{\theta}_j^T \mathbf{x}}}$$
+      </li>
+    </ul>
+  </section>
+
+  <section class="chapter-code-cluster">
+    <div class="code-cluster-header">
+      <h4><i class="icon-code"></i> Dedicated Code Cluster &bull; Chapter 05</h4>
+      <span class="code-cluster-badge">Triple-Classifier Benchmark &bull; Logistic vs KNN vs Naive Bayes</span>
+    </div>
+    <p class="code-description">
+      The following executable script ingests a diagnostic classification problem, applies proper standardization, trains Logistic Regression, K-Nearest Neighbors, and Gaussian Naive Bayes, and evaluates probabilistic accuracy and inference speeds.
+    </p>
+    <pre class="language-python"><code class="language-python"># ==============================================================================
+# 4 U By U Study Companion &bull; Chapter 05 Code Cluster
+# Benchmark Suite: Logistic Regression vs K-Nearest Neighbors vs Naive Bayes
+# ==============================================================================
+
+import time
+import numpy as np
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.linear_model import LogisticRegression
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.naive_bayes import GaussianNB
+from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, roc_auc_score
+
+def synthesize_clinical_binary_data(n_samples: int = 1200):
+    """
+    Synthesizes a realistic clinical diagnostic dataset mimicking heart disease.
+    Target: 1 (Disease Present), 0 (Healthy).
+    """
+    np.random.seed(42)
+    age = np.random.normal(54, 9, n_samples)
+    resting_bp = np.random.normal(131, 17, n_samples)
+    cholesterol = np.random.normal(246, 50, n_samples)
+    max_hr = np.random.normal(149, 23, n_samples)
+    oldpeak = np.random.exponential(1.0, n_samples)
+
+    # Underlying non-linear probability logit
+    z = (0.04 * age) + (0.02 * resting_bp) + (0.01 * cholesterol) - (0.05 * max_hr) + (0.8 * oldpeak) - 2.5
+    prob = 1.0 / (1.0 + np.exp(-z))
+    target = (np.random.rand(n_samples) &lt; prob).astype(int)
+
+    X = np.column_stack([age, resting_bp, cholesterol, max_hr, oldpeak])
+    return X, target
+
+def evaluate_classifier(model, X_train, X_test, y_train, y_test, model_name: str) -&gt; dict:
+    t0 = time.perf_counter()
+    model.fit(X_train, y_train)
+    fit_time = time.perf_counter() - t0
+
+    t1 = time.perf_counter()
+    y_pred = model.predict(X_test)
+    y_prob = model.predict_proba(X_test)[:, 1] if hasattr(model, 'predict_proba') else None
+    pred_time = time.perf_counter() - t1
+
+    return {
+        'Algorithm': model_name,
+        'Accuracy': round(accuracy_score(y_test, y_pred), 4),
+        'Precision': round(precision_score(y_test, y_pred), 4),
+        'Recall': round(recall_score(y_test, y_pred), 4),
+        'F1_Score': round(f1_score(y_test, y_pred), 4),
+        'ROC_AUC': round(roc_auc_score(y_test, y_prob), 4) if y_prob is not None else 'N/A',
+        'Train_Time_ms': round(fit_time * 1000, 2),
+        'Inference_Time_ms': round(pred_time * 1000, 2)
+    }
+
+if __name__ == "__main__":
+    X_raw, y = synthesize_clinical_binary_data()
+    X_train_raw, X_test_raw, y_train, y_test = train_test_split(X_raw, y, test_size=0.25, random_state=42, stratify=y)
+
+    # Critical Step: Standardize features (mandatory for KNN and Logistic Regression)
+    scaler = StandardScaler()
+    X_train = scaler.fit_transform(X_train_raw)
+    X_test = scaler.transform(X_test_raw)
+
+    # 1. Logistic Regression
+    clf_logreg = LogisticRegression(solver='lbfgs', max_iter=1000, random_state=42)
+    # 2. K-Nearest Neighbors (K=7 to eliminate ties)
+    clf_knn = KNeighborsClassifier(n_neighbors=7, metric='minkowski', p=2)
+    # 3. Gaussian Naive Bayes
+    clf_nb = GaussianNB()
+
+    results = [
+        evaluate_classifier(clf_logreg, X_train, X_test, y_train, y_test, "Logistic Regression"),
+        evaluate_classifier(clf_knn, X_train, X_test, y_train, y_test, "K-Nearest Neighbors (K=7)"),
+        evaluate_classifier(clf_nb, X_train, X_test, y_train, y_test, "Gaussian Naive Bayes")
+    ]
+
+    benchmark_df = pd.DataFrame(results).set_index('Algorithm')
+    print("\n" + "="*75)
+    print("CLASSIFIER BENCHMARK SUMMARY (Heart Disease Diagnostic Schema):")
+    print("="*75)
+    print(benchmark_df.to_string())
+    print("="*75)
+</code></pre>
+  </section>
+
+  <section class="chapter-takeaways">
+    <div class="takeaways-card">
+      <h4><i class="icon-bookmark"></i> Key Engineering Takeaways &bull; Chapter 05</h4>
+      <ul class="takeaways-list">
+        <li><strong>Linear Failure:</strong> Never use Linear Regression for classification. Sigmoid mapping bounds outputs in $(0, 1)$ and yields probabilistically sound decision surfaces.</li>
+        <li><strong>Log Loss Convexity:</strong> Binary Cross-Entropy guarantees a single global minimum for Logistic Regression, whereas MSE generates non-convex, trapped plateaus.</li>
+        <li><strong>KNN Scaling Requirement:</strong> Without Standardization, attributes with large numerical scales (e.g., Cholesterol in hundreds) drown out critical low-magnitude signals (e.g., Oldpeak in decimals).</li>
+        <li><strong>Naive Bayes Speed &amp; Limits:</strong> Naive Bayes trains almost instantaneously ($\mathcal{O}(m \cdot d)$ frequency counting) and excels on text, but fails to capture inter-feature correlations due to its independence assumption.</li>
+      </ul>
+    </div>
+  </section>
+
+  <footer class="chapter-footer">
+    <div class="self-check-badge pass"><i class="icon-check"></i> Self-Check Passed: Timestamps Verified &bull; Cross-Entropy Derivation Present &bull; Zero Placeholders</div>
+  </footer>
+</article>

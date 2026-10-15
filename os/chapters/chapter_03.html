@@ -1,0 +1,155 @@
+<section class="chapter-content" id="chapter-3">
+  <div class="chapter-header">
+    <div class="chapter-badge">Chapter 03 &bull; Video 2 Coverage</div>
+    <h2>CPU Scheduling Fundamentals & Classic Scheduling Algorithms</h2>
+    <p class="chapter-meta">
+      <strong>Source Video:</strong> <a href="https://www.youtube.com/watch?v=8WxLX-hfZTo" target="_blank">OS Scheduling & Multicore Systems | Part 2</a> &bull;
+      <strong>Instructor:</strong> Vivek Gupta (Ex-Google, AlgoZenith) &bull;
+      <strong>Timeline:</strong> 00:00:00 &ndash; 00:36:29
+    </p>
+  </div>
+
+  <div class="callout callout-info">
+    <h4>Mathematical Rigor in Placement Interviews</h4>
+    <p>CPU scheduling interview problems are intensely quantitative. You will be given a table of 4 to 5 processes with arrival times, burst times, and priorities, and asked to compute exact Completion Time, Turnaround Time, and Waiting Time across FCFS, SJF, SRTF, and Round Robin using clear Gantt Charts.</p>
+  </div>
+
+  <h3>3.1 Scheduling Objectives & Criteria Metrics</h3>
+  <p>The CPU scheduler is the heart of multiprogramming. Since real-world processes alternate between <strong>CPU Bursts</strong> (executing code) and <strong>I/O Bursts</strong> (waiting for network, disk, or user input), scheduling maximizes CPU utilization by giving the CPU to another ready process whenever the current process enters an I/O wait state (<a href="https://www.youtube.com/watch?v=8WxLX-hfZTo&t=284s" target="_blank" class="yt-timestamp">⏱️ 04:44</a>).</p>
+
+  <h4>The 5 Golden Scheduling Performance Metrics:</h4>
+  <ol>
+    <li><strong>CPU Utilization:</strong> The percentage of total time the CPU is actively performing user or system computation (Goal: Maximize, practically 40% to 90%).</li>
+    <li><strong>Throughput:</strong> The number of complete processes executed per unit time (Goal: Maximize).</li>
+    <li><strong>Turnaround Time (TAT):</strong> The total elapsed time from the moment a process is submitted until its complete termination:
+      $$\text{TAT} = \text{Completion Time (CT)} - \text{Arrival Time (AT)}$$
+      (Goal: Minimize).</li>
+    <li><strong>Waiting Time (WT):</strong> The cumulative time a process spends waiting in the Ready Queue:
+      $$\text{WT} = \text{Turnaround Time (TAT)} - \text{Burst Time (BT)}$$
+      (Goal: Minimize).</li>
+    <li><strong>Response Time (RT):</strong> The time elapsed between process arrival and its very first execution on the CPU:
+      $$\text{RT} = \text{Time of First CPU Dispatch} - \text{Arrival Time (AT)}$$
+      (Goal: Minimize; crucial for interactive UX).</li>
+  </ol>
+
+  <h3>3.2 Scheduler Taxonomy & Dispatcher Role</h3>
+  <p>An operating system utilizes three distinct types of schedulers acting at different operational timescales (<a href="https://www.youtube.com/watch?v=8WxLX-hfZTo&t=453s" target="_blank" class="yt-timestamp">⏱️ 07:33</a>):</p>
+  <ul>
+    <li><strong>Long-Term Scheduler (Job Scheduler):</strong> Selects processes from secondary storage (pool of batch jobs) and loads them into primary RAM ready queue. Regulates the <em>Degree of Multiprogramming</em> (total processes in memory). Invoked infrequently (seconds to minutes).</li>
+    <li><strong>Short-Term Scheduler (CPU Scheduler):</strong> Selects which in-memory ready process is allocated the physical CPU. Invoked very frequently (every 10 to 100 milliseconds), hence must be exceptionally fast.</li>
+    <li><strong>Medium-Term Scheduler (Swapper):</strong> Handles swapping out processes from RAM to Swap disk during severe memory pressure, and swapping them back when RAM frees up.</li>
+    <li><strong>Dispatcher:</strong> The low-level kernel module that physically performs the context switch, switches the CPU to user mode, and jumps to the proper location in the user program. The elapsed time taken by the dispatcher to halt one process and start another is called <strong>Dispatch Latency</strong>.</li>
+  </ul>
+
+  <h3>3.3 Preemptive vs. Non-Preemptive Scheduling</h3>
+  <ul>
+    <li><strong>Non-Preemptive Scheduling:</strong> Once a process is allocated the CPU, it holds the CPU until it voluntarily yields control&mdash;either by terminating (<code>exit()</code>) or by requesting I/O (transition to Waiting state). No timer interrupts can forcibly take the CPU away.
+      <br><em>Pros:</em> Simple, low overhead, deterministic.
+      <br><em>Cons:</em> Poor interactive response, vulnerable to rogue infinite loops.</li>
+    <li><strong>Preemptive Scheduling:</strong> The OS kernel can forcibly interrupt and confiscate the CPU from an actively running process (e.g., when a higher-priority job arrives or the hardware timer interrupt signals time slice expiration).
+      <br><em>Pros:</em> Excellent responsiveness, prevents starvation in interactive environments.
+      <br><em>Cons:</em> Incurs higher context switch overhead; requires synchronization locks on shared kernel data structures to prevent race conditions.</li>
+  </ul>
+
+  <h3>3.4 First-Come, First-Served (FCFS) Scheduling</h3>
+  <p>The simplest scheduling algorithm. Implemented via a standard FIFO queue (<a href="https://www.youtube.com/watch?v=8WxLX-hfZTo&t=866s" target="_blank" class="yt-timestamp">⏱️ 14:26</a>). Non-preemptive.</p>
+  
+  <h4>The Convoy Effect Hazard:</h4>
+  <p>If a massive CPU-bound process arrives first, all short, interactive I/O-bound processes are trapped behind it in the ready queue. While the giant process runs on CPU, the I/O devices sit idle. When the giant process finally blocks for I/O, all short processes quickly blast through CPU and block for I/O, leaving the CPU idle. This severe degradation in device and CPU utilization is called the <strong>Convoy Effect</strong>.</p>
+
+  <h3>3.5 Shortest Job First (SJF) & Shortest Remaining Time First (SRTF)</h3>
+  <p>Assigns the CPU to the process with the smallest subsequent CPU burst length (<a href="https://www.youtube.com/watch?v=8WxLX-hfZTo&t=928s" target="_blank" class="yt-timestamp">⏱️ 15:28</a>).</p>
+  <ul>
+    <li><strong>Non-Preemptive SJF:</strong> Once granted, the process runs to completion of its burst. Provably achieves the minimal average waiting time among all non-preemptive algorithms.</li>
+    <li><strong>Preemptive SJF (SRTF):</strong> If a new process arrives with a remaining CPU burst shorter than the remaining burst of the currently running process, the current process is immediately preempted.</li>
+  </ul>
+
+  <h4>Burst Time Estimation via Exponential Smoothing:</h4>
+  <p>Because the OS cannot know future CPU bursts in advance, it predicts the next burst $\tau_{n+1}$ using past historical burst $t_n$ via exponential averaging:</p>
+  $$\tau_{n+1} = \alpha t_n + (1 - \alpha) \tau_n \quad \text{where } 0 \le \alpha \le 1$$
+  <p>Typically $\alpha = 0.5$, balancing recent behavior with long-term historical baseline.</p>
+
+  <h3>3.6 Step-by-Step Solved Placement Numerical: SRTF vs. FCFS</h3>
+  <p>Consider the following process workload table (<a href="https://www.youtube.com/watch?v=8WxLX-hfZTo&t=1376s" target="_blank" class="yt-timestamp">⏱️ 22:56</a>):</p>
+  
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>Process</th>
+        <th>Arrival Time (AT)</th>
+        <th>Burst Time (BT)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>P1</td><td>0 ms</td><td>8 ms</td></tr>
+      <tr><td>P2</td><td>1 ms</td><td>4 ms</td></tr>
+      <tr><td>P3</td><td>2 ms</td><td>9 ms</td></tr>
+      <tr><td>P4</td><td>3 ms</td><td>5 ms</td></tr>
+    </tbody>
+  </table>
+
+  <h4>Preemptive SJF (SRTF) Execution Walkthrough:</h4>
+  <ul>
+    <li><strong>At $t = 0$:</strong> Only P1 is present. P1 starts executing.</li>
+    <li><strong>At $t = 1$:</strong> P2 arrives ($BT = 4$). Remaining burst of P1 is $8 - 1 = 7$. Since $4 < 7$, P1 is preempted and P2 takes the CPU.</li>
+    <li><strong>At $t = 2$:</strong> P3 arrives ($BT = 9$). P2 remaining is $3$. P2 continues.</li>
+    <li><strong>At $t = 3$:</strong> P4 arrives ($BT = 5$). P2 remaining is $2$. P2 continues.</li>
+    <li><strong>At $t = 5$:</strong> P2 finishes ($CT = 5$). Ready processes: P4 ($BT=5$), P1 (rem $7$), P3 ($BT=9$). P4 is chosen.</li>
+    <li><strong>At $t = 10$:</strong> P4 finishes ($CT = 10$). Ready: P1 (rem $7$), P3 ($BT=9$). P1 is chosen.</li>
+    <li><strong>At $t = 17$:</strong> P1 finishes ($CT = 17$). Ready: P3 ($BT=9$). P3 runs.</li>
+    <li><strong>At $t = 26$:</strong> P3 finishes ($CT = 26$).</li>
+  </ul>
+
+  <h4>Gantt Chart Representation:</h4>
+  <div class="mermaid">
+  gantt
+    title SRTF Execution Timeline
+    dateFormat X
+    axisFormat %s ms
+    section CPU
+    P1 (1ms) :0, 1
+    P2 (4ms) :1, 5
+    P4 (5ms) :5, 10
+    P1 (7ms) :10, 17
+    P3 (9ms) :17, 26
+  </div>
+
+  <h4>Final Metrics Summary:</h4>
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>PID</th>
+        <th>AT</th>
+        <th>BT</th>
+        <th>Completion (CT)</th>
+        <th>TAT (CT - AT)</th>
+        <th>Waiting Time (TAT - BT)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>P1</td><td>0</td><td>8</td><td>17</td><td>17 - 0 = 17 ms</td><td>17 - 8 = 9 ms</td></tr>
+      <tr><td>P2</td><td>1</td><td>4</td><td>5</td><td>5 - 1 = 4 ms</td><td>4 - 4 = 0 ms</td></tr>
+      <tr><td>P3</td><td>2</td><td>9</td><td>26</td><td>26 - 2 = 24 ms</td><td>24 - 9 = 15 ms</td></tr>
+      <tr><td>P4</td><td>3</td><td>5</td><td>10</td><td>10 - 3 = 7 ms</td><td>7 - 5 = 2 ms</td></tr>
+    </tbody>
+  </table>
+  <p><strong>Average Turnaround Time:</strong> $\frac{17 + 4 + 24 + 7}{4} = \frac{52}{4} = 13.0 \text{ ms}$</p>
+  <p><strong>Average Waiting Time:</strong> $\frac{9 + 0 + 15 + 2}{4} = \frac{26}{4} = 6.5 \text{ ms}$</p>
+
+  <h3>3.7 Round Robin (RR) Scheduling</h3>
+  <p>Designed specifically for time-sharing interactive systems (<a href="https://www.youtube.com/watch?v=8WxLX-hfZTo&t=1847s" target="_blank" class="yt-timestamp">⏱️ 30:47</a>). Each process is allocated a small unit of CPU time called a <strong>Time Quantum</strong> ($q$) or time slice (typically 10 to 100 ms). Processes are held in a circular FIFO queue.</p>
+  
+  <h4>The Time Quantum Dilemma:</h4>
+  <ul>
+    <li>If $q \to \infty$: Round Robin degenerates into FCFS, suffering from the Convoy Effect.</li>
+    <li>If $q \to 0$: Round Robin approaches <em>Processor Sharing</em>, where $n$ processes run at $1/n$ speed, but the system spends nearly 100% of CPU time executing context switches, collapsing throughput.</li>
+    <li><strong>Rule of Thumb:</strong> Approximately 80% of CPU bursts should be shorter than the time quantum $q$ to minimize context switches while preserving rapid interactive response.</li>
+  </ul>
+
+  <h3>3.8 Priority Scheduling & The Aging Mitigation</h3>
+  <p>Each process is assigned a priority integer $p$. The CPU is allocated to the highest-priority process (<a href="https://www.youtube.com/watch?v=8WxLX-hfZTo&t=2068s" target="_blank" class="yt-timestamp">⏱️ 34:28</a>).</p>
+  <ul>
+    <li><strong>Starvation (Indefinite Blocking):</strong> A low-priority process may sit in the ready queue indefinitely if a steady stream of higher-priority processes keeps arriving. (Legendary real-world case: When the IBM 7094 at MIT was shut down in 1973, a low-priority job submitted in 1967 was discovered still waiting!).</li>
+    <li><strong>Aging Solution:</strong> A technique of gradually incrementing the priority of processes that wait in the system for long durations. Eventually, any aged process achieves the highest priority and is guaranteed CPU dispatch.</li>
+  </ul>
+</section>

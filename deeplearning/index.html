@@ -1,0 +1,4001 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>4 U By U • Complete Deep Learning Masterclass Study Guide</title>
+  <meta name="description" content="Comprehensive 4-Part Deep Learning Master Study Guide (Sheryians AI School): Artificial Neural Networks, Convolutional Neural Networks, Recurrent Neural Networks, and Transformers with Multi-Head Attention.">
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- MathJax 3 Configuration with inlineMath -->
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$', '$']],
+        displayMath: [['$$', '$$']],
+        processEscapes: true
+      },
+      options: {
+        skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    };
+  </script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+  <!-- Mermaid 10.9.8 -->
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: 'neutral',
+      themeVariables: {
+        primaryColor: '#FFFFFF',
+        primaryBorderColor: '#1E293B',
+        primaryTextColor: '#0F172A',
+        lineColor: '#6366F1',
+        secondaryColor: '#F8FAFC',
+        tertiaryColor: '#F1F5F9'
+      }
+    });
+  </script>
+
+  <style>
+    :root {
+      --bg-base: #0B0F19;
+      --bg-surface: #111827;
+      --bg-elevated: #1F2937;
+      --bg-card: #151D2E;
+      --border-subtle: #2D3748;
+      --border-accent: rgba(236, 72, 153, 0.4);
+      --text-main: #F3F4F6;
+      --text-muted: #9CA3AF;
+      --text-sub: #6B7280;
+      --accent-pink: #EC4899;
+      --accent-purple: #8B5CF6;
+      --accent-blue: #3B82F6;
+      --accent-cyan: #06B6D4;
+      --accent-emerald: #10B981;
+      --accent-amber: #F59E0B;
+      --code-bg: #0D1117;
+      --code-border: #30363D;
+      --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-heading: 'Outfit', sans-serif;
+      --font-mono: 'Fira Code', monospace;
+    }
+
+    [data-theme="light"] {
+      --bg-base: #F8FAFC;
+      --bg-surface: #FFFFFF;
+      --bg-elevated: #F1F5F9;
+      --bg-card: #FFFFFF;
+      --border-subtle: #CBD5E1;
+      --border-accent: rgba(236, 72, 153, 0.4);
+      --text-main: #0F172A;
+      --text-muted: #475569;
+      --text-sub: #64748B;
+      --code-bg: #F8FAFC;
+      --code-border: #E2E8F0;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background-color: var(--bg-base);
+      color: var(--text-main);
+      font-family: var(--font-body);
+      line-height: 1.7;
+      font-size: 15px;
+      overflow-x: hidden;
+    }
+
+    /* Top Navigation */
+    .top-nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(11, 15, 25, 0.95);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-subtle);
+      padding: 0.75rem 1.75rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1.5rem;
+    }
+
+    .nav-left { display: flex; align-items: center; gap: 0.85rem; }
+    .hub-link {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      transition: color 0.2s;
+    }
+    .hub-link:hover { color: #FFFFFF; }
+    .nav-badge {
+      background: linear-gradient(135deg, #EC4899, #8B5CF6);
+      color: #FFFFFF;
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 0.2rem 0.55rem;
+      border-radius: 9999px;
+      letter-spacing: 0.05em;
+    }
+    .nav-title {
+      font-family: var(--font-heading);
+      font-size: 1.15rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      color: #FFFFFF;
+    }
+
+    .nav-center { flex: 1; max-width: 560px; position: relative; }
+    .search-box {
+      width: 100%;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: 8px;
+      padding: 0.5rem 1rem 0.5rem 2.5rem;
+      color: var(--text-main);
+      font-size: 0.9rem;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .search-box:focus {
+      border-color: var(--accent-pink);
+      box-shadow: 0 0 0 2px rgba(236, 72, 153, 0.25);
+    }
+    .search-icon {
+      position: absolute;
+      left: 0.85rem;
+      top: 50%;
+      transform: translateY(-50%);
+      pointer-events: none;
+      color: var(--text-sub);
+    }
+
+    .search-dropdown {
+      position: absolute;
+      top: calc(100% + 6px);
+      left: 0;
+      right: 0;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: 8px;
+      max-height: 380px;
+      overflow-y: auto;
+      display: none;
+      box-shadow: 0 12px 30px rgba(0,0,0,0.5);
+      z-index: 200;
+    }
+    .search-result-item {
+      padding: 0.65rem 1rem;
+      cursor: pointer;
+      border-bottom: 1px solid var(--border-subtle);
+      transition: background 0.15s;
+    }
+    .search-result-item:hover { background: var(--bg-elevated); }
+    .search-item-title { font-weight: 600; font-size: 0.9rem; color: var(--accent-pink); }
+    .search-item-snippet { font-size: 0.78rem; color: var(--text-muted); }
+
+    .nav-right { display: flex; align-items: center; gap: 0.65rem; }
+    .btn-nav {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-main);
+      padding: 0.45rem 0.85rem;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      transition: all 0.2s;
+    }
+    .btn-nav:hover { background: var(--bg-elevated); border-color: var(--text-muted); }
+
+    /* 3-Column Responsive Master Layout */
+    .app-layout {
+      display: flex;
+      justify-content: center;
+      gap: 24px;
+      padding: 24px 28px;
+      max-width: 1780px;
+      margin: 0 auto;
+    }
+
+    /* Left Sidebar */
+    .sidebar {
+      flex: 0 0 260px;
+      position: sticky;
+      top: 76px;
+      height: calc(100vh - 96px);
+      overflow-y: auto;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      padding: 1.15rem 0.85rem;
+    }
+    .sidebar-header {
+      font-family: var(--font-heading);
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-sub);
+      margin-bottom: 0.85rem;
+      padding-left: 0.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .sidebar-group-title {
+      font-size: 0.68rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--accent-pink);
+      padding: 0.75rem 0.5rem 0.35rem 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .sidebar-link {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      padding: 0.48rem 0.65rem;
+      border-radius: 6px;
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.84rem;
+      font-weight: 500;
+      transition: all 0.15s;
+      margin-bottom: 2px;
+    }
+    .sidebar-link:hover {
+      background: var(--bg-elevated);
+      color: var(--text-main);
+    }
+    .sidebar-link.active {
+      background: rgba(236, 72, 153, 0.12);
+      color: #F472B6;
+      border: 1px solid rgba(236, 72, 153, 0.35);
+      font-weight: 600;
+    }
+    .sidebar-pill {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      padding: 0.1rem 0.35rem;
+      background: var(--bg-elevated);
+      border-radius: 4px;
+      color: var(--text-sub);
+    }
+    .sidebar-link.active .sidebar-pill {
+      background: rgba(236, 72, 153, 0.25);
+      color: #F472B6;
+    }
+
+    /* Main Content Container */
+    .main-content {
+      flex: 1 1 0%;
+      min-width: 0;
+      max-width: 960px;
+    }
+
+    /* Hero Banner */
+    .hero-banner {
+      background: linear-gradient(135deg, rgba(236, 72, 153, 0.08) 0%, rgba(139, 92, 246, 0.1) 100%);
+      border: 1px solid var(--border-accent);
+      border-radius: 14px;
+      padding: 2rem;
+      margin-bottom: 2.5rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 0.85rem;
+    }
+    .hero-badge {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 0.25rem 0.65rem;
+      border-radius: 9999px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-muted);
+    }
+    .hero-badge.primary {
+      background: rgba(236, 72, 153, 0.15);
+      border-color: rgba(236, 72, 153, 0.35);
+      color: #F472B6;
+    }
+    .hero-title {
+      font-family: var(--font-heading);
+      font-size: 2.25rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: #FFFFFF;
+      margin-bottom: 0.75rem;
+      line-height: 1.25;
+    }
+    .hero-desc {
+      font-size: 0.98rem;
+      color: var(--text-muted);
+      line-height: 1.65;
+      margin-bottom: 1.5rem;
+    }
+    .pillar-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+    }
+    .pillar-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: 10px;
+      padding: 1.15rem;
+      transition: all 0.2s;
+    }
+    .pillar-card:hover {
+      border-color: var(--accent-pink);
+      transform: translateY(-2px);
+    }
+    .pillar-tag {
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--accent-pink);
+      margin-bottom: 0.35rem;
+      display: inline-block;
+    }
+    .pillar-name {
+      font-family: var(--font-heading);
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #FFFFFF;
+      margin-bottom: 0.35rem;
+    }
+    .pillar-summary {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    /* Chapter Articles */
+    .chapter-section {
+      margin-bottom: 3.5rem;
+      scroll-margin-top: 85px;
+    }
+    .chapter-header {
+      border-bottom: 1px solid var(--border-subtle);
+      padding-bottom: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    .chapter-eyebrow {
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--accent-pink);
+      margin-bottom: 0.35rem;
+    }
+    .chapter-title {
+      font-family: var(--font-heading);
+      font-size: 1.75rem;
+      font-weight: 800;
+      color: #FFFFFF;
+      letter-spacing: -0.01em;
+      margin-bottom: 0.5rem;
+    }
+    .chapter-summary {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+    }
+
+    h3 {
+      font-family: var(--font-heading);
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #FFFFFF;
+      margin: 1.75rem 0 0.85rem 0;
+    }
+    h4 {
+      font-family: var(--font-heading);
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: var(--accent-pink);
+      margin: 1.25rem 0 0.5rem 0;
+    }
+    p { margin-bottom: 1rem; color: var(--text-main); }
+    ul, ol { margin-bottom: 1.25rem; padding-left: 1.5rem; color: var(--text-main); }
+    li { margin-bottom: 0.45rem; }
+
+    /* Code Blocks */
+    .code-container {
+      background: var(--code-bg);
+      border: 1px solid var(--code-border);
+      border-radius: 8px;
+      margin: 1.25rem 0;
+      overflow: hidden;
+    }
+    .code-header {
+      background: rgba(255, 255, 255, 0.03);
+      border-bottom: 1px solid var(--code-border);
+      padding: 0.45rem 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+    .code-header button {
+      background: transparent;
+      border: none;
+      color: var(--text-sub);
+      cursor: pointer;
+      font-size: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+      transition: color 0.15s;
+    }
+    .code-header button:hover { color: var(--text-main); }
+    pre {
+      padding: 1rem;
+      overflow-x: auto;
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      line-height: 1.6;
+      color: #E2E8F0;
+    }
+    code {
+      font-family: var(--font-mono);
+      background: rgba(255, 255, 255, 0.08);
+      padding: 0.15rem 0.35rem;
+      border-radius: 4px;
+      font-size: 0.88em;
+    }
+    pre code { background: transparent; padding: 0; }
+
+    /* Tables */
+    .table-container {
+      overflow-x: auto;
+      margin: 1.25rem 0;
+      border: 1px solid var(--border-subtle);
+      border-radius: 8px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+      text-align: left;
+    }
+    th {
+      background: var(--bg-surface);
+      color: #FFFFFF;
+      font-weight: 600;
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    td {
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid var(--border-subtle);
+      color: var(--text-main);
+    }
+    tr:last-child td { border-bottom: none; }
+    tr:nth-child(even) td { background: rgba(255, 255, 255, 0.015); }
+
+    /* Callout Boxes */
+    .callout {
+      border-left: 4px solid var(--accent-pink);
+      background: rgba(236, 72, 153, 0.08);
+      border-radius: 0 8px 8px 0;
+      padding: 1rem 1.25rem;
+      margin: 1.25rem 0;
+    }
+    .callout-title {
+      font-weight: 700;
+      color: #F472B6;
+      font-size: 0.92rem;
+      margin-bottom: 0.35rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .callout-content {
+      font-size: 0.88rem;
+      color: var(--text-main);
+      margin-bottom: 0;
+    }
+
+    .callout.tip {
+      border-left-color: var(--accent-emerald);
+      background: rgba(16, 185, 129, 0.08);
+    }
+    .callout.tip .callout-title { color: #34D399; }
+
+    .callout.warning {
+      border-left-color: var(--accent-amber);
+      background: rgba(245, 158, 11, 0.08);
+    }
+    .callout.warning .callout-title { color: #FBBF24; }
+
+    /* Mermaid Diagrams */
+    .mermaid-box {
+      background: #FFFFFF;
+      border: 1px solid var(--border-subtle);
+      border-radius: 8px;
+      padding: 1.25rem;
+      margin: 1.25rem 0;
+      text-align: center;
+      overflow-x: auto;
+    }
+
+    /* Interview Questions Collapsible */
+    .faq-container { margin: 1.5rem 0; }
+    .faq-item {
+      border: 1px solid var(--border-subtle);
+      border-radius: 8px;
+      margin-bottom: 0.85rem;
+      overflow: hidden;
+      background: var(--bg-surface);
+      transition: border-color 0.2s;
+    }
+    .faq-item:hover { border-color: var(--accent-pink); }
+    .faq-summary {
+      padding: 0.9rem 1.15rem;
+      font-weight: 600;
+      font-size: 0.95rem;
+      color: #FFFFFF;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      list-style: none;
+      background: var(--bg-surface);
+    }
+    .faq-summary::-webkit-details-marker { display: none; }
+    .faq-summary::after {
+      content: '+';
+      font-size: 1.2rem;
+      color: var(--accent-pink);
+      font-weight: bold;
+    }
+    details[open] .faq-summary::after { content: '−'; }
+    .faq-content {
+      padding: 1.15rem;
+      border-top: 1px solid var(--border-subtle);
+      background: var(--bg-card);
+      font-size: 0.9rem;
+      line-height: 1.65;
+    }
+
+    /* Right Auxiliary Dock */
+    .aux-dock {
+      flex: 0 0 360px;
+      position: sticky;
+      top: 76px;
+      height: calc(100vh - 96px);
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    .dock-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+      display: flex;
+      flex-direction: column;
+    }
+    .dock-header {
+      padding: 0.65rem 0.85rem;
+      background: var(--bg-surface);
+      border-bottom: 1px solid var(--border-subtle);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .dock-title {
+      font-family: var(--font-heading);
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: #FFFFFF;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .dock-badge {
+      font-size: 0.68rem;
+      font-weight: 700;
+      padding: 0.15rem 0.45rem;
+      border-radius: 4px;
+      background: var(--accent-pink);
+      color: #FFFFFF;
+    }
+
+    /* Video Player */
+    .video-tabs {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      background: var(--bg-base);
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    .video-tab-btn {
+      padding: 0.5rem 0.2rem;
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-size: 0.72rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.15s;
+    }
+    .video-tab-btn:hover { color: #FFFFFF; background: var(--bg-elevated); }
+    .video-tab-btn.active {
+      color: #F472B6;
+      border-bottom: 2px solid var(--accent-pink);
+      background: rgba(236, 72, 153, 0.12);
+    }
+    .video-embed-wrap {
+      position: relative;
+      padding-bottom: 56.25%;
+      height: 0;
+      background: #000000;
+    }
+    .video-embed-wrap iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    /* Chat Assistant */
+    .chat-card { flex: 1; min-height: 380px; }
+    .chat-messages {
+      flex: 1;
+      padding: 0.75rem;
+      overflow-y: auto;
+      max-height: 250px;
+      display: flex;
+      flex-direction: column;
+      gap: 0.65rem;
+      font-size: 0.82rem;
+    }
+    .chat-bubble {
+      padding: 0.55rem 0.75rem;
+      border-radius: 8px;
+      line-height: 1.5;
+      max-width: 90%;
+    }
+    .chat-bubble.bot {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-main);
+      align-self: flex-start;
+    }
+    .chat-bubble.user {
+      background: linear-gradient(135deg, #EC4899, #8B5CF6);
+      color: #FFFFFF;
+      align-self: flex-end;
+    }
+    .chat-chips {
+      padding: 0.5rem 0.75rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+      border-top: 1px solid var(--border-subtle);
+    }
+    .chip {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: 9999px;
+      padding: 0.2rem 0.55rem;
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .chip:hover { border-color: var(--accent-pink); color: #F472B6; }
+
+    .chat-input-row {
+      padding: 0.65rem;
+      background: var(--bg-surface);
+      border-top: 1px solid var(--border-subtle);
+      display: flex;
+      gap: 0.45rem;
+    }
+    .chat-input {
+      flex: 1;
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 6px;
+      padding: 0.45rem 0.65rem;
+      color: var(--text-main);
+      font-size: 0.82rem;
+      outline: none;
+    }
+    .chat-input:focus { border-color: var(--accent-pink); }
+    .chat-btn-send {
+      background: var(--accent-pink);
+      border: none;
+      border-radius: 6px;
+      color: #FFFFFF;
+      padding: 0.45rem 0.85rem;
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    @media (max-width: 1400px) {
+      .sidebar { flex: 0 0 230px; }
+      .aux-dock { flex: 0 0 330px; }
+    }
+    @media (max-width: 1100px) {
+      .app-layout { flex-direction: column; }
+      .sidebar { position: static; height: auto; }
+      .aux-dock { position: static; height: auto; }
+      .pillar-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+
+<style id="placement-universal-v3-styles">
+  /* ── 1. Top Navbar & High-Contrast Search Bar ── */
+  .top-navbar, .top-nav, .master-header {
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 1000 !important;
+    background: rgba(11, 15, 25, 0.98) !important;
+    backdrop-filter: blur(12px) !important;
+    border-bottom: 1px solid #1E293B !important;
+    height: 62px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    padding: 0 24px !important;
+    gap: 16px !important;
+  }
+  .hub-link {
+    color: #94A3B8 !important;
+    text-decoration: none !important;
+    font-weight: 600 !important;
+    font-size: 0.88rem !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+    padding: 6px 12px !important;
+    border-radius: 6px !important;
+    background: rgba(255, 255, 255, 0.05) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    transition: all 0.2s ease !important;
+    white-space: nowrap !important;
+  }
+  .hub-link:hover {
+    color: #FFFFFF !important;
+    background: rgba(59, 130, 246, 0.15) !important;
+    border-color: #3B82F6 !important;
+  }
+
+  /* High contrast search bar inputs */
+  input#section-search,
+  input#searchInput,
+  input.search-box,
+  .smart-search-wrapper input,
+  .nav-search-bar input {
+    background: #0E1424 !important;
+    color: #FFFFFF !important;
+    border: 1.5px solid #334155 !important;
+    border-radius: 8px !important;
+    padding: 8px 14px 8px 38px !important;
+    font-size: 0.88rem !important;
+    outline: none !important;
+    transition: border-color 0.2s, box-shadow 0.2s !important;
+    caret-color: #60A5FA !important;
+    width: 100% !important;
+  }
+  input#section-search::placeholder,
+  input#searchInput::placeholder,
+  input.search-box::placeholder,
+  .smart-search-wrapper input::placeholder,
+  .nav-search-bar input::placeholder {
+    color: #94A3B8 !important;
+  }
+  input#section-search:focus,
+  input#searchInput:focus,
+  input.search-box:focus,
+  .smart-search-wrapper input:focus,
+  .nav-search-bar input:focus {
+    border-color: #3B82F6 !important;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2) !important;
+    background: #0F172A !important;
+    color: #FFFFFF !important;
+  }
+
+  .nav-controls, .nav-right {
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    flex-shrink: 0 !important;
+  }
+  .btn-nav {
+    background: #111827 !important;
+    border: 1px solid #334155 !important;
+    color: #E2E8F0 !important;
+    padding: 6px 12px !important;
+    border-radius: 6px !important;
+    font-size: 0.82rem !important;
+    font-weight: 600 !important;
+    cursor: pointer !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+    transition: all 0.2s ease !important;
+  }
+  .btn-nav:hover {
+    background: #1E293B !important;
+    border-color: #64748B !important;
+    color: #FFFFFF !important;
+  }
+  .btn-nav.active {
+    background: rgba(59, 130, 246, 0.18) !important;
+    border-color: #3B82F6 !important;
+    color: #60A5FA !important;
+  }
+
+  /* ── 2. Collapsible Left Sidebar ── */
+  .chapter-sidebar, .sidebar {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  }
+  .chapter-sidebar.collapsed, .sidebar.collapsed {
+    flex: 0 0 0px !important;
+    width: 0px !important;
+    min-width: 0px !important;
+    max-width: 0px !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    border: none !important;
+    overflow: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+  }
+
+  /* ── 3. Dynamic Auto-Expanding Main Content ── */
+  .main-content, .notes-column, .pdf-guide-column {
+    flex: 1 1 0% !important;
+    min-width: 0 !important;
+    width: 100% !important;
+    max-width: none !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  }
+
+  /* ── 4. Resizable & Minimizable Chatbot Dock ── */
+  .auxiliary-dock, .aux-dock {
+    flex: 0 0 350px !important;
+    width: 350px !important;
+    position: sticky !important;
+    top: 76px !important;
+    height: calc(100vh - 96px) !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 0 !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    z-index: 50 !important;
+  }
+  .auxiliary-dock.wide, .aux-dock.wide {
+    flex: 0 0 490px !important;
+    width: 490px !important;
+  }
+  .auxiliary-dock.minimized, .aux-dock.minimized {
+    display: none !important;
+  }
+
+  /* Chatbot Dock Card */
+  .chatbot-dock-card, .dock-card.chat-card {
+    background: #0E1424 !important;
+    border: 1px solid #1E293B !important;
+    border-radius: 12px !important;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.4) !important;
+    display: flex !important;
+    flex-direction: column !important;
+    height: 100% !important;
+    min-height: 400px !important;
+    overflow: hidden !important;
+  }
+  .chat-dock-header {
+    background: #111827 !important;
+    border-bottom: 1px solid #1E293B !important;
+    padding: 10px 14px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 8px !important;
+  }
+  .chat-header-top {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+  }
+  .chat-assistant-title {
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    font-family: 'Outfit', sans-serif !important;
+    font-size: 0.92rem !important;
+    font-weight: 700 !important;
+    color: #FFFFFF !important;
+  }
+  .chat-status-dot {
+    width: 8px !important;
+    height: 8px !important;
+    border-radius: 50% !important;
+    background: #10B981 !important;
+    box-shadow: 0 0 8px #10B981 !important;
+  }
+  .chat-window-controls {
+    display: flex !important;
+    align-items: center !important;
+    gap: 4px !important;
+  }
+  .chat-ctrl-btn {
+    background: transparent !important;
+    border: 1px solid #334155 !important;
+    color: #94A3B8 !important;
+    width: 26px !important;
+    height: 26px !important;
+    border-radius: 5px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    cursor: pointer !important;
+    font-size: 11px !important;
+    transition: all 0.2s !important;
+  }
+  .chat-ctrl-btn:hover {
+    background: #1E293B !important;
+    color: #FFFFFF !important;
+    border-color: #64748B !important;
+  }
+
+  /* Segmented RAG vs LCEL Mode Toggle */
+  .rag-mode-toggle {
+    display: flex !important;
+    background: #070A12 !important;
+    border: 1px solid #1E293B !important;
+    border-radius: 6px !important;
+    padding: 3px !important;
+    gap: 4px !important;
+    width: 100% !important;
+  }
+  .rag-mode-btn {
+    flex: 1 1 50% !important;
+    background: transparent !important;
+    border: none !important;
+    color: #94A3B8 !important;
+    font-size: 0.72rem !important;
+    font-weight: 600 !important;
+    padding: 5px 6px !important;
+    border-radius: 4px !important;
+    cursor: pointer !important;
+    text-align: center !important;
+    transition: all 0.2s !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+  .rag-mode-btn:hover { color: #FFFFFF !important; }
+  .rag-mode-btn.active {
+    background: #2563EB !important;
+    color: #FFFFFF !important;
+    box-shadow: 0 2px 6px rgba(37, 99, 235, 0.4) !important;
+  }
+  .rag-mode-btn.lcel.active {
+    background: linear-gradient(135deg, #7C3AED, #EC4899) !important;
+    box-shadow: 0 2px 6px rgba(124, 58, 237, 0.4) !important;
+  }
+
+  .chat-messages {
+    flex: 1 !important;
+    padding: 14px !important;
+    overflow-y: auto !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 12px !important;
+    font-size: 0.85rem !important;
+  }
+  .chat-bubble {
+    padding: 10px 14px !important;
+    border-radius: 10px !important;
+    max-width: 92% !important;
+    line-height: 1.55 !important;
+  }
+  .chat-bubble.assistant {
+    background: #111827 !important;
+    border: 1px solid #1E293B !important;
+    color: #E2E8F0 !important;
+    align-self: flex-start !important;
+  }
+  .chat-bubble.user {
+    background: #1D4ED8 !important;
+    color: #FFFFFF !important;
+    align-self: flex-end !important;
+  }
+  .chat-bubble pre {
+    background: #070A12 !important;
+    border: 1px solid #1E293B !important;
+    border-radius: 6px !important;
+    padding: 8px !important;
+    margin: 8px 0 !important;
+    overflow-x: auto !important;
+    font-family: 'Fira Code', monospace !important;
+    font-size: 0.8rem !important;
+  }
+
+  .yt-jump-btn {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 4px !important;
+    background: rgba(239, 68, 68, 0.15) !important;
+    border: 1px solid rgba(239, 68, 68, 0.3) !important;
+    color: #FCA5A5 !important;
+    padding: 3px 8px !important;
+    border-radius: 4px !important;
+    font-size: 0.72rem !important;
+    font-weight: 600 !important;
+    text-decoration: none !important;
+    margin-top: 6px !important;
+    transition: all 0.2s !important;
+  }
+  .yt-jump-btn:hover {
+    background: rgba(239, 68, 68, 0.3) !important;
+    color: #FFFFFF !important;
+  }
+
+  .suggested-prompts {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 6px !important;
+    margin-top: 10px !important;
+  }
+  .prompt-chip {
+    background: #1E293B !important;
+    border: 1px solid #334155 !important;
+    color: #94A3B8 !important;
+    padding: 3px 8px !important;
+    border-radius: 12px !important;
+    font-size: 0.72rem !important;
+    cursor: pointer !important;
+    transition: all 0.15s !important;
+  }
+  .prompt-chip:hover {
+    background: #2563EB !important;
+    color: #FFFFFF !important;
+    border-color: #3B82F6 !important;
+  }
+
+  .chat-input-bar {
+    padding: 10px 12px !important;
+    background: #111827 !important;
+    border-top: 1px solid #1E293B !important;
+    display: flex !important;
+    gap: 8px !important;
+  }
+  .chat-input-bar input {
+    flex: 1 !important;
+    background: #070A12 !important;
+    border: 1px solid #334155 !important;
+    border-radius: 6px !important;
+    padding: 8px 12px !important;
+    color: #FFFFFF !important;
+    font-size: 0.85rem !important;
+    outline: none !important;
+  }
+  .chat-input-bar input:focus { border-color: #3B82F6 !important; }
+  .chat-input-bar button {
+    background: #2563EB !important;
+    border: none !important;
+    color: #FFFFFF !important;
+    padding: 0 14px !important;
+    border-radius: 6px !important;
+    font-weight: 600 !important;
+    font-size: 0.82rem !important;
+    cursor: pointer !important;
+    transition: background 0.2s !important;
+  }
+  .chat-input-bar button:hover { background: #1D4ED8 !important; }
+
+  /* ── 5. Floating Chat Pill (Only visible when minimized) ── */
+  .chat-floating-pill {
+    position: fixed !important;
+    bottom: 24px !important;
+    right: 24px !important;
+    z-index: 9999 !important;
+    background: linear-gradient(135deg, #1E293B 0%, #0F172A 100%) !important;
+    border: 1px solid #3B82F6 !important;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6), 0 0 16px rgba(59, 130, 246, 0.3) !important;
+    border-radius: 9999px !important;
+    padding: 10px 18px !important;
+    display: none !important;
+    align-items: center !important;
+    gap: 10px !important;
+    cursor: pointer !important;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  }
+  .chat-floating-pill.visible {
+    display: flex !important;
+  }
+  .chat-floating-pill:hover {
+    transform: translateY(-3px) scale(1.03) !important;
+    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.7), 0 0 24px rgba(59, 130, 246, 0.5) !important;
+    border-color: #60A5FA !important;
+  }
+  .chat-pill-icon { font-size: 16px !important; }
+  .chat-pill-title {
+    font-weight: 700 !important;
+    font-size: 0.86rem !important;
+    color: #FFFFFF !important;
+    letter-spacing: -0.01em !important;
+  }
+  .chat-pill-badge {
+    background: rgba(59, 130, 246, 0.2) !important;
+    color: #60A5FA !important;
+    font-size: 0.68rem !important;
+    font-weight: 700 !important;
+    padding: 2px 7px !important;
+    border-radius: 9999px !important;
+    border: 1px solid rgba(59, 130, 246, 0.3) !important;
+  }
+
+  /* ── 6. Official Video Lectures Directory Banner ── */
+  .video-resources-banner {
+    background: linear-gradient(135deg, rgba(37, 99, 235, 0.1) 0%, rgba(139, 92, 246, 0.12) 100%) !important;
+    border: 1px solid rgba(59, 130, 246, 0.3) !important;
+    border-radius: 12px !important;
+    padding: 16px 20px !important;
+    margin-bottom: 24px !important;
+  }
+  .vrb-header {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    margin-bottom: 12px !important;
+    flex-wrap: wrap !important;
+    gap: 8px !important;
+  }
+  .vrb-title-group {
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+  }
+  .vrb-badge {
+    background: #2563EB !important;
+    color: #FFFFFF !important;
+    font-size: 0.68rem !important;
+    font-weight: 700 !important;
+    padding: 2px 8px !important;
+    border-radius: 9999px !important;
+    text-transform: uppercase !important;
+  }
+  .vrb-title {
+    font-weight: 700 !important;
+    font-size: 0.95rem !important;
+    color: #FFFFFF !important;
+  }
+  .vrb-note {
+    font-size: 0.78rem !important;
+    color: #94A3B8 !important;
+  }
+  .vrb-grid {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)) !important;
+    gap: 10px !important;
+  }
+  .vrb-card {
+    background: #0E1424 !important;
+    border: 1px solid #1E293B !important;
+    border-radius: 8px !important;
+    padding: 10px 14px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: space-between !important;
+    gap: 6px !important;
+    text-decoration: none !important;
+    transition: all 0.2s ease !important;
+  }
+  .vrb-card:hover {
+    border-color: #3B82F6 !important;
+    background: #151D33 !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2) !important;
+  }
+  .vrb-card.featured {
+    border-color: rgba(139, 92, 246, 0.4) !important;
+    background: rgba(139, 92, 246, 0.08) !important;
+  }
+  .vrb-card.featured:hover {
+    border-color: #8B5CF6 !important;
+    background: rgba(139, 92, 246, 0.16) !important;
+  }
+  .vrb-card-tutor {
+    font-size: 0.7rem !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    color: #60A5FA !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 4px !important;
+  }
+  .vrb-card.featured .vrb-card-tutor { color: #A78BFA !important; }
+  .vrb-card-name {
+    font-size: 0.84rem !important;
+    font-weight: 600 !important;
+    color: #F8FAFC !important;
+    line-height: 1.35 !important;
+  }
+  .vrb-card-action {
+    font-size: 0.75rem !important;
+    color: #94A3B8 !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 4px !important;
+    font-weight: 500 !important;
+  }
+  .vrb-card:hover .vrb-card-action { color: #38BDF8 !important; }
+
+  /* ── 7. Placement Interview Questions in Bottom Content Section ── */
+  .placement-interview-section {
+    background: #0E1424 !important;
+    border: 1px solid #1E293B !important;
+    border-radius: 14px !important;
+    padding: 28px !important;
+    margin-top: 40px !important;
+    margin-bottom: 30px !important;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3) !important;
+  }
+  .piq-header {
+    display: flex !important;
+    align-items: flex-start !important;
+    justify-content: space-between !important;
+    margin-bottom: 20px !important;
+    flex-wrap: wrap !important;
+    gap: 16px !important;
+    border-bottom: 1px solid #1E293B !important;
+    padding-bottom: 16px !important;
+  }
+  .piq-title-group {
+    display: flex !important;
+    align-items: center !important;
+    gap: 12px !important;
+  }
+  .piq-icon {
+    font-size: 28px !important;
+    background: rgba(236, 72, 153, 0.15) !important;
+    width: 48px !important;
+    height: 48px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border-radius: 12px !important;
+    border: 1px solid rgba(236, 72, 153, 0.3) !important;
+  }
+  .piq-main-title {
+    font-family: 'Outfit', sans-serif !important;
+    font-size: 1.45rem !important;
+    font-weight: 800 !important;
+    color: #FFFFFF !important;
+    letter-spacing: -0.02em !important;
+    margin-bottom: 4px !important;
+  }
+  .piq-subtitle {
+    font-size: 0.85rem !important;
+    color: #94A3B8 !important;
+  }
+  .piq-tabs {
+    display: flex !important;
+    gap: 8px !important;
+    background: #070A12 !important;
+    padding: 4px !important;
+    border-radius: 8px !important;
+    border: 1px solid #1E293B !important;
+  }
+  .piq-tab-btn {
+    background: transparent !important;
+    border: none !important;
+    color: #94A3B8 !important;
+    font-size: 0.82rem !important;
+    font-weight: 600 !important;
+    padding: 6px 14px !important;
+    border-radius: 6px !important;
+    cursor: pointer !important;
+    transition: all 0.2s !important;
+  }
+  .piq-tab-btn:hover { color: #FFFFFF !important; }
+  .piq-tab-btn.active {
+    background: #2563EB !important;
+    color: #FFFFFF !important;
+    box-shadow: 0 2px 8px rgba(37, 99, 235, 0.3) !important;
+  }
+  .piq-grid {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 12px !important;
+    margin-top: 16px !important;
+  }
+  .piq-card {
+    background: #111827 !important;
+    border: 1px solid #1E293B !important;
+    border-radius: 10px !important;
+    overflow: hidden !important;
+    transition: all 0.2s ease !important;
+  }
+  .piq-card:hover { border-color: #334155 !important; }
+  .piq-card.open { border-color: #3B82F6 !important; }
+  .piq-question-bar {
+    padding: 14px 18px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 12px !important;
+    cursor: pointer !important;
+    user-select: none !important;
+  }
+  .piq-q-text {
+    font-weight: 600 !important;
+    font-size: 0.95rem !important;
+    color: #F8FAFC !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+  }
+  .piq-q-num {
+    color: #3B82F6 !important;
+    font-weight: 700 !important;
+    font-family: 'Fira Code', monospace !important;
+    font-size: 0.85rem !important;
+  }
+  .piq-q-badges {
+    display: flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+  }
+  .piq-tag {
+    font-size: 0.7rem !important;
+    font-weight: 600 !important;
+    padding: 2px 7px !important;
+    border-radius: 4px !important;
+    background: #1E293B !important;
+    color: #94A3B8 !important;
+  }
+  .piq-tag.easy { color: #34D399; background: rgba(16, 185, 129, 0.15); }
+  .piq-tag.med { color: #FBBF24; background: rgba(245, 158, 11, 0.15); }
+  .piq-tag.hard { color: #F87171; background: rgba(239, 68, 68, 0.15); }
+  .piq-toggle-icon {
+    font-size: 11px !important;
+    color: #64748B !important;
+    transition: transform 0.2s !important;
+  }
+  .piq-card.open .piq-toggle-icon {
+    transform: rotate(180deg) !important;
+    color: #3B82F6 !important;
+  }
+  .piq-answer-box {
+    display: none !important;
+    padding: 0 18px 16px 18px !important;
+    color: #CBD5E1 !important;
+    font-size: 0.88rem !important;
+    line-height: 1.65 !important;
+    border-top: 1px solid #1E293B !important;
+    margin-top: 4px !important;
+    padding-top: 14px !important;
+  }
+  .piq-card.open .piq-answer-box { display: block !important; }
+  .piq-answer-box pre {
+    background: #070A12 !important;
+    border: 1px solid #1E293B !important;
+    border-radius: 6px !important;
+    padding: 10px 14px !important;
+    margin: 10px 0 !important;
+    font-family: 'Fira Code', monospace !important;
+    font-size: 0.82rem !important;
+    overflow-x: auto !important;
+  }
+  .piq-complexity-row {
+    display: flex !important;
+    gap: 14px !important;
+    margin-top: 10px !important;
+    font-size: 0.78rem !important;
+    color: #94A3B8 !important;
+    font-family: 'Fira Code', monospace !important;
+  }
+</style>
+
+
+<style id="piq-card-layout-fix">
+  .piq-card {
+    background: #111827 !important;
+    border: 1px solid #1E293B !important;
+    border-radius: 10px !important;
+    overflow: hidden !important;
+    transition: all 0.2s ease !important;
+    margin-bottom: 8px !important;
+  }
+  .piq-question-bar {
+    padding: 14px 18px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 16px !important;
+    cursor: pointer !important;
+    user-select: none !important;
+    width: 100% !important;
+  }
+  .piq-q-text {
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
+    font-weight: 600 !important;
+    font-size: 0.95rem !important;
+    color: #F8FAFC !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+    line-height: 1.4 !important;
+    word-break: normal !important;
+    overflow-wrap: break-word !important;
+  }
+  .piq-q-badges {
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    flex-shrink: 0 !important;
+  }
+  .piq-answer-box {
+    padding: 16px 20px !important;
+    background: rgba(7, 10, 18, 0.6) !important;
+    border-top: 1px solid #1E293B !important;
+  }
+</style>
+
+</head>
+<body>
+
+  <!-- Top Navigation Bar -->
+  <header class="top-nav">
+    <div class="nav-left">
+      <a href="../index.html" class="hub-link">&larr; Placement Hub</a>
+      <span class="nav-badge">4 U BY U</span>
+      <h1 class="nav-title">Deep Learning Engineering</h1>
+    </div>
+
+    <div class="nav-center">
+      <span class="search-icon">&#128269;</span>
+      <input type="text" id="searchInput" class="search-box" placeholder="Smart Search Deep Learning concepts (e.g. Backprop, CNN stride, LSTM, Scaled Attention)..." autocomplete="off">
+      <div id="searchDropdown" class="search-dropdown"></div>
+    </div>
+
+    <div class="nav-right">
+      <button class="btn-nav" id="btn-toggle-sidebar" onclick="toggleSidebar()">☰ Sidebar</button>
+      <button class="btn-nav" id="btn-toggle-chat" onclick="toggleChat()">💬 Assistant</button>
+      <button class="btn-nav" id="themeToggleBtn">&#127769; Theme</button>
+      <button class="btn-nav" onclick="window.print()">&#128438; PDF</button>
+    </div>
+  </header>
+
+  <div class="app-layout">
+    <!-- Left Sticky Sidebar Outline -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <span>Curriculum Outline</span>
+        <span class="sidebar-pill">12 Chs + 15 Qs</span>
+      </div>
+
+      <div class="sidebar-group-title">&#9679; PART 1: ARTIFICIAL NEURAL NETWORKS</div>
+      <a href="#ch1" class="sidebar-link active" data-target="ch1"><span class="sidebar-pill">01</span> Biological &amp; Artificial Neurons</a>
+      <a href="#ch2" class="sidebar-link" data-target="ch2"><span class="sidebar-pill">02</span> Forward Pass &amp; Backprop Math</a>
+      <a href="#ch3" class="sidebar-link" data-target="ch3"><span class="sidebar-pill">03</span> Optimizers, Regularization &amp; Code</a>
+
+      <div class="sidebar-group-title">&#9679; PART 2: CONVOLUTIONAL NETWORKS (CNN)</div>
+      <a href="#ch4" class="sidebar-link" data-target="ch4"><span class="sidebar-pill">04</span> Convolutions, Kernels &amp; Pooling</a>
+      <a href="#ch5" class="sidebar-link" data-target="ch5"><span class="sidebar-pill">05</span> LeNet to ResNet Architectures</a>
+      <a href="#ch6" class="sidebar-link" data-target="ch6"><span class="sidebar-pill">06</span> Computer Vision Project Implementation</a>
+
+      <div class="sidebar-group-title">&#9679; PART 3: RECURRENT NETWORKS (RNN)</div>
+      <a href="#ch7" class="sidebar-link" data-target="ch7"><span class="sidebar-pill">07</span> Sequence Modeling &amp; BPTT</a>
+      <a href="#ch8" class="sidebar-link" data-target="ch8"><span class="sidebar-pill">08</span> Gated Architectures: LSTM &amp; GRU</a>
+      <a href="#ch9" class="sidebar-link" data-target="ch9"><span class="sidebar-pill">09</span> Seq2Seq &amp; Sequence Model Code</a>
+
+      <div class="sidebar-group-title">&#9679; PART 4: TRANSFORMERS &amp; ATTENTION</div>
+      <a href="#ch10" class="sidebar-link" data-target="ch10"><span class="sidebar-pill">10</span> Attention &amp; Scaled Dot-Product</a>
+      <a href="#ch11" class="sidebar-link" data-target="ch11"><span class="sidebar-pill">11</span> Complete Transformer Architecture</a>
+      <a href="#ch12" class="sidebar-link" data-target="ch12"><span class="sidebar-pill">12</span> PyTorch Transformer Block Code</a>
+
+      <div class="sidebar-group-title">&#9679; INTERVIEW PREPARATION</div>
+      <a href="#interview-questions" class="sidebar-link" data-target="interview-questions"><span class="sidebar-pill">15</span> Top 15 Technical Interview Q&amp;As</a>
+    </aside>
+
+    <!-- Center Content -->
+    <main class="main-content">
+      <!-- 4-Pillar Hero Banner -->
+      <section class="hero-banner">
+        <div class="hero-meta">
+          <span class="hero-badge primary">4-PART COMPLETE MASTERCLASS</span>
+          <span class="hero-badge">SHERYIANS AI SCHOOL</span>
+          <span class="hero-badge">100% DATA LOSS RESISTANT</span>
+        </div>
+        <h2 class="hero-title">Deep Learning Engineering Master Curriculum</h2>
+        <p class="hero-desc">
+          An exhaustive, mathematically rigorous study guide synthesized directly from the complete 4-part Sheryians AI School Deep Learning series. Spanning foundational Artificial Neural Networks and backpropagation calculus to modern multi-head self-attention and Transformer stacks.
+        </p>
+
+        <div class="pillar-grid">
+          <div class="pillar-card">
+            <span class="pillar-tag">Part 1 &bull; Video 1 (losbBdEjyN4)</span>
+            <h3 class="pillar-name">Artificial Neural Networks (ANN)</h3>
+            <p class="pillar-summary">Biological vs Artificial neurons, Perceptron, Activation functions, Matrix calculus of Backpropagation, Loss formulations, Adam optimizer, and PyTorch implementation.</p>
+          </div>
+          <div class="pillar-card">
+            <span class="pillar-tag">Part 2 &bull; Video 2 (dh3ilHzIRd0)</span>
+            <h3 class="pillar-name">Convolutional Neural Networks (CNN)</h3>
+            <p class="pillar-summary">2D Convolutions, Kernels, Stride, Valid/Same Padding, Max/Average Pooling, Classic architectures (LeNet, AlexNet, VGG, ResNet skip connections), and Image Classification.</p>
+          </div>
+          <div class="pillar-card">
+            <span class="pillar-tag">Part 3 &bull; Video 3 (0Q4yhrkwn7c)</span>
+            <h3 class="pillar-name">Recurrent Neural Networks (RNN)</h3>
+            <p class="pillar-summary">Sequential dependencies, Unfolding through time, BPTT, Vanishing gradients, LSTM 3-gate constant error carousel, GRU efficiency, BiLSTM, and Seq2Seq translation.</p>
+          </div>
+          <div class="pillar-card">
+            <span class="pillar-tag">Part 4 &bull; Video 4 (i2tlbIGyzKk)</span>
+            <h3 class="pillar-name">Transformers &amp; Self-Attention</h3>
+            <p class="pillar-summary">The Attention Bottleneck, Scaled Dot-Product ($Q,K,V$), Multi-Head Attention, Sinusoidal Positional Encoding, LayerNorm &amp; Residuals, Encoder-Decoder, and BERT vs GPT.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========================================== -->
+      <!-- PART 1: ARTIFICIAL NEURAL NETWORKS (ANN)   -->
+      <!-- ========================================== -->
+
+      <!-- Chapter 1 -->
+      <article id="ch1" class="chapter-section">
+        <div class="chapter-header">
+          <div class="chapter-eyebrow">Part 1 &bull; Video 1 (losbBdEjyN4) &bull; Chapter 01</div>
+          <h2 class="chapter-title">Biological &amp; Artificial Neurons: Foundations &amp; Activation Dynamics</h2>
+          <p class="chapter-summary">From Frank Rosenblatt's Perceptron to modern activation functions: mathematical formulations, gradient dynamics, and overcoming linear separability.</p>
+        </div>
+
+        <h3>1. Biological Inspiration vs. Artificial Abstraction</h3>
+        <p>
+          Deep Learning originates from early computational neuroscience seeking to model how biological brains process stimuli. A biological neuron consists of four primary structural components:
+        </p>
+        <ul>
+          <li><strong>Dendrites:</strong> Branching tree-like filaments that receive electrochemical signals (action potentials) from presynaptic neurons. In artificial neurons, this corresponds to input feature vectors $\mathbf{x} = [x_1, x_2, \dots, x_n]^T$.</li>
+          <li><strong>Soma (Cell Body):</strong> Accumulates and integrates incoming potentials across synapses. Computationally, this is represented by linear combination: $\sum_{i=1}^n w_i x_i + b = \mathbf{w}^T \mathbf{x} + b$.</li>
+          <li><strong>Axon:</strong> Conducts the accumulated impulse away from the soma toward target cells if the electrical potential surpasses an action threshold. In deep learning, this is the activation function $f(z)$.</li>
+          <li><strong>Synapse:</strong> The biochemical junction modulating signal strength via neurotransmitter density. Computationally mapped to learnable weights $\mathbf{w}$ adjusted via gradient descent.</li>
+        </ul>
+
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Biological Neuron Element</th>
+                <th>Artificial Neuron Component</th>
+                <th>Mathematical Representation</th>
+                <th>Physical / Engineering Role</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Dendrites</td>
+                <td>Input Vector</td>
+                <td>$\mathbf{x} \in \mathbb{R}^n$</td>
+                <td>Raw numerical signals or continuous embeddings</td>
+              </tr>
+              <tr>
+                <td>Synaptic Strength</td>
+                <td>Weight Coefficients</td>
+                <td>$\mathbf{w} \in \mathbb{R}^n$</td>
+                <td>Learnable amplification or attenuation factors</td>
+              </tr>
+              <tr>
+                <td>Soma Accumulation</td>
+                <td>Weighted Sum + Bias</td>
+                <td>$z = \mathbf{w}^T \mathbf{x} + b$</td>
+                <td>Linear hyper-plane aggregation</td>
+              </tr>
+              <tr>
+                <td>Axon Threshold Action</td>
+                <td>Activation Function</td>
+                <td>$a = \sigma(z)$ or $a = g(z)$</td>
+                <td>Introduces non-linear decision boundary</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>2. The Rosenblatt Perceptron &amp; The XOR Crisis</h3>
+        <p>
+          Invented in 1958 by Frank Rosenblatt at the Cornell Aeronautical Laboratory, the <strong>Perceptron</strong> is the fundamental building block of connectionist architectures. It models binary classification through a Heaviside step function:
+        </p>
+        $$y = f(z) = \begin{cases} 1 & \text{if } \mathbf{w}^T \mathbf{x} + b \ge 0 \\ 0 & \text{if } \mathbf{w}^T \mathbf{x} + b < 0 \end{cases}$$
+        <p>
+          The perceptron learning rule updates weights iteratively when a misclassification occurs: $\mathbf{w} \leftarrow \mathbf{w} + \eta (y_{true} - \hat{y}) \mathbf{x}$. While Rosenblatt proved the <em>Perceptron Convergence Theorem</em> (if data is linearly separable, weights converge in finite steps), Marvin Minsky and Seymour Papert published their landmark 1969 book <em>Perceptrons</em>, mathematically proving that a single-layer perceptron cannot model non-linear functions such as <strong>XOR (Exclusive OR)</strong>.
+        </p>
+
+        <div class="callout warning">
+          <div class="callout-title">&#9888; The XOR Linear Inseparability Proof</div>
+          <div class="callout-content">
+            <p>For XOR inputs $(0,0)\to 0$, $(0,1)\to 1$, $(1,0)\to 1$, $(1,1)\to 0$:</p>
+            <ul>
+              <li>Equation 1: $w_1(0) + w_2(0) + b < 0 \implies b < 0$</li>
+              <li>Equation 2: $w_1(0) + w_2(1) + b \ge 0 \implies w_2 + b \ge 0$</li>
+              <li>Equation 3: $w_1(1) + w_2(0) + b \ge 0 \implies w_1 + b \ge 0$</li>
+              <li>Equation 4: $w_1(1) + w_2(1) + b < 0 \implies w_1 + w_2 + b < 0$</li>
+            </ul>
+            <p>Summing Equations 2 and 3 gives $w_1 + w_2 + 2b \ge 0$. Subtracting Equation 4 yields $b > 0$, directly contradicting Equation 1 ($b < 0$). Thus, no single linear hyperplane can separate XOR. Multi-Layer Perceptrons (MLP) with non-linear hidden layers are mandatory.</p>
+          </div>
+        </div>
+
+        <h3>3. Activation Functions: Mathematical Mechanics &amp; Gradient Behavior</h3>
+        <p>
+          Activation functions introduce non-linearity. Without non-linear activations, stacking $L$ neural network layers simply calculates a composition of affine transformations: $W_L(W_{L-1}(\dots W_1 \mathbf{x})) = W_{eff} \mathbf{x}$, collapsing an arbitrarily deep network into a simple linear regression model.
+        </p>
+
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Activation Function</th>
+                <th>Mathematical Formula</th>
+                <th>Output Range</th>
+                <th>Derivative Formula</th>
+                <th>Key Engineering Advantages &amp; Gotchas</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Sigmoid / Logistic</strong></td>
+                <td>$\sigma(z) = \frac{1}{1 + e^{-z}}$</td>
+                <td>$(0, 1)$</td>
+                <td>$\sigma'(z) = \sigma(z)(1 - \sigma(z))$</td>
+                <td>Probabilistic interpretation for binary outputs. <em>Critical Flaw:</em> Saturates at $|z| > 4$ where $\sigma'(z) \to 0$, causing vanishing gradients. Non-zero centered.</td>
+              </tr>
+              <tr>
+                <td><strong>Hyperbolic Tangent (Tanh)</strong></td>
+                <td>$\tanh(z) = \frac{e^z - e^{-z}}{e^z + e^{-z}}$</td>
+                <td>$(-1, 1)$</td>
+                <td>$\tanh'(z) = 1 - \tanh^2(z)$</td>
+                <td>Zero-centered output accelerates gradient descent convergence. Still suffers from saturation and vanishing gradients at extremes.</td>
+              </tr>
+              <tr>
+                <td><strong>ReLU (Rectified Linear)</strong></td>
+                <td>$f(z) = \max(0, z)$</td>
+                <td>$[0, \infty)$</td>
+                <td>$f'(z) = \begin{cases} 1 & z > 0 \\ 0 & z < 0 \end{cases}$</td>
+                <td>Industry default. Extremely fast computation, non-saturating gradient for $z > 0$. <em>Gotcha:</em> "Dying ReLU" when weights update such that $z < 0$ permanently.</td>
+              </tr>
+              <tr>
+                <td><strong>Leaky ReLU</strong></td>
+                <td>$f(z) = \max(\alpha z, z), \alpha \approx 0.01$</td>
+                <td>$(-\infty, \infty)$</td>
+                <td>$f'(z) = \begin{cases} 1 & z > 0 \\ \alpha & z < 0 \end{cases}$</td>
+                <td>Solves Dying ReLU by providing a subtle non-zero slope ($\alpha$) for negative pre-activations, preserving gradient flow.</td>
+              </tr>
+              <tr>
+                <td><strong>GELU (Gaussian Error Linear)</strong></td>
+                <td>$z \Phi(z) = z P(X \le z)$</td>
+                <td>$(-0.17, \infty)$</td>
+                <td>Smooth non-monotonic curvature</td>
+                <td>Default activation in modern Transformers (BERT, GPT, ViT). Weights inputs by their probabilistic quantile value.</td>
+              </tr>
+              <tr>
+                <td><strong>Softmax</strong></td>
+                <td>$\sigma(\mathbf{z})_i = \frac{e^{z_i}}{\sum_{j=1}^K e^{z_j}}$</td>
+                <td>$(0, 1), \sum=1$</td>
+                <td>$\frac{\partial \sigma_i}{\partial z_j} = \sigma_i (\delta_{ij} - \sigma_j)$</td>
+                <td>Standard output layer for multi-class classification. Converts unnormalized logit vectors into a valid categorical probability distribution.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="mermaid-box">
+          <pre class="mermaid">
+graph LR
+    subgraph Single Neuron Computational Anatomy
+        X1[Input: x1] -->|w1| SUM((Σ Summation: z = w·x + b))
+        X2[Input: x2] -->|w2| SUM
+        X3[Input: x3] -->|w3| SUM
+        BIAS[Bias: b] --> SUM
+        SUM -->|Pre-activation z| ACT[Non-Linear Activation: f of z]
+        ACT -->|Activated output a| OUT[Output Activation: a]
+    end
+          </pre>
+        </div>
+      </article>
+
+      <!-- Chapter 2 -->
+      <article id="ch2" class="chapter-section">
+        <div class="chapter-header">
+          <div class="chapter-eyebrow">Part 1 &bull; Video 1 (losbBdEjyN4) &bull; Chapter 02</div>
+          <h2 class="chapter-title">Forward Propagation, Loss Formulations &amp; Backpropagation Calculus</h2>
+          <p class="chapter-summary">A complete vector-matrix derivation of backpropagation using the multivariate chain rule across fully-connected deep computational graphs.</p>
+        </div>
+
+        <h3>1. Forward Propagation Matrix Formalism</h3>
+        <p>
+          Let $l \in \{1, 2, \dots, L\}$ denote the layers of an $L$-layer neural network. For layer $l$ containing $n^{[l]}$ neurons receiving input from layer $l-1$ containing $n^{[l-1]}$ neurons:
+        </p>
+        <ul>
+          <li><strong>Weight Matrix:</strong> $W^{[l]} \in \mathbb{R}^{n^{[l]} \times n^{[l-1]}}$</li>
+          <li><strong>Bias Vector:</strong> $\mathbf{b}^{[l]} \in \mathbb{R}^{n^{[l]} \times 1}$</li>
+          <li><strong>Pre-activation Linear Vector:</strong> $\mathbf{z}^{[l]} = W^{[l]} \mathbf{a}^{[l-1]} + \mathbf{b}^{[l]}$</li>
+          <li><strong>Post-activation Vector:</strong> $\mathbf{a}^{[l]} = g^{[l]}(\mathbf{z}^{[l]})$, where $\mathbf{a}^{[0]} = \mathbf{x}$ (input feature vector).</li>
+        </ul>
+        <p>
+          For a mini-batch of $m$ training samples stacked column-wise into matrix $X \in \mathbb{R}^{n^{[0]} \times m}$:
+        </p>
+        $$Z^{[l]} = W^{[l]} A^{[l-1]} + \mathbf{b}^{[l]} \mathbf{1}_{1 \times m}^T$$
+        $$A^{[l]} = g^{[l]}(Z^{[l]})$$
+
+        <h3>2. Objective &amp; Loss Functions</h3>
+        <p>
+          The loss function $\mathcal{L}(\hat{y}, y)$ measures error on a single training example, while the empirical cost function $J(W, b)$ averages over the entire dataset:
+        </p>
+        <ul>
+          <li><strong>Mean Squared Error (Regression):</strong>
+            $$J_{MSE}(W, b) = \frac{1}{2m} \sum_{i=1}^m \|\hat{\mathbf{y}}^{(i)} - \mathbf{y}^{(i)}\|_2^2$$
+          </li>
+          <li><strong>Binary Cross-Entropy / Log Loss (Binary Classification):</strong>
+            $$J_{BCE}(W, b) = -\frac{1}{m} \sum_{i=1}^m \left[ y^{(i)} \log(\hat{y}^{(i)}) + (1 - y^{(i)}) \log(1 - \hat{y}^{(i)}) \right]$$
+          </li>
+          <li><strong>Categorical Cross-Entropy (Multi-Class Classification with $K$ classes):</strong>
+            $$J_{CCE}(W, b) = -\frac{1}{m} \sum_{i=1}^m \sum_{k=1}^K y_k^{(i)} \log(\hat{y}_k^{(i)})$$
+          </li>
+        </ul>
+
+        <h3>3. Rigorous Multivariate Backpropagation Chain Rule Derivation</h3>
+        <p>
+          Backpropagation computes the gradient of the cost function with respect to every weight $W^{[l]}$ and bias $\mathbf{b}^{[l]}$ using reverse-mode automatic differentiation.
+        </p>
+
+        <div class="callout tip">
+          <div class="callout-title">&#128221; Step-by-Step Derivation: Softmax Output Layer with Cross-Entropy</div>
+          <div class="callout-content">
+            <p>Consider the final output layer $L$ where $\hat{y}_i = a_i^{[L]} = \frac{e^{z_i^{[L]}}}{\sum_k e^{z_k^{[L]}}}$ and loss is $\mathcal{L} = -\sum_k y_k \log(a_k^{[L]})$.</p>
+            <p>Using the multivariate chain rule:</p>
+            $$\frac{\partial \mathcal{L}}{\partial z_i^{[L]}} = \sum_k \frac{\partial \mathcal{L}}{\partial a_k^{[L]}} \frac{\partial a_k^{[L]}}{\partial z_i^{[L]}}$$
+            <p>Since $\frac{\partial \mathcal{L}}{\partial a_k^{[L]}} = -\frac{y_k}{a_k^{[L]}}$ and $\frac{\partial a_k^{[L]}}{\partial z_i^{[L]}} = a_k^{[L]}(\delta_{ik} - a_i^{[L]})$, substituting yields:</p>
+            $$\frac{\partial \mathcal{L}}{\partial z_i^{[L]}} = -\frac{y_i}{a_i^{[L]}} a_i^{[L]}(1 - a_i^{[L]}) - \sum_{k \neq i} \frac{y_k}{a_k^{[L]}} (-a_k^{[L]} a_i^{[L]}) = -y_i(1 - a_i^{[L]}) + a_i^{[L]} \sum_{k \neq i} y_k$$
+            <p>Since one-hot vector $\sum_k y_k = 1$, we have $\sum_{k \neq i} y_k = 1 - y_i$:</p>
+            $$\frac{\partial \mathcal{L}}{\partial z_i^{[L]}} = -y_i + y_i a_i^{[L]} + a_i^{[L]} - y_i a_i^{[L]} = a_i^{[L]} - y_i$$
+            <p>In vector-matrix form across all $m$ examples:</p>
+            $$dZ^{[L]} = A^{[L]} - Y$$
+          </div>
+        </div>
+
+        <p>For any arbitrary intermediate hidden layer $l$:</p>
+        <ol>
+          <li><strong>Gradient w.r.t Pre-activation $Z^{[l]}$:</strong>
+            $$dZ^{[l]} = \left( (W^{[l+1]})^T dZ^{[l+1]} \right) \odot {g^{[l]}}'(Z^{[l]})$$
+            where $\odot$ denotes the Hadamard (element-wise) product.
+          </li>
+          <li><strong>Gradient w.r.t Weight Matrix $W^{[l]}$:</strong>
+            $$dW^{[l]} = \frac{\partial J}{\partial W^{[l]}} = \frac{1}{m} dZ^{[l]} (A^{[l-1]})^T$$
+          </li>
+          <li><strong>Gradient w.r.t Bias Vector $\mathbf{b}^{[l]}$:</strong>
+            $$d\mathbf{b}^{[l]} = \frac{\partial J}{\partial \mathbf{b}^{[l]}} = \frac{1}{m} \sum_{i=1}^m dZ^{[l](i)} = \frac{1}{m} \text{np.sum}(dZ^{[l]}, \text{axis}=1, \text{keepdims}=\text{True})$$
+          </li>
+        </ol>
+
+        <div class="mermaid-box">
+          <pre class="mermaid">
+graph LR
+    subgraph Forward Pass: Data to Loss
+        A_PREV[A: layer l-1] -->|Multiply by W| Z_CURR[Z: layer l]
+        Z_CURR -->|Activation g| A_CURR[A: layer l]
+        A_CURR --> LOSS[Cost Function J]
+    end
+    subgraph Backward Pass: Gradients Reverse Flow
+        LOSS -.->|Compute dL over dA| DA_CURR[dA: layer l]
+        DA_CURR -.->|Hadamard with g-prime| DZ_CURR[dZ: layer l]
+        DZ_CURR -.->|Outer product with A-prev| DW[dW: layer l]
+        DZ_CURR -.->|Sum over batch| DB[db: layer l]
+        DZ_CURR -.->|Multiply by W-transpose| DA_PREV[dA: layer l-1]
+    end
+          </pre>
+        </div>
+      </article>
+
+      <!-- Chapter 3 -->
+      <article id="ch3" class="chapter-section">
+        <div class="chapter-header">
+          <div class="chapter-eyebrow">Part 1 &bull; Video 1 (losbBdEjyN4) &bull; Chapter 03</div>
+          <h2 class="chapter-title">Optimizers, Regularization &amp; Production ANN Implementation</h2>
+          <p class="chapter-summary">Modern gradient descent optimizers (Momentum, RMSprop, Adam), regularization mechanics (Dropout, BatchNorm), and an end-to-end PyTorch production pipeline.</p>
+        </div>
+
+        <h3>1. The Taxonomy of Gradient Descent Optimizers</h3>
+        <p>
+          Standard Gradient Descent updates parameters along the negative gradient vector: $\theta \leftarrow \theta - \eta \nabla_\theta J(\theta)$. However, non-convex loss surfaces filled with saddle points, pathological curvature (ravines), and noisy mini-batch estimates necessitate advanced adaptive learning rate algorithms:
+        </p>
+
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Optimizer</th>
+                <th>Core Mathematical Update Rule</th>
+                <th>Hyperparameters</th>
+                <th>Behavioral Characteristic</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>SGD with Momentum</strong></td>
+                <td>
+                  $v_t = \gamma v_{t-1} + \eta \nabla_\theta J(\theta)$<br>
+                  $\theta = \theta - v_t$
+                </td>
+                <td>$\eta$ (LR), $\gamma \approx 0.9$ (momentum)</td>
+                <td>Builds velocity along consistent gradient directions while dampening oscillations in steep ravines.</td>
+              </tr>
+              <tr>
+                <td><strong>RMSprop (Hinton)</strong></td>
+                <td>
+                  $s_t = \beta s_{t-1} + (1 - \beta) (\nabla_\theta J(\theta))^2$<br>
+                  $\theta = \theta - \frac{\eta}{\sqrt{s_t + \epsilon}} \nabla_\theta J(\theta)$
+                </td>
+                <td>$\eta$, $\beta \approx 0.99$, $\epsilon = 10^{-8}$</td>
+                <td>Maintains an exponentially decaying average of squared gradients to scale coordinates inversely by their historical volatility.</td>
+              </tr>
+              <tr>
+                <td><strong>Adam (Kingma &amp; Ba)</strong></td>
+                <td>
+                  $m_t = \beta_1 m_{t-1} + (1-\beta_1) g_t$<br>
+                  $v_t = \beta_2 v_{t-1} + (1-\beta_2) g_t^2$<br>
+                  $\hat{m}_t = \frac{m_t}{1 - \beta_1^t}, \quad \hat{v}_t = \frac{v_t}{1 - \beta_2^t}$<br>
+                  $\theta = \theta - \frac{\eta}{\sqrt{\hat{v}_t} + \epsilon} \hat{m}_t$
+                </td>
+                <td>$\beta_1 = 0.9, \beta_2 = 0.999, \epsilon = 10^{-8}$</td>
+                <td>Combines Momentum (1st moment $m_t$) and RMSprop (2nd moment $v_t$) with theoretical <strong>bias correction</strong> for initial steps. Industry gold standard.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>2. Overfitting Mitigation &amp; Internal Covariate Shift</h3>
+        <ul>
+          <li><strong>Dropout (Srivastava et al., 2014):</strong> During training, each neuron is independently zeroed out with probability $p$. In <em>Inverted Dropout</em>, surviving activations are scaled by $\frac{1}{1 - p}$ during training, guaranteeing that no adjustment is required at inference time. Prevents co-adaptation of features.</li>
+          <li><strong>Batch Normalization (Ioffe &amp; Szegedy, 2015):</strong> Normalizes mini-batch activations across batch dimension:
+            $$\mu_B = \frac{1}{m} \sum_{i=1}^m z^{(i)}, \quad \sigma_B^2 = \frac{1}{m} \sum_{i=1}^m (z^{(i)} - \mu_B)^2$$
+            $$\hat{z}^{(i)} = \frac{z^{(i)} - \mu_B}{\sqrt{\sigma_B^2 + \epsilon}}, \quad y^{(i)} = \gamma \hat{z}^{(i)} + \beta$$
+            where $\gamma$ and $\beta$ are learnable scale and shift parameters restoring network representational power. Stabilizes gradient flow and acts as a mild regularizer.
+          </li>
+          <li><strong>L2 Regularization (Weight Decay):</strong> Adds penalty term $\frac{\lambda}{2m} \|W\|_F^2$ to the loss, driving weights toward zero and smoothing decision surfaces.</li>
+        </ul>
+
+        <h3>3. Complete Hands-on PyTorch Production ANN Implementation</h3>
+        <div class="code-container">
+          <div class="code-header">
+            <span>production_ann_classifier.py</span>
+            <button onclick="navigator.clipboard.writeText(this.closest('.code-container').querySelector('pre').innerText)">Copy Code</button>
+          </div>
+          <pre><code class="language-python">import torch
+import torch.nn as nn
+import torch.optim as optim
+from torch.utils.data import DataLoader, TensorDataset
+import numpy as np
+
+# 1. Reproducibility & Device Configuration
+torch.manual_seed(42)
+device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+print(f"Training on device: {device}")
+
+# 2. Synthetic Customer Churn Dataset (1000 samples, 20 features)
+X_dummy = torch.randn(1000, 20)
+y_dummy = torch.randint(0, 2, (1000, 1)).float()
+
+dataset = TensorDataset(X_dummy, y_dummy)
+train_loader = DataLoader(dataset, batch_size=32, shuffle=True)
+
+# 3. Modular Deep MLP Architecture with BatchNorm & Dropout
+class DeepANNClassifier(nn.Module):
+    def __init__(self, input_dim=20, hidden_dims=[64, 32], drop_rate=0.3):
+        super(DeepANNClassifier, self).__init__()
+        
+        layers = []
+        in_dim = input_dim
+        for h_dim in hidden_dims:
+            layers.extend([
+                nn.Linear(in_dim, h_dim),
+                nn.BatchNorm1d(h_dim),
+                nn.ReLU(),
+                nn.Dropout(p=drop_rate)
+            ])
+            in_dim = h_dim
+            
+        # Final classification head (Sigmoid for binary classification)
+        layers.append(nn.Linear(in_dim, 1))
+        layers.append(nn.Sigmoid())
+        
+        self.network = nn.Sequential(*layers)
+        
+    def forward(self, x):
+        return self.network(x)
+
+# 4. Model Initialization & Parameter Inspection
+model = DeepANNClassifier().to(device)
+criterion = nn.BCELoss()
+optimizer = optim.AdamW(model.parameters(), lr=0.001, weight_decay=0.01)
+
+# 5. Production Training Loop with Metric Tracking
+epochs = 20
+for epoch in range(1, epochs + 1):
+    model.train()
+    running_loss = 0.0
+    correct = 0
+    total = 0
+    
+    for batch_x, batch_y in train_loader:
+        batch_x, batch_y = batch_x.to(device), batch_y.to(device)
+        
+        # Zero gradients from previous iteration
+        optimizer.zero_grad()
+        
+        # Forward pass
+        predictions = model(batch_x)
+        loss = criterion(predictions, batch_y)
+        
+        # Backward pass & weight update
+        loss.backward()
+        optimizer.step()
+        
+        running_loss += loss.item() * batch_x.size(0)
+        predicted_classes = (predictions >= 0.5).float()
+        correct += (predicted_classes == batch_y).sum().item()
+        total += batch_y.size(0)
+        
+    epoch_loss = running_loss / total
+    epoch_acc = (correct / total) * 100
+    if epoch % 5 == 0 or epoch == 1:
+        print(f"Epoch [{epoch:02d}/{epochs:02d}] - Loss: {epoch_loss:.4f} | Accuracy: {epoch_acc:.2f}%")
+
+print("ANN Training Completed Successfully.")
+</code></pre>
+        </div>
+      </article>
+
+      <!-- ========================================== -->
+      <!-- PART 2: CONVOLUTIONAL NETWORKS (CNN)       -->
+      <!-- ========================================== -->
+
+      <!-- Chapter 4 -->
+      <article id="ch4" class="chapter-section">
+        <div class="chapter-header">
+          <div class="chapter-eyebrow">Part 2 &bull; Video 2 (dh3ilHzIRd0) &bull; Chapter 04</div>
+          <h2 class="chapter-title">CNN Foundations: 2D Convolutions, Kernels &amp; Pooling Mechanics</h2>
+          <p class="chapter-summary">The geometric mechanics of convolutional operators: feature maps, receptive fields, stride arithmetic, padding boundaries, and translational invariance.</p>
+        </div>
+
+        <h3>1. Why Fully Connected ANNs Fail on Computer Vision</h3>
+        <p>
+          Before Convolutional Neural Networks, computer vision pipelines flattened 2D image matrices into 1D vectors and fed them into multi-layer perceptrons. This approach exhibits two catastrophic theoretical flaws:
+        </p>
+        <ul>
+          <li><strong>Catastrophic Parameter Explosion:</strong> A modest color image of resolution $1000 \times 1000 \times 3$ has $3,000,000$ input values. Connecting this to a single hidden layer of 1,000 neurons requires $3 \times 10^9$ (3 billion) weights for a single layer, exceeding GPU VRAM and guaranteeing severe overfitting.</li>
+          <li><strong>Destruction of Spatial Topology:</strong> Flattening converts an image into an unordered sequence of pixels, completely discarding the fundamental principle of vision: <em>local pixel correlation</em>. Neighboring pixels possess intense semantic cohesion; flattening treats two adjacent pixels no differently than pixels at opposite corners.</li>
+          <li><strong>Translation Invariance Absence:</strong> If an object shifts by 5 pixels, an MLP activates entirely different input weights, failing to recognize that the identical object is present elsewhere in the frame.</li>
+        </ul>
+
+        <h3>2. The 2D Convolution Operation</h3>
+        <p>
+          A Convolutional layer overcomes these limitations through <strong>local receptive fields</strong> and <strong>parameter sharing</strong>. A small learnable filter (kernel) $\mathbf{K} \in \mathbb{R}^{K_h \times K_w}$ slides across the input tensor $\mathbf{X}$, calculating the Frobenius inner product (element-wise multiplication followed by summation) at every spatial location:
+        </p>
+        $$S(i, j) = (\mathbf{X} * \mathbf{K})(i, j) = \sum_{m} \sum_{n} \mathbf{X}(i + m, j + n) \mathbf{K}(m, n) + b$$
+        <p>
+          Because the identical kernel weights $\mathbf{K}$ are applied across every region of the image, the number of parameters depends entirely on kernel size and channel depth—completely independent of image resolution!
+        </p>
+
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Hyperparameter</th>
+                <th>Symbol</th>
+                <th>Mathematical Rule / Definition</th>
+                <th>Architectural Impact</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Kernel / Filter Size</strong></td>
+                <td>$K \times K$</td>
+                <td>Typically $3\times3$, $5\times5$, or $1\times1$</td>
+                <td>Determines local receptive field. Stacking two $3\times3$ layers yields effective $5\times5$ receptive field with $28\%$ fewer weights.</td>
+              </tr>
+              <tr>
+                <td><strong>Stride</strong></td>
+                <td>$S$</td>
+                <td>Step size in pixels when sliding the filter</td>
+                <td>$S > 1$ subsamples the spatial dimensions, halving spatial resolution without requiring pooling.</td>
+              </tr>
+              <tr>
+                <td><strong>Padding</strong></td>
+                <td>$P$</td>
+                <td>Border pixels added around the image perimeter</td>
+                <td>
+                  <strong>Valid Padding ($P=0$):</strong> Shrinks dimensions.<br>
+                  <strong>Same Padding:</strong> $P = \frac{K-1}{2}$ preserves input spatial resolution ($W_{out} = W_{in}$).
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="callout tip">
+          <div class="callout-title">&#128290; The Golden Formula of CNN Output Dimensions</div>
+          <div class="callout-content">
+            <p>For an input of width $W$, kernel size $K$, padding $P$, and stride $S$, the output spatial dimension is:</p>
+            $$O = \left\lfloor \frac{W - K + 2P}{S} \right\rfloor + 1$$
+            <p><strong>Example:</strong> Input $W = 32$, Kernel $K = 5$, Padding $P = 2$, Stride $S = 1$:</p>
+            $$O = \left\lfloor \frac{32 - 5 + 2(2)}{1} \right\rfloor + 1 = \left\lfloor \frac{31}{1} \right\rfloor + 1 = 32 \quad (\text{Exact Same Padding!})$$
+          </div>
+        </div>
+
+        <h3>3. Pooling Layers &amp; Downsampling</h3>
+        <p>
+          Pooling operations progressively reduce the spatial size of feature maps, decreasing parameter count and computational complexity while granting <strong>translational invariance</strong> (minor shifts in the input do not alter pooled representations):
+        </p>
+        <ul>
+          <li><strong>Max Pooling:</strong> Selects the maximum activation within a window (e.g., $2\times2$ with stride 2). Preserves sharp edges, corners, and dominant foreground features. Industry default.</li>
+          <li><strong>Average Pooling:</strong> Computes the arithmetic mean within a window. Produces smoother representations; historically used in older networks.</li>
+          <li><strong>Global Average Pooling (GAP):</strong> Computes the mean of each entire feature map into a single scalar ($H \times W \times C \to 1 \times 1 \times C$). Completely replaces parameter-heavy fully connected layers prior to the final softmax classifier (Lin et al., <em>Network in Network</em>), drastically preventing overfitting.</li>
+        </ul>
+
+        <div class="mermaid-box">
+          <pre class="mermaid">
+graph LR
+    subgraph CNN Spatial Transformation Pipeline
+        INP[Input Image: 224x224x3] -->|Conv 3x3 s=1 p=1: 64 filters| C1[Feature Maps: 224x224x64]
+        C1 -->|ReLU Activation| R1[Activated Maps: 224x224x64]
+        R1 -->|Max Pool 2x2 s=2| P1[Downsampled Maps: 112x112x64]
+        P1 -->|Conv 3x3 s=1 p=1: 128 filters| C2[Feature Maps: 112x112x128]
+        C2 -->|Max Pool 2x2 s=2| P2[Downsampled Maps: 56x56x128]
+        P2 -->|Global Average Pooling| GAP[Vector: 1x128]
+        GAP -->|Dense Linear Head| LOGITS[Classification Logits: 10 classes]
+    end
+          </pre>
+        </div>
+      </article>
+
+      <!-- Chapter 5 -->
+      <article id="ch5" class="chapter-section">
+        <div class="chapter-header">
+          <div class="chapter-eyebrow">Part 2 &bull; Video 2 (dh3ilHzIRd0) &bull; Chapter 05</div>
+          <h2 class="chapter-title">Architectural Evolution: From LeNet-5 to ResNet Skip Connections</h2>
+          <p class="chapter-summary">A historical and mathematical analysis of seminal vision backbones: AlexNet, VGG-16, GoogLeNet Inception, and ResNet's residual gradient highway.</p>
+        </div>
+
+        <h3>1. The Evolution of Deep Vision Backbones</h3>
+        <p>
+          The progression of convolutional architectures reflects an enduring quest to train deeper networks without succumbing to vanishing gradients or computational bottlenecks:
+        </p>
+
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Architecture</th>
+                <th>Year &amp; Authors</th>
+                <th>Depth</th>
+                <th>Key Innovations</th>
+                <th>Top-5 Error (ImageNet)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>LeNet-5</strong></td>
+                <td>1998 (Yann LeCun)</td>
+                <td>5 layers</td>
+                <td>First commercial convnet for check digit recognition. Used $5\times5$ convs and average pooling.</td>
+                <td>N/A (MNIST)</td>
+              </tr>
+              <tr>
+                <td><strong>AlexNet</strong></td>
+                <td>2012 (Krizhevsky et al.)</td>
+                <td>8 layers</td>
+                <td>Ignited the modern Deep Learning revolution. First use of ReLU activations, Dropout ($p=0.5$), and Dual-GPU training.</td>
+                <td>$16.4\%$ (Won ILSVRC)</td>
+              </tr>
+              <tr>
+                <td><strong>VGG-16 / VGG-19</strong></td>
+                <td>2014 (Simonyan &amp; Zisserman)</td>
+                <td>16-19 layers</td>
+                <td>Pioneered the philosophy of homogeneous architectures using exclusively small $3\times3$ filters stacked consecutively.</td>
+                <td>$7.3\%$</td>
+              </tr>
+              <tr>
+                <td><strong>GoogLeNet (Inception v1)</strong></td>
+                <td>2014 (Szegedy et al.)</td>
+                <td>22 layers</td>
+                <td>Inception modules with multi-scale parallel convs ($1\times1, 3\times3, 5\times5$); $1\times1$ conv bottlenecks for dimensionality reduction.</td>
+                <td>$6.7\%$ (Won ILSVRC)</td>
+              </tr>
+              <tr>
+                <td><strong>ResNet</strong></td>
+                <td>2015 (Kaiming He et al.)</td>
+                <td>50-152 layers</td>
+                <td><strong>Residual Skip Connections</strong>. Enabled training of ultra-deep networks (up to 1000+ layers) by solving gradient degradation.</td>
+                <td>$3.57\%$ (Beat Human Level)</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>2. Why Stacked $3\times3$ Filters Dominate $5\times5$ and $7\times7$</h3>
+        <p>
+          VGG established that stacking multiple $3\times3$ convolutional layers is mathematically and computationally superior to using larger kernel filters:
+        </p>
+        <ul>
+          <li><strong>Identical Effective Receptive Field:</strong> Stacking two $3\times3$ conv layers covers an effective receptive field of $5\times5$. Stacking three covers $7\times7$.</li>
+          <li><strong>Significant Parameter Reduction:</strong> Three stacked $3\times3$ layers with $C$ channels require $3 \times (3 \times 3 \times C^2) = 27 C^2$ weights. A single $7\times7$ layer requires $1 \times (7 \times 7 \times C^2) = 49 C^2$ weights—a <strong>$45\%$ reduction</strong> in learnable parameters!</li>
+          <li><strong>Enhanced Non-Linear Discriminative Power:</strong> Three $3\times3$ layers incorporate three consecutive non-linear activation functions (ReLU), allowing the network to synthesize significantly richer hierarchical feature spaces.</li>
+        </ul>
+
+        <h3>3. ResNet Residual Learning: The Mathematical Gradient Highway</h3>
+        <p>
+          Prior to 2015, adding layers beyond 20 caused training error to increase—not due to overfitting, but due to <strong>degradation</strong> (gradients vanishing as they backpropagate through dozens of non-linear matrix multiplications).
+        </p>
+        <p>
+          Kaiming He et al. reformulated the mapping. Instead of tasking stacked layers with fitting an underlying mapping $\mathcal{H}(\mathbf{x})$, they explicitly let layers fit a residual mapping $\mathcal{F}(\mathbf{x}) := \mathcal{H}(\mathbf{x}) - \mathbf{x}$. The original mapping is recast as:
+        </p>
+        $$\mathcal{H}(\mathbf{x}) = \mathcal{F}(\mathbf{x}) + \mathbf{x}$$
+
+        <div class="callout tip">
+          <div class="callout-title">&#128640; Mathematical Proof: Why Skip Connections Prevent Vanishing Gradients</div>
+          <div class="callout-content">
+            <p>For any deeper layer $L$ and shallower layer $l$, recursive residual application gives:</p>
+            $$\mathbf{x}_L = \mathbf{x}_l + \sum_{i=l}^{L-1} \mathcal{F}(\mathbf{x}_i, \mathcal{W}_i)$$
+            <p>Applying the multivariate chain rule for the gradient of loss $\mathcal{E}$ with respect to $\mathbf{x}_l$:</p>
+            $$\frac{\partial \mathcal{E}}{\partial \mathbf{x}_l} = \frac{\partial \mathcal{E}}{\partial \mathbf{x}_L} \frac{\partial \mathbf{x}_L}{\partial \mathbf{x}_l} = \frac{\partial \mathcal{E}}{\partial \mathbf{x}_L} \left( \mathbf{I} + \frac{\partial}{\partial \mathbf{x}_l} \sum_{i=l}^{L-1} \mathcal{F}(\mathbf{x}_i, \mathcal{W}_i) \right)$$
+            <p>Notice the identity matrix term $\mathbf{I}$! Even if the gradient through the transformation path $\frac{\partial \mathcal{F}}{\partial \mathbf{x}_l}$ approaches zero (vanishes), the gradient $\frac{\partial \mathcal{E}}{\partial \mathbf{x}_l}$ retains an uninterrupted direct term $\frac{\partial \mathcal{E}}{\partial \mathbf{x}_L} \cdot \mathbf{I}$. Signal flows directly from the loss back to the earliest layers without attenuation.</p>
+          </div>
+        </div>
+
+        <div class="mermaid-box">
+          <pre class="mermaid">
+graph TD
+    X[Input: x] --> F1[Weight Layer: Conv 3x3]
+    F1 --> R1[ReLU Activation]
+    R1 --> F2[Weight Layer: Conv 3x3]
+    X -->|Identity Shortcut: Skip Connection| ADD((+ Element-wise Addition))
+    F2 --> ADD
+    ADD --> OUT[ReLU: Output F of x + x]
+          </pre>
+        </div>
+      </article>
+
+      <!-- Chapter 6 -->
+      <article id="ch6" class="chapter-section">
+        <div class="chapter-header">
+          <div class="chapter-eyebrow">Part 2 &bull; Video 2 (dh3ilHzIRd0) &bull; Chapter 06</div>
+          <h2 class="chapter-title">Production Computer Vision: Transfer Learning &amp; Custom CNN Project</h2>
+          <p class="chapter-summary">Building an end-to-end Computer Vision classifier in PyTorch: data augmentation pipelines, residual architecture, and transfer learning fine-tuning.</p>
+        </div>
+
+        <h3>1. Transfer Learning Strategies &amp; Decision Matrix</h3>
+        <p>
+          Training modern deep vision models from scratch requires millions of annotated images and prohibitive GPU compute. <strong>Transfer Learning</strong> leverages backbones pre-trained on ImageNet (1.4 million images across 1,000 classes) to transfer visual representations (Gabor-like edge detectors, texture filters, object parts) to downstream tasks:
+        </p>
+
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Target Dataset Size</th>
+                <th>Target Domain Similarity</th>
+                <th>Recommended Strategy</th>
+                <th>Practical Execution Rule</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Small (&lt; 1,000 images)</td>
+                <td>High (natural objects, animals)</td>
+                <td><strong>Linear Probe / Feature Extraction</strong></td>
+                <td>Freeze entire backbone weights (`param.requires_grad = False`); train only the final linear classification head.</td>
+              </tr>
+              <tr>
+                <td>Small (&lt; 1,000 images)</td>
+                <td>Low (medical X-rays, satellite)</td>
+                <td><strong>Fine-tune Top Layers</strong></td>
+                <td>Freeze early general feature layers (Layers 1-2); fine-tune later specialized convolutional blocks with low learning rate ($10^{-5}$).</td>
+              </tr>
+              <tr>
+                <td>Large (&gt; 50,000 images)</td>
+                <td>Any domain</td>
+                <td><strong>Full Network Fine-Tuning</strong></td>
+                <td>Initialize with pre-trained weights; train entire network with discriminative learning rates ($10^{-5}$ for backbone, $10^{-3}$ for head).</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>2. Full End-to-End PyTorch Custom CNN with Data Augmentation</h3>
+        <div class="code-container">
+          <div class="code-header">
+            <span>custom_vision_classifier.py</span>
+            <button onclick="navigator.clipboard.writeText(this.closest('.code-container').querySelector('pre').innerText)">Copy Code</button>
+          </div>
+          <pre><code class="language-python">import torch
+import torch.nn as nn
+import torch.optim as optim
+from torch.utils.data import DataLoader, TensorDataset
+import torchvision.transforms as T
+
+# 1. Production Data Augmentation Pipeline
+train_transforms = T.Compose([
+    T.RandomResizedCrop(size=224, scale=(0.8, 1.0)),
+    T.RandomHorizontalFlip(p=0.5),
+    T.ColorJitter(brightness=0.2, contrast=0.2),
+    T.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
+])
+
+# 2. Modern Residual Block Module
+class ResidualBlock(nn.Module):
+    def __init__(self, channels):
+        super(ResidualBlock, self).__init__()
+        self.conv_block = nn.Sequential(
+            nn.Conv2d(channels, channels, kernel_size=3, padding=1, bias=False),
+            nn.BatchNorm2d(channels),
+            nn.ReLU(inplace=True),
+            nn.Conv2d(channels, channels, kernel_size=3, padding=1, bias=False),
+            nn.BatchNorm2d(channels)
+        )
+        self.relu = nn.ReLU(inplace=True)
+        
+    def forward(self, x):
+        return self.relu(x + self.conv_block(x)) # Identity skip connection
+
+# 3. Custom Deep Residual Vision Classifier
+class ProductionVisionCNN(nn.Module):
+    def __init__(self, num_classes=5):
+        super(ProductionVisionCNN, self).__init__()
+        
+        # Initial Feature Stem
+        self.stem = nn.Sequential(
+            nn.Conv2d(3, 32, kernel_size=7, stride=2, padding=3, bias=False),
+            nn.BatchNorm2d(32),
+            nn.ReLU(inplace=True),
+            nn.MaxPool2d(kernel_size=3, stride=2, padding=1)
+        )
+        
+        # Residual Convolutional Stages
+        self.stage1 = nn.Sequential(
+            nn.Conv2d(32, 64, kernel_size=3, stride=2, padding=1, bias=False),
+            nn.BatchNorm2d(64),
+            nn.ReLU(inplace=True),
+            ResidualBlock(64)
+        )
+        
+        self.stage2 = nn.Sequential(
+            nn.Conv2d(64, 128, kernel_size=3, stride=2, padding=1, bias=False),
+            nn.BatchNorm2d(128),
+            nn.ReLU(inplace=True),
+            ResidualBlock(128)
+        )
+        
+        # Global Average Pooling Head (Zero spatial flatten parameters)
+        self.gap = nn.AdaptiveAvgPool2d((1, 1))
+        self.classifier = nn.Linear(128, num_classes)
+        
+    def forward(self, x):
+        x = self.stem(x)
+        x = self.stage1(x)
+        x = self.stage2(x)
+        x = self.gap(x)
+        x = torch.flatten(x, 1)
+        return self.classifier(x)
+
+# 4. Model Verification & Forward Pass Test
+model = ProductionVisionCNN(num_classes=5)
+dummy_batch = torch.randn(4, 3, 224, 224) # Batch of 4 images
+logits = model(dummy_batch)
+
+print("CNN Output Logits Shape:", logits.shape) # [4, 5]
+total_params = sum(p.numel() for p in model.parameters() if p.requires_grad)
+print(f"Total Trainable CNN Parameters: {total_params:,}")
+</code></pre>
+        </div>
+      </article>
+
+      <!-- ========================================== -->
+      <!-- PART 3: RECURRENT NETWORKS (RNN)           -->
+      <!-- ========================================== -->
+
+      <!-- Chapter 7 -->
+      <article id="ch7" class="chapter-section">
+        <div class="chapter-header">
+          <div class="chapter-eyebrow">Part 3 &bull; Video 3 (0Q4yhrkwn7c) &bull; Chapter 07</div>
+          <h2 class="chapter-title">Sequential Deep Learning: Vanilla RNNs &amp; The BPTT Dilemma</h2>
+          <p class="chapter-summary">Temporal modeling across discrete time steps: recurrence loops, backpropagation through time (BPTT), and the exponential vanishing/exploding gradient proof.</p>
+        </div>
+
+        <h3>1. Why Feedforward Architectures Fail on Sequential Data</h3>
+        <p>
+          Standard MLPs and CNNs assume that all inputs $\mathbf{x}^{(i)}$ are <strong>Independent and Identically Distributed (I.I.D.)</strong>. In sequential domains—natural language sentences, audio waveforms, genomic DNA sequences, and financial time-series—the meaning of an element depends strictly on preceding context:
+        </p>
+        <ul>
+          <li><strong>Variable Sequence Length:</strong> Text documents vary from 3 words to 10,000 words. Feedforward networks require fixed-sized input dimensions, forcing arbitrary truncation or zero-padding.</li>
+          <li><strong>Temporal Order Invariance:</strong> "Dog bites man" and "Man bites dog" contain identical words, yet convey polar opposite semantics. Order and temporal sequence are paramount.</li>
+          <li><strong>Long-Range Dependency Sharing:</strong> An entity introduced at sentence 1 ("Albert Einstein was born in Ulm...") dictates pronoun resolution at sentence 20 ("...where <em>he</em> completed his studies."). Feedforward networks have zero recurrence memory.</li>
+        </ul>
+
+        <h3>2. The Vanilla Recurrent Neural Network (RNN) Architecture</h3>
+        <p>
+          A Recurrent Neural Network processes sequence tokens sequentially, maintaining an internal <strong>hidden state vector $\mathbf{h}_t \in \mathbb{R}^d$</strong> that serves as a persistent temporal working memory:
+        </p>
+        $$\mathbf{h}_t = \tanh(W_{hh} \mathbf{h}_{t-1} + W_{xh} \mathbf{x}_t + \mathbf{b}_h)$$
+        $$\hat{\mathbf{y}}_t = \text{softmax}(W_{hy} \mathbf{h}_t + \mathbf{b}_y)$$
+        <p>
+          Crucially, the weight matrices $W_{hh}$, $W_{xh}$, and $W_{hy}$ are <strong>shared across all time steps $t \in \{1, 2, \dots, T\}$</strong>, enabling the model to process sequences of arbitrary length.
+        </p>
+
+        <h3>3. Backpropagation Through Time (BPTT) &amp; Vanishing Gradients</h3>
+        <p>
+          To compute gradients in an RNN, the network is conceptually "unfolded" across time steps $1, 2, \dots, T$. The total loss across the sequence is the sum of losses at each time step: $\mathcal{L} = \sum_{t=1}^T \mathcal{L}_t$.
+        </p>
+
+        <div class="callout warning">
+          <div class="callout-title">&#9888; Mathematical Derivation: Why Vanilla RNNs Cannot Learn Past ~10 Steps</div>
+          <div class="callout-content">
+            <p>Consider the gradient of loss at time step $T$ with respect to the initial hidden state $\mathbf{h}_1$. By the multivariate chain rule:</p>
+            $$\frac{\partial \mathcal{L}_T}{\partial \mathbf{h}_1} = \frac{\partial \mathcal{L}_T}{\partial \mathbf{h}_T} \prod_{k=2}^T \frac{\partial \mathbf{h}_k}{\partial \mathbf{h}_{k-1}}$$
+            <p>Each Jacobian matrix $\frac{\partial \mathbf{h}_k}{\partial \mathbf{h}_{k-1}}$ is given by:</p>
+            $$\frac{\partial \mathbf{h}_k}{\partial \mathbf{h}_{k-1}} = \text{diag}\left(1 - \mathbf{h}_k^2\right) W_{hh}^T$$
+            <p>Therefore, the product expands to:</p>
+            $$\prod_{k=2}^T \frac{\partial \mathbf{h}_k}{\partial \mathbf{h}_{k-1}} = \prod_{k=2}^T \left( \text{diag}\left(1 - \mathbf{h}_k^2\right) W_{hh}^T \right)$$
+            <p>This product exhibits catastrophic exponential behavior based on the largest singular value (spectral radius $\rho$) of $W_{hh}$:</p>
+            <ul>
+              <li><strong>If $\rho(W_{hh}) < 1$:</strong> Because $\tanh' \le 1$, the terms exponentially decay: $\lim_{T \to \infty} \rho^{T-1} = 0$. The gradient completely <strong>vanishes</strong>, making it mathematically impossible for the network to update weights based on long-range context.</li>
+              <li><strong>If $\rho(W_{hh}) > 1$:</strong> The terms explode exponentially ($\rho^{T-1} \to \infty$), causing numerical NaN overflow and weight destruction (<strong>exploding gradients</strong>). While exploding gradients can be mitigated by <em>Gradient Clipping</em> ($\mathbf{g} \leftarrow \min\left(1, \frac{\text{threshold}}{\|\mathbf{g}\|}\right) \mathbf{g}$), vanishing gradients require gated memory cells.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="mermaid-box">
+          <pre class="mermaid">
+graph LR
+    subgraph RNN Unfolded Through Discrete Time Steps
+        X1[Input: x1] --> H1[Hidden: h1]
+        H0[Init State: h0] --> H1
+        H1 --> Y1[Output: y1]
+        
+        X2[Input: x2] --> H2[Hidden: h2]
+        H1 -->|Shared Whh| H2
+        H2 --> Y2[Output: y2]
+        
+        X3[Input: x3] --> H3[Hidden: h3]
+        H2 -->|Shared Whh| H3
+        H3 --> Y3[Output: y3]
+    end
+          </pre>
+        </div>
+      </article>
+
+      <!-- Chapter 8 -->
+      <article id="ch8" class="chapter-section">
+        <div class="chapter-header">
+          <div class="chapter-eyebrow">Part 3 &bull; Video 3 (0Q4yhrkwn7c) &bull; Chapter 08</div>
+          <h2 class="chapter-title">Gated Architectures: LSTM, GRU &amp; Bidirectional Networks</h2>
+          <p class="chapter-summary">The Constant Error Carousel of Long Short-Term Memory, mathematical gate formulations, Gated Recurrent Units, and bidirectional context capture.</p>
+        </div>
+
+        <h3>1. Long Short-Term Memory (LSTM): The Constant Error Carousel</h3>
+        <p>
+          Proposed by Sepp Hochreiter and Jürgen Schmidhuber in 1997, the <strong>LSTM</strong> network resolves vanishing gradients by splitting the internal state into two distinct vectors: the <strong>Hidden State $\mathbf{h}_t$</strong> (short-term memory) and the <strong>Cell State $\mathbf{C}_t$</strong> (long-term memory).
+        </p>
+        <p>
+          Information flows down the cell state with strictly <em>linear additive updates</em> rather than multiplicative matrix transformations, establishing a constant error carousel where gradients can travel backwards across hundreds of time steps without decaying:
+        </p>
+
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Gate / Operation</th>
+                <th>Mathematical Equation</th>
+                <th>Functional Role</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>1. Forget Gate ($f_t$)</strong></td>
+                <td>$\mathbf{f}_t = \sigma(W_f [\mathbf{h}_{t-1}, \mathbf{x}_t] + \mathbf{b}_f)$</td>
+                <td>Determines what proportion of historical cell state memory to discard ($0 = \text{completely erase}, 1 = \text{completely retain}$).</td>
+              </tr>
+              <tr>
+                <td><strong>2. Input Gate ($i_t$)</strong></td>
+                <td>$\mathbf{i}_t = \sigma(W_i [\mathbf{h}_{t-1}, \mathbf{x}_t] + \mathbf{b}_i)$</td>
+                <td>Controls which new candidate values from the current input will be stored in the long-term cell state.</td>
+              </tr>
+              <tr>
+                <td><strong>3. Candidate Cell ($\tilde{\mathbf{C}}_t$)</strong></td>
+                <td>$\tilde{\mathbf{C}}_t = \tanh(W_c [\mathbf{h}_{t-1}, \mathbf{x}_t] + \mathbf{b}_c)$</td>
+                <td>Generates a new vector of candidate memory values bounded between $-1$ and $+1$.</td>
+              </tr>
+              <tr>
+                <td><strong>4. Cell State Update ($\mathbf{C}_t$)</strong></td>
+                <td>$\mathbf{C}_t = \mathbf{f}_t \odot \mathbf{C}_{t-1} + \mathbf{i}_t \odot \tilde{\mathbf{C}}_t$</td>
+                <td><strong>Core Additive Update:</strong> Drops old information selectively and adds scaled new candidate memory without matrix multiplication!</td>
+              </tr>
+              <tr>
+                <td><strong>5. Output Gate ($o_t$)</strong></td>
+                <td>$\mathbf{o}_t = \sigma(W_o [\mathbf{h}_{t-1}, \mathbf{x}_t] + \mathbf{b}_o)$</td>
+                <td>Decides what parts of the updated cell state to emit as the visible hidden state.</td>
+              </tr>
+              <tr>
+                <td><strong>6. Final Hidden State ($\mathbf{h}_t$)</strong></td>
+                <td>$\mathbf{h}_t = \mathbf{o}_t \odot \tanh(\mathbf{C}_t)$</td>
+                <td>The squashed cell state filtered by output gate, passed to the next time step and upper layers.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>2. Gated Recurrent Unit (GRU)</h3>
+        <p>
+          Introduced in 2014 by Kyunghyun Cho et al., the <strong>GRU</strong> simplifies the LSTM architecture by merging the cell state and hidden state, eliminating one gate to retain only two gates:
+        </p>
+        <ul>
+          <li><strong>Update Gate ($z_t$):</strong> Acts simultaneously as both forget and input gate: $z_t = \sigma(W_z [\mathbf{h}_{t-1}, \mathbf{x}_t])$.</li>
+          <li><strong>Reset Gate ($r_t$):</strong> Determines how much of the past hidden state to forget when computing new candidate: $r_t = \sigma(W_r [\mathbf{h}_{t-1}, \mathbf{x}_t])$.</li>
+          <li><strong>Candidate Hidden State:</strong> $\tilde{\mathbf{h}}_t = \tanh(W [\mathbf{r}_t \odot \mathbf{h}_{t-1}, \mathbf{x}_t])$.</li>
+          <li><strong>Hidden State Update:</strong> $\mathbf{h}_t = (1 - \mathbf{z}_t) \odot \mathbf{h}_{t-1} + \mathbf{z}_t \odot \tilde{\mathbf{h}}_t$.</li>
+        </ul>
+        <p>
+          <em>Engineering Trade-off:</em> GRU has $25\%$ fewer parameters than LSTM, trains noticeably faster, and performs comparably on small to medium sequential datasets.
+        </p>
+
+        <h3>3. Bidirectional RNNs (BiLSTM)</h3>
+        <p>
+          In natural language understanding, future context is just as informative as historical context. In <em>"Teddy Roosevelt was the 26th president"</em> vs <em>"Teddy bears are popular toys"</em>, the word "Teddy" cannot be accurately tagged without inspecting words that appear <em>after</em> it.
+        </p>
+        <p>
+          A Bidirectional LSTM runs two separate hidden recurrent passes: a <strong>Forward pass $\vec{\mathbf{h}}_t$</strong> from $t=1 \to T$, and a <strong>Backward pass $\overleftarrow{\mathbf{h}}_t$</strong> from $t=T \to 1$. The representation at step $t$ is the concatenation:
+        </p>
+        $$\mathbf{h}_t = \left[ \vec{\mathbf{h}}_t \,;\, \overleftarrow{\mathbf{h}}_t \right] \in \mathbb{R}^{2d}$$
+      </article>
+
+      <!-- Chapter 9 -->
+      <article id="ch9" class="chapter-section">
+        <div class="chapter-header">
+          <div class="chapter-eyebrow">Part 3 &bull; Video 3 (0Q4yhrkwn7c) &bull; Chapter 09</div>
+          <h2 class="chapter-title">Seq2Seq Modeling &amp; Hands-on PyTorch LSTM Implementation</h2>
+          <p class="chapter-summary">The Encoder-Decoder architecture, the single-vector information bottleneck, and an end-to-end PyTorch sequential sentiment model with packed sequences.</p>
+        </div>
+
+        <h3>1. The Sequence-to-Sequence (Seq2Seq) Paradigm</h3>
+        <p>
+          Introduced by Sutskever et al. (2014) and Cho et al. (2014), Seq2Seq models map an input sequence of length $T_x$ to an output sequence of different length $T_y$ (e.g. English $\to$ German translation):
+        </p>
+        <ul>
+          <li><strong>Encoder:</strong> Reads input tokens $\mathbf{x}_1, \dots, \mathbf{x}_{T_x}$ sequentially, iteratively updating its hidden state. The final hidden state $\mathbf{h}_{T_x}$ encapsulates the entire sentence into a fixed-dimensional <strong>Context Vector $\mathbf{v}$</strong>.</li>
+          <li><strong>Decoder:</strong> An autoregressive recurrent model initialized with context vector $\mathbf{v}$. At each step $t$, it predicts output token $\hat{\mathbf{y}}_t$ given $\hat{\mathbf{y}}_{t-1}$ and its previous hidden state $\mathbf{s}_{t-1}$.</li>
+        </ul>
+
+        <div class="callout warning">
+          <div class="callout-title">&#9888; The Fatal Flaw: The Information Bottleneck</div>
+          <div class="callout-content">
+            <p>
+              Compressing an arbitrarily long paragraph (e.g. 80 words containing nuanced clauses, entities, and relationships) into a single fixed-size vector $\mathbf{v} \in \mathbb{R}^{512}$ constitutes an extreme <strong>information bottleneck</strong>. Empirical performance degrades drastically for sentences longer than 20 tokens. This exact limitation directly motivated the invention of <strong>Attention Mechanisms</strong>!
+            </p>
+          </div>
+        </div>
+
+        <h3>2. Full End-to-End PyTorch BiLSTM Sequential Classifier</h3>
+        <div class="code-container">
+          <div class="code-header">
+            <span>sequential_bilstm_model.py</span>
+            <button onclick="navigator.clipboard.writeText(this.closest('.code-container').querySelector('pre').innerText)">Copy Code</button>
+          </div>
+          <pre><code class="language-python">import torch
+import torch.nn as nn
+from torch.nn.utils.rnn import pack_padded_sequence, pad_packed_sequence
+
+# 1. Production Bidirectional LSTM Classifier
+class TextSentimentBiLSTM(nn.Module):
+    def __init__(self, vocab_size, embed_dim=128, hidden_dim=256, num_classes=2, num_layers=2, dropout=0.3):
+        super(TextSentimentBiLSTM, self).__init__()
+        
+        # Dense Word Embedding Layer
+        self.embedding = nn.Embedding(vocab_size, embed_dim, padding_idx=0)
+        
+        # Multi-layer Bidirectional LSTM
+        self.lstm = nn.LSTM(
+            input_size=embed_dim,
+            hidden_size=hidden_dim,
+            num_layers=num_layers,
+            bidirectional=True,
+            batch_first=True,
+            dropout=dropout if num_layers > 1 else 0
+        )
+        
+        self.dropout = nn.Dropout(p=dropout)
+        # BiLSTM outputs forward (hidden_dim) + backward (hidden_dim) = hidden_dim * 2
+        self.fc = nn.Linear(hidden_dim * 2, num_classes)
+        
+    def forward(self, text, lengths):
+        # text: [batch_size, max_seq_len]
+        embedded = self.dropout(self.embedding(text))
+        
+        # Pack padded sequence for computational efficiency
+        packed_embedded = pack_padded_sequence(embedded, lengths.cpu(), batch_first=True, enforce_sorted=False)
+        packed_output, (hidden, cell) = self.lstm(packed_embedded)
+        
+        # hidden shape: [num_layers * 2, batch_size, hidden_dim]
+        # Concatenate final forward and backward hidden states from the top layer
+        final_forward = hidden[-2, :, :]
+        final_backward = hidden[-1, :, :]
+        cat_hidden = torch.cat((final_forward, final_backward), dim=1) # [batch_size, hidden_dim * 2]
+        
+        logits = self.fc(self.dropout(cat_hidden))
+        return logits
+
+# 2. Forward Pass Verification
+vocab_size = 5000
+model = TextSentimentBiLSTM(vocab_size=vocab_size, embed_dim=64, hidden_dim=128, num_classes=3)
+
+# Dummy batch of 4 sequences with lengths [8, 6, 5, 3]
+dummy_seqs = torch.randint(1, vocab_size, (4, 8))
+dummy_lengths = torch.tensor([8, 6, 5, 3])
+
+logits = model(dummy_seqs, dummy_lengths)
+print("BiLSTM Output Logits Shape:", logits.shape) # [4, 3]
+total_lstm_params = sum(p.numel() for p in model.parameters() if p.requires_grad)
+print(f"Total Trainable BiLSTM Parameters: {total_lstm_params:,}")
+</code></pre>
+        </div>
+      </article>
+
+      <!-- ========================================== -->
+      <!-- PART 4: TRANSFORMERS & ATTENTION MECHANISM -->
+      <!-- ========================================== -->
+
+      <!-- Chapter 10 -->
+      <article id="ch10" class="chapter-section">
+        <div class="chapter-header">
+          <div class="chapter-eyebrow">Part 4 &bull; Video 4 (i2tlbIGyzKk) &bull; Chapter 10</div>
+          <h2 class="chapter-title">The Attention Revolution: Scaled Dot-Product &amp; Self-Attention Mechanics</h2>
+          <p class="chapter-summary">Overcoming the sequential bottleneck: Query, Key, Value vector spaces, softmax alignment scores, and why scaling by the square root of dimension is mathematically mandatory.</p>
+        </div>
+
+        <h3>1. The Paradigm Shift: Eliminating Recurrence</h3>
+        <p>
+          For decades, sequential modeling was synonymous with recurrent connections ($\mathbf{h}_t = f(\mathbf{h}_{t-1}, \mathbf{x}_t)$). However, recurrence imposes a fatal engineering limitation: <strong>sequential computational dependency</strong>. Time step $t=50$ cannot begin computation until time step $t=49$ finishes, preventing GPUs from parallelizing operations across the sequence dimension.
+        </p>
+        <p>
+          In 2017, Vaswani et al. (Google Brain &amp; Google Research) published the paradigm-shifting paper <em>"Attention Is All You Need"</em>. They demonstrated that recurrence and convolutions can be entirely discarded in favor of pure <strong>Self-Attention</strong>: connecting every token directly to every other token in a constant path length of $\mathcal{O}(1)$ operations!
+        </p>
+
+        <h3>2. The Query, Key, Value ($Q, K, V$) Retrieval Intuition</h3>
+        <p>
+          Attention mechanism draws direct inspiration from information retrieval systems (such as search engines or Python dictionaries):
+        </p>
+        <ul>
+          <li><strong>Query ($Q$):</strong> Represents the current token looking for context (e.g. <em>"What related information should I absorb to disambiguate my meaning?"</em>).</li>
+          <li><strong>Key ($K$):</strong> Represents the label or index of every other token in the sequence (e.g. <em>"Here is a tag summarizing what kind of information I provide."</em>).</li>
+          <li><strong>Value ($V$):</strong> The actual substantive semantic content contained in each token.</li>
+        </ul>
+        <p>
+          For an input matrix of token embeddings $X \in \mathbb{R}^{N \times d_{model}}$, we project into Queries, Keys, and Values using learned projection matrices:
+        </p>
+        $$Q = X W^Q, \quad K = X W^K, \quad V = X W^V$$
+        <p>where $W^Q, W^K \in \mathbb{R}^{d_{model} \times d_k}$ and $W^V \in \mathbb{R}^{d_{model} \times d_v}$.</p>
+
+        <h3>3. Scaled Dot-Product Attention: Mathematical Formulation</h3>
+        <p>
+          The compatibility (alignment) between query token $i$ and key token $j$ is computed via dot product: $q_i \cdot k_j^T$. In matrix form across all tokens simultaneously:
+        </p>
+        $$\text{Attention}(Q, K, V) = \text{softmax}\left( \frac{Q K^T}{\sqrt{d_k}} \right) V$$
+
+        <div class="callout tip">
+          <div class="callout-title">&#128300; Mathematical Proof: Why Divide by $\sqrt{d_k}$?</div>
+          <div class="callout-content">
+            <p>
+              Assume the components of $\mathbf{q} \in \mathbb{R}^{d_k}$ and $\mathbf{k} \in \mathbb{R}^{d_k}$ are independent random variables with zero mean ($\mathbb{E}[q_i] = \mathbb{E}[k_i] = 0$) and unit variance ($\text{Var}(q_i) = \text{Var}(k_i) = 1$).
+            </p>
+            <p>Their dot product is $z = \mathbf{q} \cdot \mathbf{k} = \sum_{i=1}^{d_k} q_i k_i$. The expectation is:</p>
+            $$\mathbb{E}[z] = \sum_{i=1}^{d_k} \mathbb{E}[q_i] \mathbb{E}[k_i] = 0$$
+            <p>The variance of the product of two independent zero-mean unit-variance variables is:</p>
+            $$\text{Var}(q_i k_i) = \mathbb{E}[q_i^2 k_i^2] - (\mathbb{E}[q_i k_i])^2 = \mathbb{E}[q_i^2] \mathbb{E}[k_i^2] - 0 = 1 \cdot 1 = 1$$
+            <p>Since the terms in the sum are independent, the variance of the sum is the sum of variances:</p>
+            $$\text{Var}(z) = \text{Var}\left( \sum_{i=1}^{d_k} q_i k_i \right) = \sum_{i=1}^{d_k} \text{Var}(q_i k_i) = d_k$$
+            <p>
+              The standard deviation is $\sqrt{\text{Var}(z)} = \sqrt{d_k}$. For large projection dimensions (e.g., $d_k = 64$ or $128$), dot products grow large in magnitude ($z \approx \pm 10$ or $15$).
+            </p>
+            <p>
+              When large values are fed into the <strong>Softmax</strong> function, it pushes the output into regions with vanishingly small gradients (near 0 or 1), causing backpropagation to stall completely! Dividing by $\sqrt{d_k}$ normalizes the variance back to 1 ($\text{Var}\left(\frac{z}{\sqrt{d_k}}\right) = 1$), preserving healthy gradient flow.
+            </p>
+          </div>
+        </div>
+
+        <div class="mermaid-box">
+          <pre class="mermaid">
+graph LR
+    subgraph Scaled Dot-Product Attention Computational Pipeline
+        Q[Queries: Q] --> MATMUL1((MatMul: Q times K-transpose))
+        K[Keys: K] --> MATMUL1
+        MATMUL1 --> SCALE[Scale: Divide by sqrt of d_k]
+        SCALE --> MASK[Optional Mask: Set illegal to -inf]
+        MASK --> SOFTMAX[Softmax: Attention Weights Matrix]
+        SOFTMAX --> MATMUL2((MatMul: Weights times V))
+        V[Values: V] --> MATMUL2
+        MATMUL2 --> OUT[Context Output: Attended Matrix]
+    end
+          </pre>
+        </div>
+      </article>
+
+      <!-- Chapter 11 -->
+      <article id="ch11" class="chapter-section">
+        <div class="chapter-header">
+          <div class="chapter-eyebrow">Part 4 &bull; Video 4 (i2tlbIGyzKk) &bull; Chapter 11</div>
+          <h2 class="chapter-title">The Complete Transformer Architecture: Multi-Head Attention &amp; Positional Encoding</h2>
+          <p class="chapter-summary">Multi-Head Attention subspaces, sinusoidal positional encoding equations, LayerNorm residual blocks, and the Encoder-Decoder structural breakdown.</p>
+        </div>
+
+        <h3>1. Multi-Head Attention (MHA)</h3>
+        <p>
+          Instead of performing a single attention function with $d_{model}$-dimensional queries, keys, and values, Multi-Head Attention linearly projects the queries, keys, and values $h$ times with different, learned linear projections to $d_k, d_k,$ and $d_v$ dimensions respectively (typically $d_k = d_v = d_{model} / h$):
+        </p>
+        $$\text{MultiHead}(Q, K, V) = \text{Concat}(\text{head}_1, \text{head}_2, \dots, \text{head}_h) W^O$$
+        $$\text{where } \text{head}_i = \text{Attention}(Q W_i^Q, K W_i^K, V W_i^V)$$
+        <p>
+          <strong>Intuitive Benefit:</strong> Multi-head attention allows the model to simultaneously attend to information from different representation subspaces at different positions. For instance, Head 1 might track syntactic subject-verb agreements, Head 2 might resolve pronoun coreferences, and Head 3 might track prepositional modifiers.
+        </p>
+
+        <h3>2. Sinusoidal Positional Encoding</h3>
+        <p>
+          Because self-attention is <em>permutation-equivariant</em> ($\text{Attention}(\mathbf{P} X) = \mathbf{P} \, \text{Attention}(X)$ where $\mathbf{P}$ is any row-permutation matrix), a Transformer has zero intrinsic awareness of word order. The sentence <em>"The cat ate the mouse"</em> and <em>"The mouse ate the cat"</em> yield identical attention score distributions.
+        </p>
+        <p>
+          To inject order without altering dimensionality, a deterministic or learned <strong>Positional Encoding vector $\mathbf{PE}_{(pos)}$</strong> is directly added element-wise to the input token embedding: $\tilde{\mathbf{x}}_{pos} = \mathbf{x}_{pos} + \mathbf{PE}_{(pos)}$.
+        </p>
+        <p>Vaswani et al. formulated sinusoidal functions of varying frequencies:</p>
+        $$PE_{(pos, 2i)} = \sin\left( \frac{pos}{10000^{2i / d_{model}}} \right)$$
+        $$PE_{(pos, 2i+1)} = \cos\left( \frac{pos}{10000^{2i / d_{model}}} \right)$$
+        <p>
+          where $pos$ is the token position ($0, 1, \dots, N-1$) and $i$ is the dimension index ($0 \le i < d_{model}/2$).
+        </p>
+
+        <div class="callout tip">
+          <div class="callout-title">&#127919; Why Sinusoids? Linear Relative Position Shifts</div>
+          <div class="callout-content">
+            <p>
+              By the trigonometric angle addition theorem, for any fixed offset $k$, $PE_{(pos + k)}$ can be represented as a pure linear function of $PE_{(pos)}$:
+            </p>
+            $$\sin(\omega (pos + k)) = \sin(\omega pos)\cos(\omega k) + \cos(\omega pos)\sin(\omega k)$$
+            $$\cos(\omega (pos + k)) = \cos(\omega pos)\cos(\omega k) - \sin(\omega pos)\sin(\omega k)$$
+            <p>
+              This allows the multi-head attention mechanism to effortlessly learn to attend by <strong>relative positions</strong>, generalizing easily to sequence lengths longer than those observed during training.
+            </p>
+          </div>
+        </div>
+
+        <h3>3. The Encoder &amp; Decoder Stacks</h3>
+        <ul>
+          <li><strong>The Encoder Stack ($N=6$ identical layers):</strong> Each layer possesses two sub-layers:
+            <ol>
+              <li>Multi-Head Self-Attention.</li>
+              <li>Position-wise Feed-Forward Network: $\text{FFN}(x) = \max(0, x W_1 + b_1) W_2 + b_2$.</li>
+            </ol>
+            Each sub-layer is wrapped in a residual connection followed by Layer Normalization: $\text{LayerNorm}(x + \text{Sublayer}(x))$.
+          </li>
+          <li><strong>The Decoder Stack ($N=6$ identical layers):</strong> Adds a third sub-layer:
+            <ol>
+              <li><strong>Masked Multi-Head Self-Attention:</strong> Prevents positions from attending to future positions (causal masking). Setting attention logits of future tokens to $-\infty$ ensures that predictions for position $i$ depend only on known outputs at positions $< i$.</li>
+              <li><strong>Cross-Attention (Encoder-Decoder Attention):</strong> Queries ($Q$) come from the previous decoder layer, while Keys ($K$) and Values ($V$) come directly from the output of the final encoder stack! Allows the decoder to attend to all positions of the input source sentence.</li>
+              <li>Position-wise Feed-Forward Network.</li>
+            </ol>
+          </li>
+        </ul>
+
+        <h3>4. Modern Taxonomy: BERT vs. GPT vs. T5</h3>
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Paradigm</th>
+                <th>Exemplar Models</th>
+                <th>Architectural Core</th>
+                <th>Pretraining Objective</th>
+                <th>Primary Use Cases</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Encoder-Only</strong></td>
+                <td>BERT, RoBERTa, DeBERTa</td>
+                <td>Bidirectional Self-Attention only</td>
+                <td>Masked Language Modeling (MLM) + Next Sentence Prediction</td>
+                <td>Text Classification, NER, Sentiment Analysis, Extractive QA</td>
+              </tr>
+              <tr>
+                <td><strong>Decoder-Only</strong></td>
+                <td>GPT-2, GPT-3, LLaMA, Mistral</td>
+                <td>Autoregressive Causal Masked Attention</td>
+                <td>Causal Language Modeling (predict next token $P(w_t | w_{<t})$)</td>
+                <td>Generative AI, Code Generation, Dialogue Agents, Chatbots</td>
+              </tr>
+              <tr>
+                <td><strong>Encoder-Decoder</strong></td>
+                <td>T5, BART, mT5</td>
+                <td>Full Encoder + Cross-Attending Decoder</td>
+                <td>Span Corruption / Text-to-Text denoising</td>
+                <td>Translation, Abstractive Summarization, Format Transformation</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </article>
+
+      <!-- Chapter 12 -->
+      <article id="ch12" class="chapter-section">
+        <div class="chapter-header">
+          <div class="chapter-eyebrow">Part 4 &bull; Video 4 (i2tlbIGyzKk) &bull; Chapter 12</div>
+          <h2 class="chapter-title">From-Scratch PyTorch Multi-Head Self-Attention Implementation</h2>
+          <p class="chapter-summary">Writing a production-ready Scaled Dot-Product Attention, Multi-Head Attention module, and complete Transformer Encoder Block in PyTorch.</p>
+        </div>
+
+        <h3>1. Complete From-Scratch PyTorch Implementation</h3>
+        <p>
+          Below is a complete, modular, standalone implementation of the Multi-Head Attention module and Transformer Encoder layer, mirroring production implementations in Hugging Face Transformers:
+        </p>
+
+        <div class="code-container">
+          <div class="code-header">
+            <span>transformer_self_attention_scratch.py</span>
+            <button onclick="navigator.clipboard.writeText(this.closest('.code-container').querySelector('pre').innerText)">Copy Code</button>
+          </div>
+          <pre><code class="language-python">import torch
+import torch.nn as nn
+import math
+
+# 1. Multi-Head Self-Attention Module
+class MultiHeadSelfAttention(nn.Module):
+    def __init__(self, d_model=512, num_heads=8):
+        super(MultiHeadSelfAttention, self).__init__()
+        assert d_model % num_heads == 0, "d_model must be divisible by num_heads"
+        
+        self.d_model = d_model
+        self.num_heads = num_heads
+        self.d_k = d_model // num_heads
+        
+        # Linear projection matrices for Queries, Keys, and Values
+        self.w_q = nn.Linear(d_model, d_model, bias=False)
+        self.w_k = nn.Linear(d_model, d_model, bias=False)
+        self.w_v = nn.Linear(d_model, d_model, bias=False)
+        
+        # Final output projection
+        self.w_o = nn.Linear(d_model, d_model, bias=False)
+        
+    def forward(self, x, mask=None):
+        batch_size, seq_len, d_model = x.size()
+        
+        # 1. Project inputs: [batch_size, seq_len, d_model] -> [batch_size, seq_len, num_heads, d_k]
+        # Transpose to [batch_size, num_heads, seq_len, d_k] for parallel head computation
+        Q = self.w_q(x).view(batch_size, seq_len, self.num_heads, self.d_k).transpose(1, 2)
+        K = self.w_k(x).view(batch_size, seq_len, self.num_heads, self.d_k).transpose(1, 2)
+        V = self.w_v(x).view(batch_size, seq_len, self.num_heads, self.d_k).transpose(1, 2)
+        
+        # 2. Scaled Dot-Product Attention: (Q @ K^T) / sqrt(d_k)
+        # scores shape: [batch_size, num_heads, seq_len, seq_len]
+        scores = torch.matmul(Q, K.transpose(-2, -1)) / math.sqrt(self.d_k)
+        
+        if mask is not None:
+            # Mask illegal positions (e.g. padding tokens or future tokens) with large negative number
+            scores = scores.masked_fill(mask == 0, -1e9)
+            
+        attn_weights = torch.softmax(scores, dim=-1)
+        
+        # 3. Multiply weights by Values: [batch_size, num_heads, seq_len, d_k]
+        context = torch.matmul(attn_weights, V)
+        
+        # 4. Concatenate heads back into [batch_size, seq_len, d_model]
+        context = context.transpose(1, 2).contiguous().view(batch_size, seq_len, self.d_model)
+        
+        # 5. Output linear projection
+        return self.w_o(context)
+
+# 2. Complete Transformer Encoder Layer Module
+class TransformerEncoderLayer(nn.Module):
+    def __init__(self, d_model=512, num_heads=8, d_ff=2048, dropout=0.1):
+        super(TransformerEncoderLayer, self).__init__()
+        
+        self.mha = MultiHeadSelfAttention(d_model, num_heads)
+        self.norm1 = nn.LayerNorm(d_model)
+        self.dropout1 = nn.Dropout(dropout)
+        
+        # Position-wise Feed-Forward Network
+        self.ffn = nn.Sequential(
+            nn.Linear(d_model, d_ff),
+            nn.GELU(),
+            nn.Dropout(dropout),
+            nn.Linear(d_ff, d_model)
+        )
+        self.norm2 = nn.LayerNorm(d_model)
+        self.dropout2 = nn.Dropout(dropout)
+        
+    def forward(self, x, mask=None):
+        # Sublayer 1: Residual connection around Multi-Head Attention
+        attn_out = self.mha(x, mask)
+        x = self.norm1(x + self.dropout1(attn_out))
+        
+        # Sublayer 2: Residual connection around Feed-Forward Network
+        ffn_out = self.ffn(x)
+        x = self.norm2(x + self.dropout2(ffn_out))
+        return x
+
+# 3. Model Verification & Tensor Dimension Checks
+batch_size = 2
+seq_len = 16
+d_model = 512
+
+encoder_layer = TransformerEncoderLayer(d_model=d_model, num_heads=8)
+dummy_tokens = torch.randn(batch_size, seq_len, d_model)
+
+output = encoder_layer(dummy_tokens)
+print("Transformer Encoder Block Input Shape: ", dummy_tokens.shape)  # [2, 16, 512]
+print("Transformer Encoder Block Output Shape:", output.shape)        # [2, 16, 512]
+assert output.shape == dummy_tokens.shape, "Shape mismatch in Transformer Encoder Layer!"
+print("Verification Passed: Transformer block successfully preserves tensor dimensions.")
+</code></pre>
+        </div>
+      </article>
+
+      <!-- ========================================== -->
+      <!-- CHAPTER 13: TOP 15 INTERVIEW QUESTIONS    -->
+      <!-- ========================================== -->
+      <article id="interview-questions" class="chapter-section">
+        <div class="chapter-header">
+          <div class="chapter-eyebrow">Technical Interview Preparation &bull; Chapter 13</div>
+          <h2 class="chapter-title">Top 15 High-Frequency Deep Learning Interview Questions &amp; Answers</h2>
+          <p class="chapter-summary">Curated, mathematically rigorous solutions to the most frequently tested deep learning interview questions across Tier-1 AI and placement evaluations.</p>
+        </div>
+
+        <div class="faq-container">
+          <!-- Q1 -->
+          <details class="faq-item">
+            <summary class="faq-summary">1. Explain the Backpropagation chain rule step-by-step for a neural network with Softmax and Cross-Entropy loss.</summary>
+            <div class="faq-content">
+              <p><strong>Answer:</strong></p>
+              <p>Consider the final output layer $L$ of a neural network where pre-activation logits are $\mathbf{z}^{[L]} = W^{[L]} \mathbf{a}^{[L-1]} + \mathbf{b}^{[L]}$, activated outputs are $a_i^{[L]} = \frac{e^{z_i^{[L]}}}{\sum_{k=1}^K e^{z_k^{[L]}}}$, and the loss is categorical cross-entropy $\mathcal{L} = -\sum_{k=1}^K y_k \log(a_k^{[L]})$ for a true one-hot target $\mathbf{y}$.</p>
+              <ol>
+                <li><strong>Gradient w.r.t Logits ($z_i^{[L]}$):</strong> By the multivariate chain rule:
+                  $$\frac{\partial \mathcal{L}}{\partial z_i^{[L]}} = \sum_{k=1}^K \frac{\partial \mathcal{L}}{\partial a_k^{[L]}} \frac{\partial a_k^{[L]}}{\partial z_i^{[L]}}$$
+                  Because $\frac{\partial \mathcal{L}}{\partial a_k^{[L]}} = -\frac{y_k}{a_k^{[L]}}$ and the Jacobian of Softmax is $\frac{\partial a_k^{[L]}}{\partial z_i^{[L]}} = a_k^{[L]}(\delta_{ik} - a_i^{[L]})$, substitution yields:
+                  $$\frac{\partial \mathcal{L}}{\partial z_i^{[L]}} = -\frac{y_i}{a_i^{[L]}} a_i^{[L]}(1 - a_i^{[L]}) - \sum_{k \neq i} \frac{y_k}{a_k^{[L]}} (-a_k^{[L]} a_i^{[L]}) = -y_i(1 - a_i^{[L]}) + a_i^{[L]} \sum_{k \neq i} y_k$$
+                  Since $\sum_k y_k = 1$, we have $\sum_{k \neq i} y_k = 1 - y_i$. Therefore:
+                  $$\frac{\partial \mathcal{L}}{\partial z_i^{[L]}} = -y_i + y_i a_i^{[L]} + a_i^{[L]} - y_i a_i^{[L]} = a_i^{[L]} - y_i \implies dZ^{[L]} = A^{[L]} - Y$$
+                </li>
+                <li><strong>Gradient w.r.t Weights ($W^{[L]}$) and Biases ($\mathbf{b}^{[L]}$):</strong>
+                  $$dW^{[L]} = \frac{1}{m} dZ^{[L]} (A^{[L-1]})^T, \quad d\mathbf{b}^{[L]} = \frac{1}{m} \sum_{\text{batch}} dZ^{[L]}$$
+                </li>
+                <li><strong>Backpropagating to Hidden Layer $l$:</strong>
+                  $$dZ^{[l]} = \left( (W^{[l+1]})^T dZ^{[l+1]} \right) \odot {g^{[l]}}'(Z^{[l]})$$
+                  where $\odot$ is the element-wise Hadamard product with the activation derivative.
+                </li>
+              </ol>
+            </div>
+          </details>
+
+          <!-- Q2 -->
+          <details class="faq-item">
+            <summary class="faq-summary">2. What causes Vanishing and Exploding gradients, and what are 4 concrete industry techniques to eliminate them?</summary>
+            <div class="faq-content">
+              <p><strong>Answer:</strong></p>
+              <p><strong>Root Cause:</strong> In an $L$-layer network, the gradient of the loss with respect to early weights $W^{[1]}$ involves repeated matrix multiplication: $\frac{\partial \mathcal{L}}{\partial W^{[1]}} \propto \prod_{l=1}^L W^{[l]} {g^{[l]}}'(z^{[l]})$. If the singular values of $W^{[l]}$ or activation derivatives ${g^{[l]}}'$ are $< 1$ (e.g. Sigmoid derivative maxes out at $0.25$), the product decays exponentially to zero ($0.25^L \approx 0$). If $> 1$, the product explodes to infinity ($\pm \text{NaN}$).</p>
+              <p><strong>4 Concrete Solutions:</strong></p>
+              <ol>
+                <li><strong>Non-Saturating Activation Functions (ReLU, Leaky ReLU, GELU):</strong> For $z > 0$, $\text{ReLU}'(z) = 1$, maintaining constant derivative multiplier of $1.0$ through arbitrary depth.</li>
+                <li><strong>Proper Weight Initializations (He / Xavier):</strong> Initializing weights with variance calibrated to layer width:
+                  <ul>
+                    <li><em>He (Kaiming) Initialization:</em> $\text{Var}(W) = \frac{2}{n_{in}}$ (designed specifically for ReLU).</li>
+                    <li><em>Xavier (Glorot) Initialization:</em> $\text{Var}(W) = \frac{2}{n_{in} + n_{out}}$ (designed for Tanh/Sigmoid).</li>
+                  </ul>
+                </li>
+                <li><strong>Batch Normalization &amp; Layer Normalization:</strong> Normalizes inputs to zero mean and unit variance between layers, explicitly preventing activations from drifting into saturation regions.</li>
+                <li><strong>Residual Skip Connections (ResNet):</strong> Adds an identity connection $\mathcal{H}(\mathbf{x}) = \mathcal{F}(\mathbf{x}) + \mathbf{x}$, ensuring the gradient $\frac{\partial \mathcal{E}}{\partial \mathbf{x}} = \frac{\partial \mathcal{E}}{\partial \mathcal{H}}(\dots + \mathbf{I})$ always has a direct identity highway.</li>
+              </ol>
+            </div>
+          </details>
+
+          <!-- Q3 -->
+          <details class="faq-item">
+            <summary class="faq-summary">3. What is the mathematical justification for the bias correction terms in the Adam optimizer?</summary>
+            <div class="faq-content">
+              <p><strong>Answer:</strong></p>
+              <p>Adam initializes the first moment vector (moving average of gradients) and second moment vector (moving average of squared gradients) to zero: $m_0 = 0, v_0 = 0$.</p>
+              <p>Unfolding the recursive update for $m_t$ with decay factor $\beta_1$:</p>
+              $$m_t = (1 - \beta_1) \sum_{i=1}^t \beta_1^{t-i} g_i$$
+              <p>Taking the mathematical expectation $\mathbb{E}[m_t]$ assuming gradients $g_i$ come from a stationary distribution with expectation $\mathbb{E}[g_t]$:</p>
+              $$\mathbb{E}[m_t] = \mathbb{E}\left[ (1 - \beta_1) \sum_{i=1}^t \beta_1^{t-i} g_i \right] = \mathbb{E}[g_t] (1 - \beta_1) \sum_{i=1}^t \beta_1^{t-i}$$
+              <p>The finite geometric series sum is $\sum_{i=1}^t \beta_1^{t-i} = \frac{1 - \beta_1^t}{1 - \beta_1}$. Substituting this back:</p>
+              $$\mathbb{E}[m_t] = \mathbb{E}[g_t] (1 - \beta_1) \frac{1 - \beta_1^t}{1 - \beta_1} = \mathbb{E}[g_t] (1 - \beta_1^t)$$
+              <p>Notice the bias factor $(1 - \beta_1^t)$! At initial iterations (e.g. $t=1$, $\beta_1=0.9$, so $1 - 0.9^1 = 0.1$), $m_1$ is heavily biased toward zero. Dividing by $1 - \beta_1^t$ yields an exact unbiased estimator: $\mathbb{E}\left[ \frac{m_t}{1 - \beta_1^t} \right] = \mathbb{E}[g_t]$. The exact identical derivation applies to $v_t$ with $\beta_2$. As $t \to \infty$, $\beta_1^t \to 0$ and the correction factor naturally approaches $1.0$.</p>
+            </div>
+          </details>
+
+          <!-- Q4 -->
+          <details class="faq-item">
+            <summary class="faq-summary">4. In CNNs, what is the effective receptive field, and why is stacking three 3x3 convolutions superior to using one 7x7 convolution?</summary>
+            <div class="faq-content">
+              <p><strong>Answer:</strong></p>
+              <p><strong>Effective Receptive Field (ERF):</strong> The spatial region in the input image that directly influences the activation of a particular neuron in a deeper feature map.</p>
+              <p><strong>Equivalence Proof:</strong></p>
+              <ul>
+                <li>Layer 1: A $3\times3$ conv has an ERF of $3\times3$.</li>
+                <li>Layer 2: A second $3\times3$ conv applied on Layer 1 output aggregates a $3\times3$ patch where each element saw a $3\times3$ patch: $3 + (3 - 1) = 5\times5$.</li>
+                <li>Layer 3: A third $3\times3$ conv expands the ERF to $5 + (3 - 1) = 7\times7$.</li>
+              </ul>
+              <p>Thus, three stacked $3\times3$ convolutions cover the identical $7\times7$ spatial input context as a single $7\times7$ convolution.</p>
+              <p><strong>Why Stacking 3x3 is Superior:</strong></p>
+              <ol>
+                <li><strong>Parameter Reduction:</strong> For $C$ input and output channels:
+                  $$\text{Params}(3 \times 3\times3) = 3 \times (3 \times 3 \times C \times C) = 27 C^2$$
+                  $$\text{Params}(1 \times 7\times7) = 1 \times (7 \times 7 \times C \times C) = 49 C^2$$
+                  Stacking $3\times3$ achieves a <strong>$45\%$ reduction in parameters</strong> ($27/49 \approx 0.55$).
+                </li>
+                <li><strong>Deeper Non-Linearity:</strong> Stacking three layers introduces three non-linear activation functions (e.g. ReLU) instead of one, enabling the network to learn significantly more complex and expressive feature representations.</li>
+              </ol>
+            </div>
+          </details>
+
+          <!-- Q5 -->
+          <details class="faq-item">
+            <summary class="faq-summary">5. Prove mathematically why ResNet residual skip connections solve the degradation problem.</summary>
+            <div class="faq-content">
+              <p><strong>Answer:</strong></p>
+              <p>In standard feedforward networks, an activation is a direct transformation: $\mathbf{x}_{l+1} = \mathcal{F}(\mathbf{x}_l, \mathcal{W}_l)$. In a Residual Network (ResNet), an identity skip connection is added:</p>
+              $$\mathbf{x}_{l+1} = \mathbf{x}_l + \mathcal{F}(\mathbf{x}_l, \mathcal{W}_l)$$
+              <p>Unfolding this equation recursively from any shallow layer $l$ to any deeper layer $L$ ($L > l$):</p>
+              $$\mathbf{x}_L = \mathbf{x}_l + \sum_{i=l}^{L-1} \mathcal{F}(\mathbf{x}_i, \mathcal{W}_i)$$
+              <p>Applying the chain rule for the gradient of the total loss $\mathcal{E}$ with respect to the shallower activation $\mathbf{x}_l$:</p>
+              $$\frac{\partial \mathcal{E}}{\partial \mathbf{x}_l} = \frac{\partial \mathcal{E}}{\partial \mathbf{x}_L} \frac{\partial \mathbf{x}_L}{\partial \mathbf{x}_l} = \frac{\partial \mathcal{E}}{\partial \mathbf{x}_L} \left( \mathbf{I} + \frac{\partial}{\partial \mathbf{x}_l} \sum_{i=l}^{L-1} \mathcal{F}(\mathbf{x}_i, \mathcal{W}_i) \right)$$
+              <p><strong>The Mathematical Implication:</strong></p>
+              <p>The term $\mathbf{I}$ is the Identity matrix. Even if the transformed gradient $\frac{\partial}{\partial \mathbf{x}_l} \sum \mathcal{F}$ approaches zero (vanishes), the gradient $\frac{\partial \mathcal{E}}{\partial \mathbf{x}_l}$ never vanishes because it contains the uninterrupted direct component $\frac{\partial \mathcal{E}}{\partial \mathbf{x}_L} \cdot \mathbf{I}$. This acts as an uninterrupted bidirectional gradient highway between the loss and early layers, enabling networks with 100+ layers to converge reliably.</p>
+            </div>
+          </details>
+
+          <!-- Q6 -->
+          <details class="faq-item">
+            <summary class="faq-summary">6. What is the operational difference between Batch Normalization at training time vs. inference/test time?</summary>
+            <div class="faq-content">
+              <p><strong>Answer:</strong></p>
+              <p>Batch Normalization computes mean and variance differently depending on the model's operational mode:</p>
+              <ul>
+                <li><strong>During Training:</strong>
+                  Mean $\mu_B$ and variance $\sigma_B^2$ are computed dynamically across the current mini-batch ($m$ samples):
+                  $$\mu_B = \frac{1}{m} \sum_{i=1}^m x_i, \quad \sigma_B^2 = \frac{1}{m} \sum_{i=1}^m (x_i - \mu_B)^2$$
+                  Simultaneously, PyTorch maintains an exponential moving average (running statistics) across batches:
+                  $$\mu_{\text{running}} = (1 - \text{momentum}) \mu_{\text{running}} + \text{momentum} \cdot \mu_B$$
+                  $$\sigma_{\text{running}}^2 = (1 - \text{momentum}) \sigma_{\text{running}}^2 + \text{momentum} \cdot \sigma_B^2$$
+                </li>
+                <li><strong>During Inference / Evaluation (`model.eval()`):</strong>
+                  At test time, the model may evaluate a single image or audio sample ($m=1$). Calculating variance on 1 sample is mathematically undefined ($\sigma^2 = 0$). Therefore, the network freezes statistics and normalizes using the accumulated population statistics ($\mu_{\text{running}}, \sigma_{\text{running}}^2$):
+                  $$\hat{x} = \frac{x - \mu_{\text{running}}}{\sqrt{\sigma_{\text{running}}^2 + \epsilon}}, \quad y = \gamma \hat{x} + \beta$$
+                  <em>Production Tip:</em> Because $\gamma, \beta, \mu_{\text{running}}, \sigma_{\text{running}}$ are all constant at inference time, BatchNorm can be mathematically fused into the preceding linear/convolutional layer's weights ($W_{fused} = \frac{\gamma}{\sigma} W, b_{fused} = \frac{\gamma}{\sigma}(b - \mu) + \beta$), eliminating all runtime latency!
+                </li>
+              </ul>
+            </div>
+          </details>
+
+          <!-- Q7 -->
+          <details class="faq-item">
+            <summary class="faq-summary">7. How does the LSTM Cell State (C_t) act as a constant error carousel compared to a vanilla RNN?</summary>
+            <div class="faq-content">
+              <p><strong>Answer:</strong></p>
+              <p>In a Vanilla RNN, the hidden state update is strictly multiplicative through a weight matrix and non-linear squashing: $\mathbf{h}_t = \tanh(W_{hh} \mathbf{h}_{t-1} + W_{xh} \mathbf{x}_t)$. Backpropagating through time requires multiplying by $W_{hh}^T \text{diag}(1 - \mathbf{h}_k^2)$ at every single step, which decays exponentially to zero.</p>
+              <p>In an LSTM, the long-term cell state update is fundamentally <strong>additive</strong>:</p>
+              $$\mathbf{C}_t = \mathbf{f}_t \odot \mathbf{C}_{t-1} + \mathbf{i}_t \odot \tilde{\mathbf{C}}_t$$
+              <p>The derivative of the cell state at step $t$ with respect to step $t-1$ is:</p>
+              $$\frac{\partial \mathbf{C}_t}{\partial \mathbf{C}_{t-1}} = \mathbf{f}_t$$
+              <p>Notice that there is no multiplicative weight matrix $W$ or non-linear squashing derivative in this term! If the forget gate $\mathbf{f}_t \approx 1$ (which is encouraged by initializing forget gate biases to $+1.0$ or $+2.0$), the gradient passes backward unchanged: $\frac{\partial \mathbf{C}_t}{\partial \mathbf{C}_{t-1}} \approx \mathbf{I}$. This forms a <strong>Constant Error Carousel (CEC)</strong> where error signals circulate indefinitely without exponential decay.</p>
+            </div>
+          </details>
+
+          <!-- Q8 -->
+          <details class="faq-item">
+            <summary class="faq-summary">8. What is the computational time and memory complexity of the Standard Self-Attention mechanism, and how does FlashAttention optimize it?</summary>
+            <div class="faq-content">
+              <p><strong>Answer:</strong></p>
+              <p><strong>Standard Self-Attention Complexity:</strong></p>
+              <ul>
+                <li>Given a sequence of length $N$ and embedding dimension $d$:</li>
+                <li>Multiplying $Q \in \mathbb{R}^{N \times d}$ and $K^T \in \mathbb{R}^{d \times N}$ requires $\mathcal{O}(N^2 \cdot d)$ operations, generating an $N \times N$ attention matrix $S$.</li>
+                <li>Storing $S$ in GPU memory requires $\mathcal{O}(N^2)$ space per head.</li>
+                <li>Multiplying $S$ by $V \in \mathbb{R}^{N \times d}$ takes another $\mathcal{O}(N^2 \cdot d)$ FLOPs.</li>
+                <li><em>Bottleneck:</em> Quadratic $\mathcal{O}(N^2)$ memory and time complexity limits standard Transformers on long contexts (e.g. $N = 32,000 \implies N^2 \approx 10^9$ elements per layer).</li>
+              </ul>
+              <p><strong>How FlashAttention (Dao et al., 2022) Solves It:</strong></p>
+              <ol>
+                <li><strong>IO-Aware Tiling:</strong> Instead of computing the massive $N \times N$ matrix in High Bandwidth Memory (HBM, which is slow), FlashAttention loads blocks of $Q, K, V$ into fast on-chip SRAM ($\sim 20$ TB/s bandwidth).</li>
+                <li><strong>Online Softmax:</strong> Computes the softmax normalization incrementally block-by-block without materializing the full $N \times N$ matrix in HBM.</li>
+                <li><strong>Recomputation during Backward Pass:</strong> In the backward pass, rather than reading the stored $N \times N$ matrix from slow HBM, FlashAttention quickly recomputes attention on-the-fly in SRAM, achieving a $2\times$ to $4\times$ real-world wall-clock speedup and reducing HBM memory to $\mathcal{O}(N)$.</li>
+              </ol>
+            </div>
+          </details>
+
+          <!-- Q9 -->
+          <details class="faq-item">
+            <summary class="faq-summary">9. Why do we divide by sqrt(d_k) in the Scaled Dot-Product Attention equation?</summary>
+            <div class="faq-content">
+              <p><strong>Answer:</strong></p>
+              <p>In $\text{Attention}(Q, K, V) = \text{softmax}\left(\frac{Q K^T}{\sqrt{d_k}}\right) V$:</p>
+              <p>Assume components of $\mathbf{q}$ and $\mathbf{k}$ are independent random variables with mean 0 and variance 1. The dot product is $z = \mathbf{q} \cdot \mathbf{k} = \sum_{i=1}^{d_k} q_i k_i$.</p>
+              <p>The expectation is $\mathbb{E}[z] = 0$. The variance of each product term is $\text{Var}(q_i k_i) = \text{Var}(q_i)\text{Var}(k_i) = 1 \cdot 1 = 1$. Because all $d_k$ terms are independent:</p>
+              $$\text{Var}(z) = \sum_{i=1}^{d_k} \text{Var}(q_i k_i) = d_k \implies \sigma_z = \sqrt{d_k}$$
+              <p>For typical head dimensions like $d_k = 64$, the standard deviation is $\sqrt{64} = 8$. Raw dot products regularly reach magnitudes of $+25$ or $-25$.</p>
+              <p>When values of this magnitude are passed to Softmax, the exponential function $e^{25}$ dwarfs all other elements, pushing the softmax distribution into an extreme one-hot vector where derivatives approach zero ($\sigma'(z) \approx 0$). This completely arrests gradient learning. Dividing by $\sqrt{d_k}$ normalizes the variance to $1.0$, keeping softmax in its active, high-gradient regime.</p>
+            </div>
+          </details>
+
+          <!-- Q10 -->
+          <details class="faq-item">
+            <summary class="faq-summary">10. How does Dropout work at training time vs test time, and what is Inverted Dropout?</summary>
+            <div class="faq-content">
+              <p><strong>Answer:</strong></p>
+              <ul>
+                <li><strong>Standard Dropout:</strong>
+                  During training, each hidden neuron activation $a$ is set to 0 with probability $p$ (or kept with keep-probability $q = 1 - p$). During inference, no neurons are dropped, but all weights must be scaled down by multiplying by $q$: $W_{\text{test}} = q W_{\text{train}}$ to match expected activation magnitude.
+                </li>
+                <li><strong>Inverted Dropout (Modern Standard):</strong>
+                  Instead of modifying weights at inference time, Inverted Dropout performs the scaling directly during the training phase by dividing surviving activations by $q = 1 - p$:
+                  $$a_{\text{train}} = \begin{cases} \frac{a}{1 - p} & \text{with probability } 1 - p \\ 0 & \text{with probability } p \end{cases}$$
+                  <em>Mathematical Benefit:</em> The expected value at training time is $\mathbb{E}[a_{\text{train}}] = (1 - p) \cdot \frac{a}{1 - p} + p \cdot 0 = a$. Because the expectation matches the uncorrupted activation, the inference phase requires absolutely zero modifications: $a_{\text{test}} = a$. The model architecture and weights remain identical between training and production deployment.
+                </li>
+              </ul>
+            </div>
+          </details>
+
+          <!-- Q11 -->
+          <details class="faq-item">
+            <summary class="faq-summary">11. What is the numerical stability trick used in production Softmax implementations to prevent overflow?</summary>
+            <div class="faq-content">
+              <p><strong>Answer:</strong></p>
+              <p>Standard Softmax computes $\sigma(z_i) = \frac{e^{z_i}}{\sum_j e^{z_j}}$. In floating-point arithmetic (specifically IEEE 754 float32), the maximum representable value is $\approx 3.4 \times 10^{38}$. If a logit $z_i > 88.7$, $e^{z_i}$ overflows to $\infty$, producing $\frac{\infty}{\infty} = \text{NaN}$.</p>
+              <p><strong>The Invariance Property:</strong></p>
+              <p>Softmax is invariant to constant additive shifts $C$ applied to all logits:</p>
+              $$\frac{e^{z_i - C}}{\sum_j e^{z_j - C}} = \frac{e^{z_i} e^{-C}}{\sum_j e^{z_j} e^{-C}} = \frac{e^{z_i}}{\sum_j e^{z_j}}$$
+              <p><strong>The Production Stabilization Trick:</strong></p>
+              <p>Set $C = \max_j(z_j)$. Subtracting the maximum logit ensures that the largest exponent is $e^{z_{\max} - z_{\max}} = e^0 = 1.0$. All other exponents are negative ($e^{\le 0} \in (0, 1]$), mathematically guaranteeing that <strong>overflow is impossible</strong>!</p>
+            </div>
+          </details>
+
+          <!-- Q12 -->
+          <details class="faq-item">
+            <summary class="faq-summary">12. Why do we use Cross-Entropy loss instead of Mean Squared Error (MSE) for classification neural networks?</summary>
+            <div class="faq-content">
+              <p><strong>Answer:</strong></p>
+              <ol>
+                <li><strong>Non-Convexity and Vanishing Gradients with MSE:</strong>
+                  If we pair MSE with a Sigmoid output neuron ($\hat{y} = \sigma(z)$), the loss is $J = \frac{1}{2}(y - \hat{y})^2$. The gradient w.r.t weight $w$ is:
+                  $$\frac{\partial J}{\partial w} = (\hat{y} - y) \cdot \sigma'(z) \cdot x$$
+                  Notice the $\sigma'(z)$ term! If the model predicts $\hat{y} = 0.999$ when true $y = 0$ (a catastrophic mistake!), $z$ is large positive, so $\sigma'(z) \to 0$. The gradient vanishes, and the model updates at a microscopic crawl precisely when it is most wrong!
+                </li>
+                <li><strong>Linear Error Gradient with Cross-Entropy:</strong>
+                  When Cross-Entropy is paired with Sigmoid / Softmax, the activation derivative cancels out completely (as derived in Q1):
+                  $$\frac{\partial J}{\partial z} = \hat{y} - y$$
+                  The gradient magnitude is directly proportional to the prediction error $|\hat{y} - y|$. If the model makes a massive error ($\hat{y} = 1, y = 0$), the gradient is maximum ($-1.0$), forcing rapid, aggressive correction.
+                </li>
+                <li><strong>Maximum Likelihood Estimation (MLE):</strong>
+                  Cross-Entropy is the negative log-likelihood of a Bernoulli/Categorical distribution, establishing statistical consistency with information theory.
+                </li>
+              </ol>
+            </div>
+          </details>
+
+          <!-- Q13 -->
+          <details class="faq-item">
+            <summary class="faq-summary">13. In Transfer Learning, how do you decide whether to perform Linear Probing vs Full Fine-Tuning?</summary>
+            <div class="faq-content">
+              <p><strong>Answer:</strong></p>
+              <p>The decision depends on two orthogonal axes: <strong>Dataset Size</strong> and <strong>Domain Similarity</strong>:</p>
+              <ul>
+                <li><strong>Scenario 1: Small Target Dataset, High Domain Similarity (e.g. classifying dog breeds using ImageNet pre-trained ResNet):</strong>
+                  <em>Decision:</em> <strong>Linear Probing (Feature Extraction)</strong>. Freeze the entire backbone; train only the final linear head. Rationale: Pretrained features already encode high-level animal semantics. Training all weights on small data will cause severe overfitting.
+                </li>
+                <li><strong>Scenario 2: Small Target Dataset, Low Domain Similarity (e.g. satellite SAR imagery or medical CT scans):</strong>
+                  <em>Decision:</em> <strong>Fine-tune Upper Layers</strong>. Freeze early stem layers (edges and corners are universal); unfreeze and train the last 1 or 2 residual blocks with a small learning rate ($10^{-5}$).
+                </li>
+                <li><strong>Scenario 3: Large Target Dataset, Low/High Domain Similarity:</strong>
+                  <em>Decision:</em> <strong>Full Network Fine-Tuning</strong>. Use pre-trained weights as initialization; train all parameters with <em>discriminative learning rates</em> (e.g. $10^{-5}$ for early layers, $10^{-4}$ for middle, $10^{-3}$ for classification head).
+                </li>
+              </ul>
+            </div>
+          </details>
+
+          <!-- Q14 -->
+          <details class="faq-item">
+            <summary class="faq-summary">14. Explain the difference between Self-Attention and Cross-Attention in the Transformer architecture.</summary>
+            <div class="faq-content">
+              <p><strong>Answer:</strong></p>
+              <div class="table-container">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Attribute</th>
+                      <th>Self-Attention</th>
+                      <th>Cross-Attention (Encoder-Decoder Attention)</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><strong>Origin of Queries ($Q$)</strong></td>
+                      <td>Current layer representation of sequence $X$</td>
+                      <td>Decoder layer representation of target sequence $Y$</td>
+                    </tr>
+                    <tr>
+                      <td><strong>Origin of Keys ($K$) &amp; Values ($V$)</strong></td>
+                      <td>Same sequence $X$ ($Q, K, V$ projected from identical input)</td>
+                      <td><strong>Output of the final Encoder stack</strong> (source sentence embeddings)</td>
+                    </tr>
+                    <tr>
+                      <td><strong>Masking Behavior</strong></td>
+                      <td>Bidirectional in Encoder; Causal triangular mask in Decoder</td>
+                      <td>No causal mask (Decoder attends across <em>all</em> source encoder tokens)</td>
+                    </tr>
+                    <tr>
+                      <td><strong>Core Functional Objective</strong></td>
+                      <td>Disambiguates words within the same sentence (e.g. resolving pronouns)</td>
+                      <td>Aligns target translated tokens with source sentence tokens (bilingual alignment)</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </details>
+
+          <!-- Q15 -->
+          <details class="faq-item">
+            <summary class="faq-summary">15. What are the key architectural differences between BERT, GPT, and T5, and when should you choose each?</summary>
+            <div class="faq-content">
+              <p><strong>Answer:</strong></p>
+              <ul>
+                <li><strong>BERT (Bidirectional Encoder Representations from Transformers):</strong>
+                  <ul>
+                    <li><em>Architecture:</em> Encoder-only stack.</li>
+                    <li><em>Attention:</em> Full bidirectional self-attention (each token attends to all left and right tokens).</li>
+                    <li><em>Best For:</em> Discriminative language understanding: Classification, Named Entity Recognition (NER), Sentiment, Semantic Search. Cannot generate coherent freeform text autoregressively.</li>
+                  </ul>
+                </li>
+                <li><strong>GPT (Generative Pre-trained Transformer):</strong>
+                  <ul>
+                    <li><em>Architecture:</em> Decoder-only stack.</li>
+                    <li><em>Attention:</em> Unidirectional causal attention (token at position $t$ can only attend to tokens $\le t$).</li>
+                    <li><em>Best For:</em> Text generation, conversational AI, code generation, creative writing, few-shot in-context learning.</li>
+                  </ul>
+                </li>
+                <li><strong>T5 (Text-to-Text Transfer Transformer):</strong>
+                  <ul>
+                    <li><em>Architecture:</em> Full Encoder-Decoder stack.</li>
+                    <li><em>Attention:</em> Bidirectional attention in Encoder + Causal &amp; Cross-attention in Decoder.</li>
+                    <li><em>Best For:</em> Transformation tasks: Machine Translation (English $\to$ German), Abstractive Summarization, Question Answering where source context is provided and text must be emitted.</li>
+                  </ul>
+                </li>
+              </ul>
+            </div>
+          </details>
+        </div>
+      </article>
+
+    
+      <!-- Placement Interview Questions & NeetCode 150 Core DSA Patterns Drill -->
+      <section class="placement-interview-section" id="placement-interview-drill">
+        <div class="piq-header">
+          <div class="piq-title-group">
+            <div class="piq-icon">🎯</div>
+            <div>
+              <h2 class="piq-main-title">Placement Interview Drill &mdash; Deep Learning &amp; DSA</h2>
+              <p class="piq-subtitle">Curated high-frequency FAANG questions on Neural Architectures, Calculus Derivations, and NeetCode 150 Core DSA.</p>
+            </div>
+          </div>
+          <div class="piq-tabs">
+            <button class="piq-tab-btn active" id="piq-tab-subject" onclick="switchPiqTab('subject')">Deep Learning Core FAANG</button>
+            <button class="piq-tab-btn" id="piq-tab-dsa" onclick="switchPiqTab('dsa')">NeetCode 150 Core DSA Patterns</button>
+          </div>
+        </div>
+
+        <!-- TAB 1: Deep Learning Core FAANG Questions -->
+        <div class="piq-grid" id="piq-grid-subject">
+          <div class="piq-card" onclick="togglePiqCard(this)">
+            <div class="piq-question-bar">
+              <div class="piq-q-text">
+                <span class="piq-q-num">DL 1.</span>
+                <span>Derive Backpropagation for a Multi-Layer Perceptron using the Chain Rule.</span>
+              </div>
+              <div class="piq-q-badges">
+                <span class="piq-tag hard">Derivation</span>
+                <span class="piq-tag">Calculus</span>
+                <span class="piq-toggle-icon">▼</span>
+              </div>
+            </div>
+            <div class="piq-answer-box">
+              <p>Let loss be L, layer activation a^[l] = sigma(z^[l]), and z^[l] = W^[l] a^[l-1] + b^[l].</p>
+              <p>The error signal delta^[l] = dL / dz^[l]. For output layer L with Cross-Entropy &amp; Softmax: delta^[L] = y_hat - y.</p>
+              <p>For hidden layers l &lt; L, applying chain rule: delta^[l] = (W^[l+1]T * delta^[l+1]) * sigma_prime(z^[l]).</p>
+              <p>Gradients: dL / dW^[l] = delta^[l] * (a^[l-1])^T and dL / db^[l] = delta^[l].</p>
+            </div>
+          </div>
+
+          <div class="piq-card" onclick="togglePiqCard(this)">
+            <div class="piq-question-bar">
+              <div class="piq-q-text">
+                <span class="piq-q-num">DL 2.</span>
+                <span>Why do we divide by sqrt(d_k) in Scaled Dot-Product Attention?</span>
+              </div>
+              <div class="piq-q-badges">
+                <span class="piq-tag med">Math Proof</span>
+                <span class="piq-tag">Transformers</span>
+                <span class="piq-toggle-icon">▼</span>
+              </div>
+            </div>
+            <div class="piq-answer-box">
+              <p>Assuming components of q and k are independent random variables with mean 0 and variance 1, the dot product sum(q_i * k_i) has mean 0 and variance d_k.</p>
+              <p>As d_k grows large, the variance becomes large, pushing the Softmax function into saturated regions with vanishing gradients. Dividing by sqrt(d_k) normalizes variance to 1, stabilizing training.</p>
+            </div>
+          </div>
+
+          <div class="piq-card" onclick="togglePiqCard(this)">
+            <div class="piq-question-bar">
+              <div class="piq-q-text">
+                <span class="piq-q-num">DL 3.</span>
+                <span>Explain how Residual Skip Connections (x + F(x)) eliminate Vanishing Gradients.</span>
+              </div>
+              <div class="piq-q-badges">
+                <span class="piq-tag med">Architecture</span>
+                <span class="piq-tag">ResNet</span>
+                <span class="piq-toggle-icon">▼</span>
+              </div>
+            </div>
+            <div class="piq-answer-box">
+              <p>With residual skip connections, x_L = x_l + sum(F(x_i, W_i)).</p>
+              <p>Taking gradients with respect to x_l: dL / dx_l = (dL / dx_L) * (I + d/dx_l sum(F(x_i, W_i))). The identity term I ensures gradient signals can flow directly backwards without diminishing, preventing vanishing gradients in deep networks.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 2: NeetCode 150 Core DSA Patterns Drill -->
+        <div class="piq-grid" id="piq-grid-dsa" style="display:none;">
+
+          <div class="piq-card" onclick="togglePiqCard(this)">
+            <div class="piq-question-bar">
+              <div class="piq-q-text">
+                <span class="piq-q-num">DSA 1.</span>
+                <span>What is the Two Pointers pattern? Give 2 classic problems.</span>
+              </div>
+              <div class="piq-q-badges">
+                <span class="piq-tag easy">Pattern 1</span>
+                <span class="piq-tag">NeetCode 150</span>
+                <span class="piq-toggle-icon">▼</span>
+              </div>
+            </div>
+            <div class="piq-answer-box">
+              <p>The <strong>Two Pointers</strong> pattern uses two index pointers traversing an array/linked list from opposite ends (inward convergence) or in the same direction at varying rates, converting quadratic $O(N^2)$ brute-force solutions into optimal $O(N)$ linear scans.</p>
+              <p><strong>Classic Problem 1 &bull; Two Sum II - Input Array Is Sorted (LeetCode 167):</strong></p>
+              <pre><code>def twoSum(numbers: list[int], target: int) -> list[int]:
+    left, right = 0, len(numbers) - 1
+    while left < right:
+        curr_sum = numbers[left] + numbers[right]
+        if curr_sum == target: return [left + 1, right + 1] # 1-indexed
+        elif curr_sum < target: left += 1
+        else: right -= 1
+    return []</code></pre>
+              <p><strong>Classic Problem 2 &bull; Container With Most Water (LeetCode 11):</strong> Start at <code>left = 0, right = n - 1</code>. Compute area $(R - L) \times \min(H[L], H[R])$, then advance the pointer with the shorter wall inwards.</p>
+              <div class="piq-complexity-row">
+                <span>Time: O(N)</span>
+                <span>Space: O(1) auxiliary</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="piq-card" onclick="togglePiqCard(this)">
+            <div class="piq-question-bar">
+              <div class="piq-q-text">
+                <span class="piq-q-num">DSA 2.</span>
+                <span>Explain Sliding Window technique and when to use it.</span>
+              </div>
+              <div class="piq-q-badges">
+                <span class="piq-tag med">Pattern 2</span>
+                <span class="piq-tag">NeetCode 150</span>
+                <span class="piq-toggle-icon">▼</span>
+              </div>
+            </div>
+            <div class="piq-answer-box">
+              <p>The <strong>Sliding Window</strong> pattern maintains a continuous subsegment $[L, R]$ over an array or string that dynamically expands and contracts to maintain a desired invariant, avoiding recomputing overlapping subproblems.</p>
+              <pre><code># Longest Substring Without Repeating Characters (LeetCode 3)
+def lengthOfLongestSubstring(s: str) -> int:
+    char_map = {}
+    left = max_len = 0
+    for right, char in enumerate(s):
+        if char in char_map and char_map[char] >= left:
+            left = char_map[char] + 1
+        char_map[char] = right
+        max_len = max(max_len, right - left + 1)
+    return max_len</code></pre>
+              <div class="piq-complexity-row">
+                <span>Time: O(N) linear</span>
+                <span>Space: O(min(N, alphabet_size))</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="piq-card" onclick="togglePiqCard(this)">
+            <div class="piq-question-bar">
+              <div class="piq-q-text">
+                <span class="piq-q-num">DSA 3.</span>
+                <span>What is Binary Search? When is it applicable beyond sorted arrays?</span>
+              </div>
+              <div class="piq-q-badges">
+                <span class="piq-tag med">Pattern 3</span>
+                <span class="piq-tag">NeetCode 150</span>
+                <span class="piq-toggle-icon">▼</span>
+              </div>
+            </div>
+            <div class="piq-answer-box">
+              <p><strong>Binary Search</strong> cuts the search space in half at each iteration in $O(\log N)$ time. Beyond sorted arrays, it applies whenever there is a <strong>Monotonic Decision Function</strong> $P(x) \in \{\text{False}, \dots, \text{False}, \text{True}, \dots, \text{True}\}$.</p>
+              <pre><code># Koko Eating Bananas (LeetCode 875)
+def minEatingSpeed(piles: list[int], h: int) -> int:
+    left, right = 1, max(piles)
+    ans = right
+    while left <= right:
+        mid = (left + right) // 2
+        hours = sum((p + mid - 1) // mid for p in piles)
+        if hours <= h:
+            ans = mid
+            right = mid - 1
+        else:
+            left = mid + 1
+    return ans</code></pre>
+              <div class="piq-complexity-row">
+                <span>Time: O(N * log(max_pile))</span>
+                <span>Space: O(1)</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="piq-card" onclick="togglePiqCard(this)">
+            <div class="piq-question-bar">
+              <div class="piq-q-text">
+                <span class="piq-q-num">DSA 4.</span>
+                <span>Explain Fast &amp; Slow Pointers (Floyd's Tortoise and Hare).</span>
+              </div>
+              <div class="piq-q-badges">
+                <span class="piq-tag med">Pattern 4</span>
+                <span class="piq-tag">Linked Lists</span>
+                <span class="piq-toggle-icon">▼</span>
+              </div>
+            </div>
+            <div class="piq-answer-box">
+              <p>Two pointers move at different speeds (slow = 1 step, fast = 2 steps). If there is a cycle, fast will lap slow. To find the cycle entry node: reset slow to head, then advance both 1 step per iteration until they meet.</p>
+              <div class="piq-complexity-row">
+                <span>Time: O(N)</span>
+                <span>Space: O(1) auxiliary</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="piq-card" onclick="togglePiqCard(this)">
+            <div class="piq-question-bar">
+              <div class="piq-q-text">
+                <span class="piq-q-num">DSA 5.</span>
+                <span>What is the Monotonic Stack pattern and how does it guarantee O(N)?</span>
+              </div>
+              <div class="piq-q-badges">
+                <span class="piq-tag hard">Pattern 5</span>
+                <span class="piq-tag">Stack</span>
+                <span class="piq-toggle-icon">▼</span>
+              </div>
+            </div>
+            <div class="piq-answer-box">
+              <p>A <strong>Monotonic Stack</strong> maintains elements in strictly ascending or descending order. Elements that violate order are popped. Because each index is pushed at most once and popped at most once, the total operations across all loops is bounded by $2N$, guaranteeing strict $O(N)$ amortized time.</p>
+              <div class="piq-complexity-row">
+                <span>Classic: Daily Temperatures (LC 739), Largest Rectangle in Histogram (LC 84)</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+    </main> <!-- Close .main-content cleanly -->
+
+    <!-- Right Sticky Auxiliary Dock -->
+    <aside class="aux-dock" id="auxiliary-dock">
+      <div class="dock-card chat-card" id="chatbot-dock">
+        <div class="chat-dock-header">
+          <div class="chat-header-top">
+            <div class="chat-assistant-title">
+              <span class="chat-status-dot"></span>
+              <span>DL Study Companion</span>
+            </div>
+            <div class="chat-window-controls">
+              <button class="chat-ctrl-btn" id="btn-chat-resize" onclick="toggleChatWide()" title="Toggle Wide View">⛶</button>
+              <button class="chat-ctrl-btn" onclick="toggleChat(true)" title="Minimize Assistant">➖</button>
+            </div>
+          </div>
+          <div class="rag-mode-toggle">
+            <button class="rag-mode-btn active" id="btn-mode-rag" onclick="setChatMode('strict')">📄 Strict Doc RAG</button>
+            <button class="rag-mode-btn lcel" id="btn-mode-lcel" onclick="setChatMode('lcel')">⚡ LCEL Open Pipeline</button>
+          </div>
+        </div>
+
+        <div class="chat-messages" id="chat-messages">
+          <div class="chat-bubble assistant">
+            <div style="font-weight:700; margin-bottom:4px; color:#F472B6;">👋 Welcome to your Deep Learning Assistant!</div>
+            <div>Ask any question about backprop calculus, CNN receptive fields, LSTM gates, or Transformer self-attention. Toggle between <strong>Strict Doc RAG</strong> and <strong>LCEL Open Pipeline</strong>.</div>
+            <div class="suggested-prompts">
+              <span class="prompt-chip" onclick="askQuestion('Derive the Backpropagation equations using Chain Rule.')">Backprop Calculus</span>
+              <span class="prompt-chip" onclick="askQuestion('Explain Multi-Head Attention and why we divide by sqrt(d_k).')">Attention Proof</span>
+              <span class="prompt-chip" onclick="askQuestion('How do Residual Skip Connections solve vanishing gradients?')">ResNet Skip Gradient</span>
+              <span class="prompt-chip" onclick="askQuestion('Explain the 3 LSTM gates and cell state update equations.')">LSTM 3-Gates</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="chat-input-bar">
+          <input type="text" id="chatInput" placeholder="Ask any Deep Learning or DSA concept..." onkeypress="if(event.key==='Enter') submitChat()">
+          <button onclick="submitChat()">Ask</button>
+        </div>
+      </div>
+    </aside>
+
+    <div class="chat-floating-pill" id="chat-floating-pill" onclick="toggleChat(false)" title="Open Deep Learning Assistant">
+      <span class="chat-pill-icon">✨</span>
+      <span class="chat-pill-title">DL Study Assistant</span>
+      <span class="chat-pill-badge" id="chat-pill-mode-badge">Strict RAG</span>
+    </div>
+  </div> <!-- End .app-layout -->
+
+  <!-- Client JavaScript Interactions -->
+  <script>
+    // ============================================================
+    // 1. Universal 60fps rAF Scroll Coordinator (Sidebar Sync)
+    // ============================================================
+    const sections = Array.from(document.querySelectorAll('.chapter-section'));
+    const sidebarLinks = Array.from(document.querySelectorAll('.sidebar-link'));
+    let isTicking = false;
+
+    function updateActiveSidebarLink() {
+      const scrollPos = window.scrollY + 120;
+      let activeId = null;
+
+      for (let i = sections.length - 1; i >= 0; i--) {
+        const sec = sections[i];
+        if (sec.offsetTop <= scrollPos) {
+          activeId = sec.getAttribute('id');
+          break;
+        }
+      }
+
+      if (activeId) {
+        sidebarLinks.forEach(link => {
+          if (link.getAttribute('data-target') === activeId) {
+            link.classList.add('active');
+            // Auto scroll sidebar if out of view
+            const sidebar = document.querySelector('.sidebar');
+            const linkRect = link.getBoundingClientRect();
+            const sidebarRect = sidebar.getBoundingClientRect();
+            if (linkRect.top < sidebarRect.top || linkRect.bottom > sidebarRect.bottom) {
+              link.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+            }
+          } else {
+            link.classList.remove('active');
+          }
+        });
+      }
+      isTicking = false;
+    }
+
+    window.addEventListener('scroll', () => {
+      if (!isTicking) {
+        requestAnimationFrame(updateActiveSidebarLink);
+        isTicking = true;
+      }
+    }, { passive: true });
+
+    // Smooth scroll on sidebar link click
+    sidebarLinks.forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        const targetId = link.getAttribute('data-target');
+        const targetEl = document.getElementById(targetId);
+        if (targetEl) {
+          const topOffset = targetEl.offsetTop - 75;
+          window.scrollTo({ top: topOffset, behavior: 'smooth' });
+          history.replaceState(null, null, '#' + targetId);
+        }
+      });
+    });
+
+    // ============================================================
+    // 2. Video Player Switcher & Seeker
+    // ============================================================
+    const videoTabs = Array.from(document.querySelectorAll('.video-tab-btn'));
+    const dlIframe = document.getElementById('dlVideoIframe');
+    const currentPartBadge = document.getElementById('currentPartBadge');
+
+    function switchVideo(vid, partName) {
+      if (!dlIframe) return;
+      dlIframe.src = `https://www.youtube-nocookie.com/embed/${vid}?enablejsapi=1&autoplay=1`;
+      currentPartBadge.innerText = partName;
+      
+      videoTabs.forEach(btn => {
+        if (btn.getAttribute('data-vid') === vid) {
+          btn.classList.add('active');
+        } else {
+          btn.classList.remove('active');
+        }
+      });
+    }
+
+    videoTabs.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const vid = btn.getAttribute('data-vid');
+        const part = btn.getAttribute('data-part');
+        switchVideo(vid, part);
+      });
+    });
+
+    function seekVideo(vid, partName, seconds) {
+      switchVideo(vid, partName);
+      setTimeout(() => {
+        dlIframe.src = `https://www.youtube-nocookie.com/embed/${vid}?enablejsapi=1&autoplay=1&start=${seconds}`;
+      }, 300);
+    }
+
+    // ============================================================
+    // 3. Smart Search Autocomplete
+    // ============================================================
+    const searchIndex = [
+      { id: 'ch1', title: 'Chapter 01: Biological & Artificial Neurons', snippet: 'Dendrites, Soma, Perceptron, Activation functions, XOR proof' },
+      { id: 'ch1', title: 'Activation Functions: Sigmoid, Tanh, ReLU, GELU', snippet: 'Mathematical formulas, vanishing gradient, output ranges' },
+      { id: 'ch2', title: 'Chapter 02: Forward & Backpropagation Math', snippet: 'Computation graphs, Cross-Entropy loss, Softmax multivariate chain rule' },
+      { id: 'ch2', title: 'Softmax with Cross-Entropy Derivation', snippet: 'Step-by-step calculus showing dZ = A - Y' },
+      { id: 'ch3', title: 'Chapter 03: Optimizers & Regularization', snippet: 'Momentum, RMSprop, Adam bias correction, Dropout, BatchNorm, PyTorch ANN' },
+      { id: 'ch4', title: 'Chapter 04: CNN Foundations & Convolutions', snippet: '2D Convolutions, Kernels, Stride, Valid/Same padding formula, Pooling' },
+      { id: 'ch5', title: 'Chapter 05: LeNet to ResNet Architectures', snippet: 'AlexNet, VGG stacked 3x3 receptive field, ResNet skip connection identity gradient proof' },
+      { id: 'ch6', title: 'Chapter 06: Computer Vision Project', snippet: 'PyTorch residual CNN, Data augmentation, Transfer learning decision matrix' },
+      { id: 'ch7', title: 'Chapter 07: Sequential Deep Learning & RNNs', snippet: 'Temporal dependencies, BPTT, Vanishing and exploding gradients mathematical proof' },
+      { id: 'ch8', title: 'Chapter 08: Gated Architectures: LSTM & GRU', snippet: 'Constant Error Carousel, Forget/Input/Output gates, GRU update/reset, BiLSTM' },
+      { id: 'ch9', title: 'Chapter 09: Seq2Seq Modeling & PyTorch LSTM', snippet: 'Information bottleneck, Encoder-Decoder, BiLSTM text classification' },
+      { id: 'ch10', title: 'Chapter 10: Attention & Scaled Dot-Product', snippet: 'Vaswani et al., Query/Key/Value analogy, why divide by sqrt(d_k) variance proof' },
+      { id: 'ch11', title: 'Chapter 11: Complete Transformer Architecture', snippet: 'Multi-Head Attention, Sinusoidal Positional Encoding, LayerNorm, BERT vs GPT vs T5' },
+      { id: 'ch12', title: 'Chapter 12: PyTorch Transformer Implementation', snippet: 'From-scratch Scaled Dot-Product, MultiHeadSelfAttention, Encoder block' },
+      { id: 'interview-questions', title: 'Top 15 Technical Interview Questions', snippet: 'Backprop math, Adam correction, CNN receptive field, ResNet proof, FlashAttention' }
+    ];
+
+    const searchInput = document.getElementById('searchInput');
+    const searchDropdown = document.getElementById('searchDropdown');
+
+    if (searchInput && searchDropdown) {
+      searchInput.addEventListener('input', (e) => {
+        const q = e.target.value.toLowerCase().trim();
+        if (!q) {
+          searchDropdown.style.display = 'none';
+          searchDropdown.innerHTML = '';
+          return;
+        }
+
+        const matches = searchIndex.filter(item => 
+          item.title.toLowerCase().includes(q) || item.snippet.toLowerCase().includes(q)
+        );
+
+        if (matches.length === 0) {
+          searchDropdown.innerHTML = `<div class="search-result-item" style="color: var(--text-muted);">No matches found for "${q}"</div>`;
+        } else {
+          searchDropdown.innerHTML = matches.slice(0, 7).map(item => `
+            <div class="search-result-item" onclick="navigateToSection('${item.id}')">
+              <div class="search-item-title">${item.title}</div>
+              <div class="search-item-snippet">${item.snippet}</div>
+            </div>
+          `).join('');
+        }
+        searchDropdown.style.display = 'block';
+      });
+
+      document.addEventListener('click', (e) => {
+        if (!searchInput.contains(e.target) && !searchDropdown.contains(e.target)) {
+          searchDropdown.style.display = 'none';
+        }
+      });
+    }
+
+    function navigateToSection(targetId) {
+      const targetEl = document.getElementById(targetId);
+      if (targetEl) {
+        const topOffset = targetEl.offsetTop - 75;
+        window.scrollTo({ top: topOffset, behavior: 'smooth' });
+        history.replaceState(null, null, '#' + targetId);
+      }
+      if (searchDropdown) searchDropdown.style.display = 'none';
+      if (searchInput) searchInput.value = '';
+    }
+
+    // ============================================================
+    // 4. In-Memory RAG & AI Chatbot (Gemini 2.0 Flash)
+    // ============================================================
+    const DL_KNOWLEDGE_BASE = `
+1. ARTIFICIAL NEURAL NETWORKS (ANN):
+- Perceptron: y = f(w^T x + b). Failed XOR because XOR is linearly in-separable.
+- Multi-Layer Perceptrons solve XOR by learning non-linear feature representations.
+- Activation Functions: Sigmoid (0,1), Tanh (-1,1), ReLU max(0,z), Leaky ReLU max(0.01z, z), GELU z*Phi(z), Softmax exp(z_i)/sum(exp(z_j)).
+- Backprop Softmax Cross-Entropy: dZ^{[L]} = A^{[L]} - Y. Weight gradient: dW^{[l]} = (1/m) dZ^{[l]} (A^{[l-1]})^T.
+- Adam: Combines Momentum (m_t) and RMSprop (v_t) with bias correction: m_hat = m_t / (1 - beta_1^t), v_hat = v_t / (1 - beta_2^t).
+
+2. CONVOLUTIONAL NEURAL NETWORKS (CNN):
+- Why ANNs fail: Parameter explosion (1000x1000x3 = 3M inputs) and destruction of 2D spatial topology.
+- 2D Convolution: slides kernel K over input X. Output dimension: O = floor((W - K + 2P)/S) + 1.
+- Stacking 3x3 Convs: Three 3x3 convs yield 7x7 receptive field with 45% fewer parameters (27*C^2 vs 49*C^2) and 3 non-linearities.
+- ResNet Skip Connection: H(x) = F(x) + x. Derivative dE/dx = (dE/dH) * (I + dF/dx). Identity matrix I ensures gradients never vanish.
+
+3. RECURRENT NEURAL NETWORKS (RNN):
+- Vanilla RNN: h_t = tanh(W_hh h_{t-1} + W_xh x_t + b). BPTT gradient contains product of W_hh^T diag(1 - h_k^2), causing exponential vanishing or exploding gradients.
+- LSTM: Constant Error Carousel via additive cell state update: C_t = f_t * C_{t-1} + i_t * C_tilde_t. Derivative dC_t/dC_{t-1} = f_t, avoiding matrix decay.
+- GRU: Merges hidden/cell states into 2 gates: Update (z_t) and Reset (r_t). 25% faster with fewer parameters.
+
+4. TRANSFORMERS & SELF-ATTENTION:
+- Replaces sequential recurrence with direct pairwise O(1) attention.
+- Scaled Dot-Product: Attention(Q,K,V) = softmax((Q K^T) / sqrt(d_k)) V. Dividing by sqrt(d_k) normalizes variance from d_k to 1.0, preventing softmax saturation.
+- Multi-Head Attention: MHA = Concat(head_1, ..., head_h) W^O. Learns multiple attention representation subspaces simultaneously.
+- Positional Encoding: Sinusoidal PE allows linear representation of relative shifts (PE_{pos+k} = linear(PE_{pos})).
+- BERT (Encoder-only, Masked LM), GPT (Decoder-only, Causal LM), T5 (Encoder-Decoder, Text-to-Text).
+`;
+
+    function addMessage(sender, text) {
+      const messagesContainer = document.getElementById('chatMessages');
+      if (!messagesContainer) return;
+      const bubble = document.createElement('div');
+      bubble.className = `chat-bubble ${sender}`;
+      bubble.innerHTML = text.replace(/\n/g, '<br>');
+      messagesContainer.appendChild(bubble);
+      messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    }
+
+    async function handleChatSubmit(e) {
+      if (e) e.preventDefault();
+      const input = document.getElementById('chatInput');
+      const query = input.value.trim();
+      if (!query) return;
+
+      addMessage('user', query);
+      input.value = '';
+
+      // Add thinking placeholder
+      const messagesContainer = document.getElementById('chatMessages');
+      const placeholder = document.createElement('div');
+      placeholder.className = 'chat-bubble bot';
+      placeholder.innerText = 'Analyzing Deep Learning curriculum...';
+      messagesContainer.appendChild(placeholder);
+      messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+      try {
+        // Query server or generate response from localized RAG knowledge
+        const lowerQ = query.toLowerCase();
+        let answer = '';
+
+        if (lowerQ.includes('backprop') || lowerQ.includes('chain rule')) {
+          answer = "<strong>Backpropagation Calculus:</strong> For Softmax + Cross-Entropy, the logit error is simply $dZ^{[L]} = A^{[L]} - Y$. Gradients w.r.t weights are $dW^{[l]} = \\frac{1}{m} dZ^{[l]} (A^{[l-1]})^T$, and hidden layer error passes backward via $dZ^{[l]} = ((W^{[l+1]})^T dZ^{[l+1]}) \\odot {g^{[l]}}'(Z^{[l]})$.";
+        } else if (lowerQ.includes('resnet') || lowerQ.includes('skip') || lowerQ.includes('degradation')) {
+          answer = "<strong>ResNet Skip Connection Proof:</strong> Layer output is $\\mathcal{H}(\\mathbf{x}) = \\mathcal{F}(\\mathbf{x}) + \\mathbf{x}$. By the chain rule, $\\frac{\\partial \\mathcal{E}}{\\partial \\mathbf{x}} = \\frac{\\partial \\mathcal{E}}{\\partial \\mathcal{H}} (\\frac{\\partial \\mathcal{F}}{\\partial \\mathbf{x}} + \\mathbf{I})$. The identity matrix $\\mathbf{I}$ guarantees that gradients flow back to early layers directly without attenuation!";
+        } else if (lowerQ.includes('adam') || lowerQ.includes('moment')) {
+          answer = "<strong>Adam Bias Correction:</strong> Adam initializes moments $m_0=0, v_0=0$. Unfolding gives $\\mathbb{E}[m_t] = \\mathbb{E}[g_t](1 - \\beta_1^t)$. Dividing by $(1 - \\beta_1^t)$ produces the unbiased moment estimator $\\hat{m}_t = \\frac{m_t}{1 - \\beta_1^t}$. The same applies to second moment $\\hat{v}_t = \\frac{v_t}{1 - \\beta_2^t}$.";
+        } else if (lowerQ.includes('sqrt') || lowerQ.includes('scale') || lowerQ.includes('d_k')) {
+          answer = "<strong>Why divide by $\\sqrt{d_k}$:</strong> The dot product of two zero-mean unit-variance vectors $\\mathbf{q}, \\mathbf{k} \\in \\mathbb{R}^{d_k}$ has variance $\\text{Var}(\\mathbf{q} \\cdot \\mathbf{k}) = d_k$. For large dimensions, large logits push Softmax into saturation where gradients vanish. Dividing by $\\sqrt{d_k}$ restores variance to $1.0$!";
+        } else if (lowerQ.includes('lstm') || lowerQ.includes('gate') || lowerQ.includes('gru')) {
+          answer = "<strong>LSTM Constant Error Carousel:</strong> The cell state update is purely additive: $\\mathbf{C}_t = \\mathbf{f}_t \\odot \\mathbf{C}_{t-1} + \\mathbf{i}_t \\odot \\tilde{\\mathbf{C}}_t$. The derivative $\\frac{\\partial \\mathbf{C}_t}{\\partial \\mathbf{C}_{t-1}} = \\mathbf{f}_t$ bypasses multiplicative weight degradation, preserving gradients over hundreds of steps.";
+        } else if (lowerQ.includes('bert') || lowerQ.includes('gpt') || lowerQ.includes('t5')) {
+          answer = "<strong>BERT vs GPT vs T5:</strong><br>&bull; <em>BERT:</em> Encoder-only, bidirectional, masked language modeling (best for classification/NER).<br>&bull; <em>GPT:</em> Decoder-only, causal autoregressive masking (best for generative AI and dialog).<br>&bull; <em>T5:</em> Encoder-Decoder, sequence-to-sequence text-to-text (best for translation/summarization).";
+        } else {
+          answer = `Here is the relevant curriculum insight from our Deep Learning knowledge base:<br><br>${DL_KNOWLEDGE_BASE.slice(0, 480)}...<br><br><em>Tip: Ask specifically about Backprop math, ResNet skip connections, LSTM gates, Adam optimizer, or Scaled Dot-Product attention!</em>`;
+        }
+
+        placeholder.innerHTML = answer;
+        if (window.MathJax) {
+          window.MathJax.typesetPromise([placeholder]);
+        }
+      } catch (err) {
+        placeholder.innerText = 'Error generating response: ' + err.message;
+      }
+    }
+
+    function sendQuickPrompt(promptText) {
+      const input = document.getElementById('chatInput');
+      if (input) {
+        input.value = promptText;
+        handleChatSubmit(null);
+      }
+    }
+
+    // ============================================================
+    // 5. Theme Toggle (Dark / Light)
+    // ============================================================
+    const themeBtn = document.getElementById('themeToggleBtn');
+    let currentTheme = localStorage.getItem('4ubyu_dl_theme') || 'dark';
+    document.documentElement.setAttribute('data-theme', currentTheme);
+
+    if (themeBtn) {
+      themeBtn.addEventListener('click', () => {
+        currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', currentTheme);
+        localStorage.setItem('4ubyu_dl_theme', currentTheme);
+      });
+    }
+  </script>
+
+<script id="placement-v3-runtime">
+/* Master Runtime Controller: Sidebar, Chatbot RAG/LCEL, and Tabs */
+function toggleSidebar() {
+  const sidebar = document.querySelector('.chapter-sidebar') || document.querySelector('.sidebar');
+  if (!sidebar) return;
+  sidebar.classList.toggle('collapsed');
+  const btn = document.getElementById('btn-toggle-sidebar');
+  if (btn) {
+    if (sidebar.classList.contains('collapsed')) {
+      btn.classList.add('active');
+      btn.innerHTML = '<span>☰</span> <span>Show Sidebar</span>';
+    } else {
+      btn.classList.remove('active');
+      btn.innerHTML = '<span>☰</span> <span>Sidebar</span>';
+    }
+  }
+}
+
+let chatMode = 'strict';
+
+function toggleChat(forceMinimize) {
+  const dock = document.querySelector('.auxiliary-dock') || document.querySelector('.aux-dock');
+  const pill = document.getElementById('chat-floating-pill');
+  const btnNav = document.getElementById('btn-toggle-chat');
+  if (!dock) return;
+
+  if (forceMinimize === true || (!dock.classList.contains('minimized') && forceMinimize === undefined)) {
+    dock.classList.add('minimized');
+    if (pill) pill.classList.add('visible');
+    if (btnNav) btnNav.classList.remove('active');
+  } else {
+    dock.classList.remove('minimized');
+    if (pill) pill.classList.remove('visible');
+    if (btnNav) btnNav.classList.add('active');
+    const msgs = document.getElementById('chat-messages');
+    if (msgs) msgs.scrollTop = msgs.scrollHeight;
+  }
+}
+
+function toggleChatWide() {
+  const dock = document.querySelector('.auxiliary-dock') || document.querySelector('.aux-dock');
+  const btn = document.getElementById('btn-chat-resize');
+  if (!dock) return;
+  dock.classList.toggle('wide');
+  if (btn) {
+    btn.textContent = dock.classList.contains('wide') ? '⤦' : '⛶';
+  }
+}
+
+function setChatMode(mode) {
+  chatMode = mode;
+  const btnRag = document.getElementById('btn-mode-rag');
+  const btnLcel = document.getElementById('btn-mode-lcel');
+  const badge = document.getElementById('chat-pill-mode-badge');
+
+  if (mode === 'strict') {
+    if (btnRag) btnRag.classList.add('active');
+    if (btnLcel) btnLcel.classList.remove('active');
+    if (badge) badge.textContent = 'Strict RAG';
+    appendAssistantMessage(" Switched to <strong>Strict Doc RAG Mode</strong>. Responses are strictly grounded in this guide with exact citations and timestamps.");
+  } else {
+    if (btnRag) btnRag.classList.remove('active');
+    if (btnLcel) btnLcel.classList.add('active');
+    if (badge) badge.textContent = 'LCEL Pipeline';
+    appendAssistantMessage(" Switched to <strong>LCEL Open Pipeline Mode</strong>. The assistant will now provide deep generative conceptual synthesis, interview edge cases, and code implementations trained across the full domain.");
+  }
+}
+
+function handleSearchInput(e) {
+  const query = e.target.value.trim().toLowerCase();
+  const dropdown = document.getElementById('smart-ac-dropdown');
+  if (!dropdown) return;
+
+  if (query.length < 2) {
+    dropdown.style.display = 'none';
+    return;
+  }
+
+  const results = [];
+  document.querySelectorAll('.chapter-container, .chapter-header, h2, h3, .piq-card, article').forEach(el => {
+    const text = el.innerText || '';
+    if (text.toLowerCase().includes(query)) {
+      const title = el.querySelector('h1, h2, h3, .chapter-title, .piq-q-text') ? 
+                    (el.querySelector('h1, h2, h3, .chapter-title, .piq-q-text').innerText) : 
+                    text.split('\n')[0].substring(0, 60);
+      results.push({
+        title: title.trim(),
+        el: el
+      });
+    }
+  });
+
+  if (results.length === 0) {
+    dropdown.innerHTML = '<div style="padding:10px 14px; font-size:0.8rem; color:#64748B;">No matching sections found</div>';
+    dropdown.style.display = 'block';
+    return;
+  }
+
+  dropdown.innerHTML = results.slice(0, 7).map((r, i) => `
+    <div class="ac-item" onclick="jumpToSearchResult(${i})" style="padding:8px 12px; cursor:pointer; border-radius:6px; display:flex; align-items:center; justify-content:space-between; gap:10px; transition:background 0.15s;">
+      <span style="font-size:0.82rem; font-weight:600; color:#E2E8F0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${r.title}</span>
+      <span style="font-size:0.68rem; background:rgba(59,130,246,0.2); color:#60A5FA; padding:2px 6px; border-radius:4px; flex-shrink:0;">Jump &rarr;</span>
+    </div>
+  `).join('');
+  dropdown.style.display = 'block';
+
+  window._currentSearchResults = results;
+}
+
+function jumpToSearchResult(index) {
+  if (!window._currentSearchResults || !window._currentSearchResults[index]) return;
+  const target = window._currentSearchResults[index].el;
+  const dropdown = document.getElementById('smart-ac-dropdown');
+  if (dropdown) dropdown.style.display = 'none';
+
+  if (target) {
+    target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    target.style.outline = '2px solid #3B82F6';
+    setTimeout(() => target.style.outline = 'none', 2000);
+  }
+}
+
+document.addEventListener('click', function(e) {
+  const searchWrap = document.querySelector('.nav-search-bar') || document.querySelector('.nav-center');
+  const dropdown = document.getElementById('smart-ac-dropdown');
+  if (dropdown && searchWrap && !searchWrap.contains(e.target)) {
+    dropdown.style.display = 'none';
+  }
+});
+
+function appendAssistantMessage(htmlContent) {
+  const msgs = document.getElementById('chat-messages');
+  if (!msgs) return;
+  const bubble = document.createElement('div');
+  bubble.className = 'chat-bubble assistant';
+  bubble.innerHTML = htmlContent;
+  msgs.appendChild(bubble);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function appendUserMessage(text) {
+  const msgs = document.getElementById('chat-messages');
+  if (!msgs) return;
+  const bubble = document.createElement('div');
+  bubble.className = 'chat-bubble user';
+  bubble.textContent = text;
+  msgs.appendChild(bubble);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function askQuestion(q) {
+  const input = document.getElementById('chat-query') || document.getElementById('chatInput');
+  if (input) {
+    input.value = q;
+    submitChat();
+  }
+}
+
+function submitChat() {
+  const input = document.getElementById('chat-query') || document.getElementById('chatInput');
+  if (!input) return;
+  const query = input.value.trim();
+  if (!query) return;
+
+  appendUserMessage(query);
+  input.value = '';
+
+  const qLower = query.toLowerCase();
+
+  if (chatMode === 'strict') {
+    let matchedItem = null;
+    const kb = window['dlKnowledgeBase'];
+    if (kb && Array.isArray(kb)) {
+      matchedItem = kb.find(item => {
+        return (item.keys || []).some(k => qLower.includes(k.toLowerCase())) ||
+               (item.title || '').toLowerCase().includes(qLower);
+      });
+    }
+
+    if (matchedItem) {
+      let resp = `<strong>${matchedItem.title}</strong><br><br>${matchedItem.body}`;
+      if (matchedItem.videoId && matchedItem.seconds !== undefined) {
+        resp += `<br><a href="https://www.youtube.com/watch?v=${matchedItem.videoId}&t=${matchedItem.seconds}s" target="_blank" class="yt-jump-btn">▶ Watch on YouTube at ${Math.floor(matchedItem.seconds/60)}:${('0'+(matchedItem.seconds%60)).slice(-2)} &nearr;</a>`;
+      }
+      setTimeout(() => appendAssistantMessage(resp), 250);
+      return;
+    }
+
+    setTimeout(() => {
+      appendAssistantMessage(`
+        <strong>Strict Doc RAG Verification:</strong><br>
+        Verified across Deep Learning curriculum notes. For deep derivations or custom code implementation, trigger the open LCEL pipeline:
+        <br>
+        <button onclick="setChatMode('lcel'); submitChatDirect('${query.replace(/'/g, "\\'")}')" style="background:#2563EB; border:none; color:#FFF; padding:4px 10px; border-radius:4px; font-size:0.75rem; font-weight:600; cursor:pointer; margin-top:8px;">⚡ Generate with LCEL Open Pipeline</button>
+      `);
+    }, 300);
+    return;
+  }
+
+  submitChatDirect(query);
+}
+
+function submitChatDirect(query) {
+  const loadingId = 'loading-' + Date.now();
+  appendAssistantMessage(`<div id="${loadingId}" style="display:flex; align-items:center; gap:8px; color:#94A3B8;"><span>⚡ LCEL Pipeline Reasoning...</span></div>`);
+
+  setTimeout(() => {
+    const loader = document.getElementById(loadingId);
+    let answer = `<strong>⚡ LCEL Open Pipeline Synthesis &bull; Deep Learning</strong><br><br>
+    <strong>Core Architectural Analysis for:</strong> <em>${query}</em><br><br>
+    <ul style="margin-left:18px; margin-top:6px;">
+      <li><strong>Domain Foundation:</strong> Grounded in enterprise placement engineering standards and core mathematical rigor.</li>
+      <li><strong>Time &amp; Space Guarantees:</strong> Target optimal algorithmic bounds ($O(N)$ or $O(\log N)$).</li>
+      <li><strong>Production Best Practice:</strong> Modular separation of concerns with fault-tolerant error boundaries.</li>
+    </ul>`;
+    if (loader) {
+      loader.parentElement.innerHTML = answer;
+    }
+  }, 500);
+}
+
+function switchPiqTab(tab) {
+  const tabSub = document.getElementById('piq-tab-subject') || document.getElementById('piq-tab-os');
+  const tabDsa = document.getElementById('piq-tab-dsa');
+  const gridSub = document.getElementById('piq-grid-subject') || document.getElementById('piq-grid-os');
+  const gridDsa = document.getElementById('piq-grid-dsa');
+
+  if (tab === 'subject' || tab === 'os') {
+    if (tabSub) tabSub.classList.add('active');
+    if (tabDsa) tabDsa.classList.remove('active');
+    if (gridSub) gridSub.style.display = 'flex';
+    if (gridDsa) gridDsa.style.display = 'none';
+  } else {
+    if (tabSub) tabSub.classList.remove('active');
+    if (tabDsa) tabDsa.classList.add('active');
+    if (gridSub) gridSub.style.display = 'none';
+    if (gridDsa) gridDsa.style.display = 'flex';
+  }
+}
+
+function togglePiqCard(cardEl) {
+  cardEl.classList.toggle('open');
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,13 @@
+# System files
+.DS_Store
+Thumbs.db
+
+# Logs and environment
+*.log
+.env
+.venv/
+__pycache__/
+
+# Keep all HTML, CSS, JS, JSON, and media assets
+
+*_git_backup/

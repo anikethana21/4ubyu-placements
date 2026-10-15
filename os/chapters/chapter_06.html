@@ -1,0 +1,103 @@
+<section class="chapter-content" id="chapter-6">
+  <div class="chapter-header">
+    <div class="chapter-badge">Chapter 06 &bull; Video 3 Coverage</div>
+    <h2>Virtual Memory, TLB Performance & Page Replacement Algorithms</h2>
+    <p class="chapter-meta">
+      <strong>Source Video:</strong> <a href="https://www.youtube.com/watch?v=X077mn-qghM" target="_blank">OS Memory Management Explained | Part 3</a> &bull;
+      <strong>Instructor:</strong> Vivek Gupta (Ex-Google, AlgoZenith) &bull;
+      <strong>Timeline:</strong> 00:33:37 &ndash; 01:07:50
+    </p>
+  </div>
+
+  <div class="callout callout-info">
+    <h4>Core Interview Numericals</h4>
+    <p>In technical interviews for systems engineering roles, candidates must know how to calculate Effective Memory Access Time (EMAT) with TLB hit ratios, detail the exact 7-step hardware/kernel page fault routine, trace Belady's Anomaly in FIFO replacement with reference strings, and explain the working set model for Thrashing prevention.</p>
+  </div>
+
+  <h3>6.1 Translation Lookaside Buffer (TLB) & EMAT Calculations</h3>
+  <p>In basic paging, every memory reference requires <strong>two</strong> physical RAM accesses: first to read the Page Table Entry (PTE) from RAM, and second to read/write the actual operand. This doubles memory latency and halves processor throughput (<a href="https://www.youtube.com/watch?v=X077mn-qghM&t=2017s" target="_blank" class="yt-timestamp">⏱️ 33:37</a>).</p>
+
+  <p>The <strong>Translation Lookaside Buffer (TLB)</strong> is an associative hardware cache embedded directly inside the Memory Management Unit (MMU) that stores recent $\langle \text{Page Number}, \text{Frame Number} \rangle$ translations.</p>
+
+  <h4>The Complete EMAT Formula:</h4>
+  <p>Let $h$ be the TLB Hit Ratio ($0 \le h \le 1$), $t_{\text{tlb}}$ be the TLB search time, and $t_{\text{mem}}$ be the physical RAM access time:</p>
+  $$\text{EMAT} = h \cdot (t_{\text{tlb}} + t_{\text{mem}}) + (1 - h) \cdot (t_{\text{tlb}} + 2 \cdot t_{\text{mem}})$$
+
+  <h4>Solved Placement Numerical:</h4>
+  <p><strong>Given:</strong> TLB access time $t_{\text{tlb}} = 10 \text{ ns}$, RAM access time $t_{\text{mem}} = 100 \text{ ns}$, TLB Hit Ratio $h = 95\% = 0.95$.</p>
+  <p>$$\text{On TLB Hit:} \quad 10 + 100 = 110 \text{ ns}$$</p>
+  <p>$$\text{On TLB Miss:} \quad 10 + 100 (\text{page table}) + 100 (\text{data}) = 210 \text{ ns}$$</p>
+  <p>$$\text{EMAT} = 0.95 \times 110 + 0.05 \times 210 = 104.5 + 10.5 = 115 \text{ ns}$$</p>
+  <p>Notice that with a 95% hit ratio, effective access slows from 100 ns to only 115 ns (a mere 15% slowdown instead of a 100% doubling!).</p>
+
+  <h3>6.2 Virtual Memory & Demand Paging Mechanics</h3>
+  <p><strong>Virtual Memory</strong> decouples the logical address space perceived by user programs from physical RAM capacity (<a href="https://www.youtube.com/watch?v=X077mn-qghM&t=2247s" target="_blank" class="yt-timestamp">⏱️ 37:27</a>). An application can allocate a 64 GB address space on a machine with only 8 GB of physical RAM.</p>
+
+  <h4>Demand Paging & The Valid-Invalid Bit:</h4>
+  <p>Under <strong>Demand Paging</strong>, pages are not preloaded into RAM at startup. Pages are loaded lazily only when the executing CPU actively references an instruction or data byte residing on that page.</p>
+  <ul>
+    <li>Each entry in the Page Table includes a <strong>Valid-Invalid Bit</strong> ($v/i$):
+      <ul>
+        <li><code>Valid (v):</code> The page is legally present in physical RAM. Translation proceeds immediately at hardware speed.</li>
+        <li><code>Invalid (i):</code> The page is either outside the legal address space of the process, or is a valid page currently residing on secondary swap storage. Access triggers a <strong>Page Fault</strong>.</li>
+      </ul>
+    </li>
+  </ul>
+
+  <h3>6.3 The 7-Step Page Fault Handling Routine</h3>
+  <p>When the CPU attempts to access an address marked with an invalid bit, the MMU cannot complete the translation and raises a hardware trap to the OS kernel (<a href="https://www.youtube.com/watch?v=X077mn-qghM&t=2390s" target="_blank" class="yt-timestamp">⏱️ 39:50</a>):</p>
+  <div class="mermaid">
+  graph TD
+    Step1["1. CPU executes instruction referencing page marked 'Invalid' (i)"] --> Step2["2. MMU hardware triggers Page Fault Trap to Kernel"]
+    Step2 --> Step3["3. Kernel saves user registers and checks PCB internal tables"]
+    Step3 --> Step4{"Is reference legal?"}
+    Step4 -->|Illegal| Abort["Abort process: Segmentation Fault"]
+    Step4 -->|Legal| Step5["4. Find free physical frame (or invoke Page Replacement)"]
+    Step5 --> Step6["5. Issue disk I/O to read page from swap space into frame"]
+    Step6 --> Step7["6. Disk interrupt: Kernel updates Page Table to 'Valid' (v)"]
+    Step7 --> Step8["7. Restore user registers & restart aborted instruction"]
+  </div>
+
+  <h4>Page Fault Overhead Impact:</h4>
+  <p>Disk I/O latency is approximately $8 \text{ ms} = 8,000,000 \text{ ns}$, whereas RAM access is $100 \text{ ns}$. If the page fault rate is denoted $p$, the effective access time is:</p>
+  $$\text{EAT} = (1 - p) \cdot 100 \text{ ns} + p \cdot 8,000,000 \text{ ns}$$
+  <p>Even if only 1 out of 100,000 accesses ($p = 0.00001$) triggers a page fault, memory access speed slows down by almost a factor of two! Hence, optimal page replacement algorithms are critical.</p>
+
+  <h3>6.4 Page Replacement Algorithms</h3>
+  <p>When a page fault occurs and all physical frames in RAM are occupied, the OS must select a <strong>victim frame</strong> to page out to disk (<a href="https://www.youtube.com/watch?v=X077mn-qghM&t=2900s" target="_blank" class="yt-timestamp">⏱️ 48:20</a>):</p>
+
+  <h4>1. First-In, First-Out (FIFO) & Belady's Anomaly:</h4>
+  <p>The oldest loaded page in memory is chosen as victim.</p>
+  <div class="callout callout-warning">
+    <h4>Belady's Anomaly Defined</h4>
+    <p>Normally, providing more physical RAM frames reduces the number of page faults. In <strong>FIFO Page Replacement</strong>, however, increasing the number of allocated physical frames can paradoxically <em>increase</em> the total number of page faults for certain reference strings! (e.g., Reference string: <code>1, 2, 3, 4, 1, 2, 5, 1, 2, 3, 4, 5</code> yields 9 faults with 3 frames, but 10 faults with 4 frames!). Stack-based algorithms (OPT, LRU) are provably immune to Belady's Anomaly.</p>
+  </div>
+
+  <h4>2. Optimal Page Replacement (OPT / MIN):</h4>
+  <p>Replace the page that will <strong>not be referenced for the longest duration of time in the future</strong>. Provably guarantees the lowest possible page fault rate for any fixed number of frames. However, it is unimplementable in general-purpose systems because the OS cannot foresee the future. It serves as an optimal theoretical upper bound benchmark for evaluating practical algorithms.</p>
+
+  <h4>3. Least Recently Used (LRU) Algorithm:</h4>
+  <p>Approximates the Optimal algorithm by using the recent past as an approximation of the near future: replace the page that has not been referenced for the longest period of time (<a href="https://www.youtube.com/watch?v=X077mn-qghM&t=3125s" target="_blank" class="yt-timestamp">⏱️ 52:05</a>).</p>
+  <ul>
+    <li><strong>Counter / Timestamp Implementation:</strong> Every page table entry contains a time-of-use field. On every memory access, copy CPU clock into the PTE. On replacement, scan all entries for smallest time value. High overhead ($O(N)$ scan).</li>
+    <li><strong>Doubly-Linked List Stack:</strong> Maintain a stack of page numbers. Whenever a page is accessed, unlink it and move it to the top of the stack. The bottom of the stack is always the LRU victim frame ($O(1)$ replacement, but memory pointer updates on every access).</li>
+  </ul>
+
+  <h4>4. Clock / Second-Chance Algorithm:</h4>
+  <p>Hardware approximation of LRU. Uses a circular queue and a single <strong>Reference Bit</strong> per frame:</p>
+  <ul>
+    <li>When a page is accessed, hardware sets Reference Bit $= 1$.</li>
+    <li>When replacement is needed, the pointer moves circularly through the frames:
+      <ul>
+        <li>If Reference Bit $== 1$: Clear bit to $0$ and advance pointer (gives page a second chance).</li>
+        <li>If Reference Bit $== 0$: Select this frame as victim immediately!</li>
+      </ul>
+    </li>
+  </ul>
+
+  <h3>6.5 Thrashing & The Working Set Model</h3>
+  <p>If a process does not have enough physical frames allocated to hold its currently active working pages, it faults rapidly. The CPU scheduler sees processes blocking on I/O, assumes the CPU is underutilized, and increases the Degree of Multiprogramming by admitting more processes into RAM. This further starves existing processes of frames, plunging the system into <strong>Thrashing</strong>: a pathological state where the computer spends nearly 100% of its time swapping pages in and out of disk, while productive CPU utilization collapses to near zero (<a href="https://www.youtube.com/watch?v=X077mn-qghM&t=3500s" target="_blank" class="yt-timestamp">⏱️ 58:20</a>).</p>
+
+  <h4>Solution: The Working Set Model ($W(t, \Delta)$):</h4>
+  <p>Peter Denning's <strong>Working Set Model</strong> defines the working set of a process as the set of distinct pages referenced in the most recent $\Delta$ page references (the Working Set Window). The OS calculates total demand $D = \sum |W_i|$. If $D > \text{Total Physical Frames}$, the OS immediately suspends/swaps out an entire process to free up frames, guaranteeing thrashing never occurs.</p>
+</section>

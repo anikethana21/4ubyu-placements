@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Agentic AI &amp; LLM Engineering Masterclass — Dual-Track Interactive Hub</title>
+<meta name="description" content="The definitive engineering masterclass for Agentic AI, LangChain LCEL, 5 Pillars of RAG, LangGraph Orchestration, and 8 Full Production Projects."/>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --bg-primary: #07080e;
+  --bg-secondary: #0d101a;
+  --bg-card: #131726;
+  --bg-card-hover: #192036;
+  --border: #1e263d;
+  --accent-blue: #3b82f6;
+  --accent-purple: #8b5cf6;
+  --accent-cyan: #06b6d4;
+  --accent-emerald: #10b981;
+  --accent-amber: #f59e0b;
+  --accent-rose: #f43f5e;
+  --text-primary: #f8fafc;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+  --code-bg: #090c16;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  line-height: 1.65;
+  overflow-x: hidden;
+}
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--bg-secondary); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+/* Navigation Bar */
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background: rgba(7,8,14,0.88);
+  backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--border);
+  padding: 0 40px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.nav-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+}
+.brand-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  color: #ffffff;
+}
+.brand-text h1 {
+  font-size: 16px;
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: -0.3px;
+  line-height: 1.2;
+}
+.brand-text p {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 18px;
+  border-radius: 8px;
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: all 0.2s ease;
+  text-decoration: none;
+}
+.btn-primary {
+  background: linear-gradient(135deg, #2563eb, #3b82f6);
+  color: #ffffff;
+  box-shadow: 0 0 20px rgba(59,130,246,0.3);
+}
+.btn-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 0 25px rgba(59,130,246,0.5);
+}
+.btn-purple {
+  background: linear-gradient(135deg, #7c3aed, #8b5cf6);
+  color: #ffffff;
+  box-shadow: 0 0 20px rgba(139,92,246,0.3);
+}
+.btn-purple:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 0 25px rgba(139,92,246,0.5);
+}
+.btn-secondary {
+  background: rgba(255,255,255,0.04);
+  color: var(--text-secondary);
+  border-color: var(--border);
+}
+.btn-secondary:hover {
+  background: rgba(255,255,255,0.08);
+  color: #ffffff;
+}
+
+/* Hero Section */
+.hero {
+  padding: 80px 40px 60px;
+  max-width: 1280px;
+  margin: 0 auto;
+  text-align: center;
+  position: relative;
+}
+.hero::before {
+  content: '';
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 600px;
+  height: 350px;
+  background: radial-gradient(circle, rgba(99,102,241,0.12), transparent 70%);
+  border-radius: 50%;
+  pointer-events: none;
+}
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 14px;
+  border-radius: 30px;
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  background: rgba(99,102,241,0.12);
+  color: #a5b4fc;
+  border: 1px solid rgba(99,102,241,0.25);
+  margin-bottom: 24px;
+}
+.hero h2 {
+  font-size: 46px;
+  font-weight: 800;
+  letter-spacing: -1.2px;
+  line-height: 1.15;
+  color: #ffffff;
+  margin-bottom: 18px;
+  max-width: 960px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.hero-gradient-text {
+  background: linear-gradient(135deg, #60a5fa, #c084fc, #38bdf8);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.hero p {
+  font-size: 16.5px;
+  color: var(--text-secondary);
+  max-width: 760px;
+  margin: 0 auto 36px;
+  line-height: 1.7;
+}
+.hero-cta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+/* Track Cards */
+.tracks-container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 40px 60px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 28px;
+}
+.track-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 36px;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.25s ease;
+  display: flex;
+  flex-direction: column;
+}
+.track-card:hover {
+  transform: translateY(-4px);
+  border-color: #3b4263;
+  box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+}
+.track-card.blue:hover { border-color: rgba(59,130,246,0.4); }
+.track-card.purple:hover { border-color: rgba(139,92,246,0.4); }
+
+.track-badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 16px;
+}
+.track-badge.blue { background: rgba(59,130,246,0.18); color: #60a5fa; }
+.track-badge.purple { background: rgba(139,92,246,0.18); color: #c4b5fd; }
+
+.track-card h3 {
+  font-size: 24px;
+  font-weight: 800;
+  color: #ffffff;
+  margin-bottom: 12px;
+  line-height: 1.25;
+}
+.track-card p {
+  font-size: 14px;
+  color: var(--text-secondary);
+  line-height: 1.65;
+  margin-bottom: 24px;
+}
+.track-features {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 30px;
+}
+.track-feature-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  color: var(--text-primary);
+}
+.track-feature-item span {
+  font-weight: 700;
+}
+.track-card .btn {
+  margin-top: auto;
+  align-self: flex-start;
+  padding: 10px 22px;
+  font-size: 13.5px;
+}
+
+/* Comparison Section */
+.comparison-section {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 40px 40px 80px;
+}
+.section-title-wrap {
+  text-align: center;
+  margin-bottom: 36px;
+}
+.section-title-wrap h3 {
+  font-size: 28px;
+  font-weight: 800;
+  color: #ffffff;
+  margin-bottom: 10px;
+}
+.section-title-wrap p {
+  font-size: 15px;
+  color: var(--text-secondary);
+}
+.table-wrap {
+  width: 100%;
+  overflow-x: auto;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+th {
+  background: rgba(255,255,255,0.03);
+  padding: 16px 20px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #ffffff;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-bottom: 1px solid var(--border);
+  text-align: left;
+}
+td {
+  padding: 16px 20px;
+  font-size: 13.5px;
+  color: var(--text-secondary);
+  border-bottom: 1px solid rgba(255,255,255,0.03);
+}
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: rgba(255,255,255,0.015); }
+
+/* Project Catalog */
+.project-catalog {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 40px 90px;
+}
+.project-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 18px;
+  margin-top: 28px;
+}
+.proj-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px;
+  transition: all 0.2s ease;
+  display: flex;
+  flex-direction: column;
+}
+.proj-card:hover {
+  transform: translateY(-3px);
+  border-color: #3b4263;
+  background: var(--bg-card-hover);
+}
+.proj-num {
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: var(--accent-cyan);
+  margin-bottom: 8px;
+  letter-spacing: 0.5px;
+}
+.proj-title {
+  font-size: 14.5px;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 6px;
+  line-height: 1.35;
+}
+.proj-desc {
+  font-size: 12.5px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin-bottom: 16px;
+}
+.proj-tag {
+  margin-top: auto;
+  font-size: 11px;
+  font-family: 'JetBrains Mono', monospace;
+  color: var(--text-muted);
+}
+
+/* Footer */
+footer {
+  border-top: 1px solid var(--border);
+  padding: 30px 40px;
+  text-align: center;
+  font-size: 12.5px;
+  color: var(--text-muted);
+}
+
+@media (max-width: 1024px) {
+  .project-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 768px) {
+  .tracks-container { grid-template-columns: 1fr; }
+  .project-grid { grid-template-columns: 1fr; }
+  .hero h2 { font-size: 32px; }
+  .hero p { font-size: 14.5px; }
+  .navbar { padding: 0 20px; }
+  .tracks-container, .comparison-section, .project-catalog { padding-left: 20px; padding-right: 20px; }
+}
+</style>
+  <!-- MathJax 3 -->
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$', '$']],
+        displayMath: [['$$', '$$']],
+        processEscapes: true
+      },
+      options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+    };
+  </script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <!-- Mermaid -->
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script>mermaid.initialize({startOnLoad:true,theme:'dark',themeVariables:{primaryColor:'#1e293b',primaryBorderColor:'#334155',primaryTextColor:'#f8fafc',lineColor:'#475569',fontFamily:'Plus Jakarta Sans, sans-serif'}});</script>
+
+</head>
+<body>
+
+  <div style="background: rgba(14, 19, 32, 0.9); border-bottom: 1px solid var(--border); padding: 12px 24px; display: flex; align-items: center; justify-content: space-between;">
+    <a href="../index.html" style="color: #60a5fa; text-decoration: none; font-size: 0.85rem; font-weight: 600; display: inline-flex; align-items: center; gap: 6px;">
+      &larr; Return to Central Placement Hub
+    </a>
+    <span style="background: #2563eb; color: #ffffff; padding: 2px 8px; border-radius: 9999px; font-size: 0.7rem; font-weight: 700;">4 U BY U</span>
+  </div>
+
+
+<nav class="navbar">
+  <a href="index.html" class="nav-brand">
+    <div class="brand-icon">&#9883;</div>
+    <div class="brand-text">
+      <h1>Agentic AI Masterclass</h1>
+      <p>Dual-Track Engineering Curriculum</p>
+    </div>
+  </a>
+  <div class="nav-links">
+    <a href="langchain.html" class="btn btn-secondary">&#128279; LangChain Guide</a>
+    <a href="langgraph.html" class="btn btn-secondary">&#128375; LangGraph Guide</a>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="hero-badge">&#128640; Production AI Engineering</div>
+  <h2>From Ground Zero to <span class="hero-gradient-text">Autonomous Multi-Agent Systems</span></h2>
+  <p>The definitive engineering handbook and interactive application suite. Master large language models, prompt engineering, 5 RAG pillars, vector geometry, tool execution, multi-agent graph topologies, and 8 full production projects.</p>
+  <div class="hero-cta">
+    <a href="langchain.html" class="btn btn-primary">&#128279; Open LangChain &amp; RAG Guide &rarr;</a>
+    <a href="langgraph.html" class="btn btn-purple">&#128375; Open LangGraph Orchestration &rarr;</a>
+  </div>
+</section>
+
+<section class="tracks-container">
+  <!-- Track 1: LangChain & RAG -->
+  <div class="track-card blue">
+    <div class="track-badge blue">Track 1 &bull; Foundations to Systems</div>
+    <h3>LangChain, LCEL &amp; RAG Architecture</h3>
+    <p>Comprehensive guide covering LLM token mechanics, temperature scaling softmax formulas, prompt structure, vector embeddings geometry, and single-agent ReAct execution loops.</p>
+    <div class="track-features">
+      <div class="track-feature-item"><span>&#10003;</span> 4 Eras of Software &amp; The 5 Pillars of RAG</div>
+      <div class="track-feature-item"><span>&#10003;</span> Softmax with Temperature, Cosine Similarity &amp; MMR Formulas</div>
+      <div class="track-feature-item"><span>&#10003;</span> Pydantic Tool Definitions &amp; Finite State Machine ReAct Loop</div>
+      <div class="track-feature-item"><span>&#10003;</span> Project 1: Multi-Agent Research Pipeline (Tavily + .pkl)</div>
+      <div class="track-feature-item"><span>&#10003;</span> Project 2: AI Video Assistant with .pkl Caching Engine</div>
+      <div class="track-feature-item"><span>&#10003;</span> The 6-Step Universal Master Agent Blueprint</div>
+    </div>
+    <a href="langchain.html" class="btn btn-primary">Launch LangChain Handbook &rarr;</a>
+  </div>
+
+  <!-- Track 2: LangGraph & Multi-Agent -->
+  <div class="track-card purple">
+    <div class="track-badge purple">Track 2 &bull; Orchestration &amp; Graphs</div>
+    <h3>LangGraph Multi-Agent Orchestration</h3>
+    <p>Master multi-agent systems, state modeling (TypedDict vs Pydantic), parallel fan-out with Annotated Reducers, human-in-the-loop checkpoints, and full Streamlit web integration.</p>
+    <div class="track-features">
+      <div class="track-feature-item"><span>&#10003;</span> State Modeling: TypedDict vs Pydantic schemas (<code>states.py</code>)</div>
+      <div class="track-feature-item"><span>&#10003;</span> P1: Sequential Workflow (<code>sequential_base.py</code>)</div>
+      <div class="track-feature-item"><span>&#10003;</span> P2: Parallel Safety Analyzer &amp; Reducers (<code>parallel_reducers.py</code>)</div>
+      <div class="track-feature-item"><span>&#10003;</span> P3: Conditional Multi-PDF RAG Router (<code>conditional_RAG.py</code>)</div>
+      <div class="track-feature-item"><span>&#10003;</span> P4: Iterative Reviewer Loop with Tools (<code>iterative_tools.py</code>)</div>
+      <div class="track-feature-item"><span>&#10003;</span> P5: Human-in-the-Loop with <code>interrupt()</code> (<code>humanintheloop.py</code>)</div>
+      <div class="track-feature-item"><span>&#10003;</span> P6: Enterprise Streamlit Web App (<code>app.py</code>)</div>
+    </div>
+    <a href="langgraph.html" class="btn btn-purple">Launch LangGraph Manual &rarr;</a>
+  </div>
+</section>
+
+<!-- Comparison Matrix -->
+<section class="comparison-section">
+  <div class="section-title-wrap">
+    <h3>Architectural Comparison: LangChain vs LangGraph</h3>
+    <p>Understanding when to use declarative pipelines versus cyclic stategraphs in production.</p>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Architectural Vector</th>
+          <th>LangChain (LCEL)</th>
+          <th>LangGraph</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Execution Topology</strong></td>
+          <td>Directed Acyclic Graph (DAG) &mdash; Linear pipelines</td>
+          <td>Cyclic Graphs &mdash; Feedback loops, branching, recursion</td>
+        </tr>
+        <tr>
+          <td><strong>State Management</strong></td>
+          <td>Transient dictionary passing via pipes (<code>|</code>)</td>
+          <td>Centralized <code>StateGraph</code> with schemas and custom reducers</td>
+        </tr>
+        <tr>
+          <td><strong>Multi-Agent Coordination</strong></td>
+          <td>Single-agent ReAct loops or monolithic prompts</td>
+          <td>Hierarchical, supervisor, parallel, and generator-critic networks</td>
+        </tr>
+        <tr>
+          <td><strong>Fault Tolerance &amp; Checkpoints</strong></td>
+          <td>None out-of-the-box; restarts on failure</td>
+          <td><code>MemorySaver</code>, <code>SqliteSaver</code>, step-level replay, time-travel</td>
+        </tr>
+        <tr>
+          <td><strong>Human Oversight</strong></td>
+          <td>Requires external bespoke callback hooks</td>
+          <td>Native <code>interrupt()</code> and <code>Command(resume=...)</code> primitives</td>
+        </tr>
+        <tr>
+          <td><strong>Primary Use Case</strong></td>
+          <td>RAG retrieval, deterministic chains, simple tool calling</td>
+          <td>Autonomous multi-agent swarms, self-correcting iterative tasks</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- Project Catalog -->
+<section class="project-catalog">
+  <div class="section-title-wrap">
+    <h3>Complete 8-Project Production Catalog</h3>
+    <p>Every project included in this curriculum with complete, executable production source code.</p>
+  </div>
+  <div class="project-grid">
+    <div class="proj-card">
+      <div class="proj-num">LangGraph &bull; P1</div>
+      <div class="proj-title">Sequential Video Content Pipeline</div>
+      <div class="proj-desc">Linear hand-off: Raw Text &rarr; Copyeditor &rarr; Video Scriptwriter Hook &rarr; Hinglish Translator.</div>
+      <div class="proj-tag">sequential_base.py</div>
+    </div>
+    <div class="proj-card">
+      <div class="proj-num">LangGraph &bull; P2</div>
+      <div class="proj-title">Multi-Branch Safety Analyzer</div>
+      <div class="proj-desc">Parallel fan-out: Toxicity, Copyright, and Culture branches with custom Annotated Reducer.</div>
+      <div class="proj-tag">parallel_reducers.py</div>
+    </div>
+    <div class="proj-card">
+      <div class="proj-num">LangGraph &bull; P3</div>
+      <div class="proj-title">College Assistant Multi-PDF RAG</div>
+      <div class="proj-desc">Dynamic classifier router sending student queries to academic, fee, or exam FAISS retrievers.</div>
+      <div class="proj-tag">conditional_RAG.py</div>
+    </div>
+    <div class="proj-card">
+      <div class="proj-num">LangGraph &bull; P4</div>
+      <div class="proj-title">LinkedIn Generator with Reviewer</div>
+      <div class="proj-desc">Generator-Critic reflection loop with live Tavily web search tool and 7 scoring criteria.</div>
+      <div class="proj-tag">iterative_tools.py</div>
+    </div>
+    <div class="proj-card">
+      <div class="proj-num">LangGraph &bull; P5</div>
+      <div class="proj-title">Human-in-the-Loop Checkpoint Gate</div>
+      <div class="proj-desc">State pausing with interrupt(), MemorySaver thread checkpoints, and resumption via Command.</div>
+      <div class="proj-tag">humanintheloop.py</div>
+    </div>
+    <div class="proj-card">
+      <div class="proj-num">LangGraph &bull; P6</div>
+      <div class="proj-title">Interactive Streamlit Web Portal</div>
+      <div class="proj-desc">Enterprise frontend with cached resource ingestion (@st.cache_resource) and live streaming chat.</div>
+      <div class="proj-tag">app.py</div>
+    </div>
+    <div class="proj-card">
+      <div class="proj-num">LangChain &bull; Handbook P1</div>
+      <div class="proj-title">Multi-Agent Research Pipeline</div>
+      <div class="proj-desc">Search, Read, and Writer specialist agents with Tavily and persistent .pkl search caching.</div>
+      <div class="proj-tag">project_1_multi_agent_research/</div>
+    </div>
+    <div class="proj-card">
+      <div class="proj-num">LangChain &bull; Handbook P2</div>
+      <div class="proj-title">AI Video Assistant with .pkl Caching</div>
+      <div class="proj-desc">YouTube transcript ingestion, timecode preservation, and 2,500x faster cold-start vector search.</div>
+      <div class="proj-tag">project_2_video_rag_assistant/</div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>&copy; 2026 Agentic AI &amp; LangGraph Engineering Masterclass. Built with modern Vanilla HTML, CSS, and JavaScript. Zero external bloat.</p>
+</footer>
+
+
+<script>
+/* â”€â”€ SIDEBAR ACTIVE SYNC (IntersectionObserver) â”€â”€ */
+(function() {
+  function initSidebarSync() {
+    var pillLinks = document.querySelectorAll(
+      '.sidebar-pill, .sidebar-nav a, .chapter-nav a, nav a[href^="#"], aside a[href^="#"]'
+    );
+    if (!pillLinks.length) return;
+    var sections = document.querySelectorAll(
+      '[id^="chapter"], [id^="module"], [id^="curriculum"], [id^="section-"], [id^="interview-questions"]'
+    );
+    if (!sections.length) return;
+    function setActive(id) {
+      pillLinks.forEach(function(link) {
+        var href = link.getAttribute('href') || '';
+        var match = href === '#' + id || href.endsWith('/' + '#' + id);
+        link.classList.toggle('active', match);
+      });
+    }
+    var io = new IntersectionObserver(function(entries) {
+      entries.forEach(function(e) { if (e.isIntersecting) setActive(e.target.id); });
+    }, { rootMargin: '-15% 0px -65% 0px', threshold: 0 });
+    sections.forEach(function(el) { io.observe(el); });
+    pillLinks.forEach(function(link) {
+      link.addEventListener('click', function() {
+        var href = (link.getAttribute('href') || '').replace(/^.*#/, '');
+        if (href) setActive(href);
+      });
+    });
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initSidebarSync);
+  } else {
+    initSidebarSync();
+  }
+})();
+</script>
+
+</body>
+</html>

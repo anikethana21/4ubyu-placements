@@ -1,0 +1,2247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>4 U By U &bull; Complete Operating Systems Masterclass Study Notes</title>
+  <meta name="description" content="Comprehensive engineer-grade study document covering the complete 5-part Operating Systems Course by Vivek Gupta (Ex-Google, AlgoZenith). Theory, derivations, code, and diagrams.">
+  
+  <!-- Modern Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- MathJax for Mathematical Rigor -->
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  
+  <!-- Mermaid for Clean Diagrams -->
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: 'neutral',
+      themeVariables: {
+        primaryColor: '#FFFFFF',
+        primaryBorderColor: '#1E293B',
+        primaryTextColor: '#0F172A',
+        lineColor: '#334155',
+        fontFamily: 'Inter, sans-serif'
+      }
+    });
+  </script>
+
+  <style>
+    /* ==========================================================================
+       Design System: Deep Navy / Technical Blue (#0F172A, #1E293B, #2563EB)
+       Theme: Canvas rgb(238,238,238), Cards Pure White, High Typography Contrast
+       ========================================================================== */
+    :root {
+      --bg-canvas: #070A12;
+      --bg-surface: #0E1424;
+      --bg-card: #111827;
+      --bg-card-subtle: #151D33;
+      --text-main: #F8FAFC;
+      --text-muted: #94A3B8;
+      --text-light: #64748B;
+      --border-color: #24304F;
+      --border-dark: #374151;
+      --navy-900: #0F172A;
+      --navy-800: #1E293B;
+      --blue-600: #2563EB;
+      --blue-500: #3B82F6;
+      --blue-400: #60A5FA;
+      --blue-50: rgba(37, 99, 235, 0.15);
+      --amber-50: rgba(245, 158, 11, 0.15);
+      --amber-800: #FCD34D;
+      --emerald-600: #10B981;
+      --emerald-50: rgba(16, 185, 129, 0.15);
+      --code-bg: #0A0F1D;
+      --code-text: #E2E8F0;
+      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --font-mono: 'Fira Code', Menlo, Monaco, Consolas, monospace;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.3);
+      --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.4);
+      --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.5);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background-color: var(--bg-canvas);
+      color: var(--text-main);
+      font-family: var(--font-sans);
+      font-size: 15px;
+      line-height: 1.65;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Top Sticky Navigation Bar */
+    .top-navbar {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      background: rgba(15, 23, 42, 0.98);
+      backdrop-filter: blur(8px);
+      color: #FFFFFF;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      box-shadow: var(--shadow-md);
+      transition: all 0.3s ease;
+    }
+
+    .brand-group {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .brand-logo {
+      font-weight: 800;
+      font-size: 19px;
+      letter-spacing: -0.5px;
+      color: #FFFFFF;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .brand-pill {
+      background: var(--blue-600);
+      color: #FFFFFF;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 12px;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    .nav-search-bar {
+      display: flex;
+      align-items: center;
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 6px;
+      padding: 4px 12px;
+      width: 320px;
+      transition: all 0.2s ease;
+    }
+
+    .nav-search-bar:focus-within {
+      background: #FFFFFF;
+      border-color: var(--blue-600);
+    }
+
+    .nav-search-bar input {
+      background: transparent;
+      border: none;
+      outline: none;
+      color: #FFFFFF;
+      font-size: 13px;
+      width: 100%;
+    }
+
+    .nav-search-bar:focus-within input {
+      color: var(--text-main);
+    }
+
+    .nav-controls {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .btn-nav {
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.2);
+      color: #FFFFFF;
+      padding: 6px 14px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background 0.2s;
+    }
+
+    .btn-nav:hover {
+      background: rgba(255,255,255,0.2);
+    }
+
+        /* Master Layout (3-Column Architecture) */
+    .master-layout {
+      display: flex;
+      max-width: 1780px;
+      margin: 16px auto;
+      padding: 0 20px;
+      gap: 20px;
+    }
+
+    /* Left Column: Vertical Chapter Sidebar */
+    .chapter-sidebar {
+      flex: 0 0 260px;
+      position: sticky;
+      top: 76px;
+      height: calc(100vh - 96px);
+      overflow-y: auto;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .sidebar-header {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--blue-400);
+      letter-spacing: 0.8px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border-color);
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .sidebar-nav {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .sidebar-pill {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 12px;
+      border-radius: 8px;
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 500;
+      border: 1px solid transparent;
+      transition: all 0.2s ease;
+    }
+
+    .sidebar-pill:hover {
+      background: var(--bg-card);
+      color: #FFFFFF;
+      border-color: var(--border-color);
+    }
+
+    .sidebar-pill.active {
+      background: rgba(37, 99, 235, 0.15);
+      border-color: var(--blue-500);
+      color: #FFFFFF;
+      font-weight: 600;
+    }
+
+    .sidebar-pill .pill-badge {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--blue-400);
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
+    .sidebar-pill.active .pill-badge {
+      background: var(--blue-600);
+      color: #FFFFFF;
+    }
+
+    .sidebar-pill .pill-label {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* Center Column: Primary Study Document */
+    .notes-column {
+      flex: 1 1 55%;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    /* Right Column: Auxiliary Dock (Chatbot & Video) */
+    .auxiliary-dock {
+      flex: 0 0 350px;
+      position: sticky;
+      top: 76px;
+      height: calc(100vh - 96px);
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    @media (max-width: 1400px) {
+      .chapter-sidebar { display: none; }
+    }
+
+    @media (max-width: 1100px) {
+      .master-layout { flex-direction: column; }
+      .auxiliary-dock { position: static; height: auto; }
+    }
+
+/* Video Player Dock Card */
+    .player-dock-card {
+      background: var(--bg-card);
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .dock-header {
+      background: var(--navy-800);
+      color: #FFFFFF;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 8px 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .player-iframe-container {
+      position: relative;
+      padding-bottom: 56.25%; /* 16:9 */
+      height: 0;
+      background: #000;
+    }
+
+    .player-iframe-container iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    /* Chatbot Dock Card */
+    .chatbot-dock-card {
+      background: var(--bg-card);
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      overflow: hidden;
+      min-height: 380px;
+    }
+
+    .chat-messages {
+      flex: 1;
+      padding: 14px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      font-size: 13.5px;
+    }
+
+    .chat-bubble {
+      padding: 10px 14px;
+      border-radius: 8px;
+      line-height: 1.5;
+      max-width: 90%;
+    }
+
+    .chat-bubble.assistant {
+      background: var(--blue-50);
+      border: 1px solid #DBEAFE;
+      color: #1E3A8A;
+      align-self: flex-start;
+    }
+
+    .chat-bubble.user {
+      background: var(--navy-800);
+      color: #FFFFFF;
+      align-self: flex-end;
+    }
+
+    .suggested-prompts {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 8px;
+    }
+
+    .prompt-chip {
+      background: #FFFFFF;
+      border: 1px solid #BFDBFE;
+      color: var(--blue-700);
+      font-size: 11px;
+      padding: 4px 8px;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .prompt-chip:hover {
+      background: var(--blue-600);
+      color: #FFFFFF;
+    }
+
+    .chat-input-bar {
+      display: flex;
+      border-top: 1px solid var(--border-color);
+      padding: 8px;
+      background: var(--bg-card-subtle);
+    }
+
+    .chat-input-bar input {
+      flex: 1;
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      padding: 8px 12px;
+      font-size: 13px;
+      outline: none;
+    }
+
+    .chat-input-bar button {
+      background: var(--navy-800);
+      color: #FFFFFF;
+      border: none;
+      border-radius: 6px;
+      padding: 8px 16px;
+      margin-left: 8px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+        
+    /* ==========================================================================
+       AUTHENTIC DOCUMENT WHITE SHEET THEME (Matching DBMS Benchmark)
+       Canvas: Dark Obsidian (#070A12) | Sidebar & Dock: Dark (#0E1424) | Chapters: Clean White Sheet
+       ========================================================================== */
+    .master-intro-card, .chapter-container {
+      background: #FFFFFF !important;
+      color: #111827 !important;
+      border-radius: 8px !important;
+      border: 1px solid rgba(255, 255, 255, 0.1) !important;
+      padding: 44px 50px !important;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 1px 3px rgba(0, 0, 0, 0.3) !important;
+      margin-bottom: 24px !important;
+    }
+
+    .chapter-header {
+      border-bottom: 2px solid #E5E7EB !important;
+      padding-bottom: 18px !important;
+      margin-bottom: 24px !important;
+    }
+
+    .chapter-title, .master-intro-title {
+      color: #111827 !important;
+      font-weight: 800 !important;
+    }
+
+    .chapter-badge {
+      background: #EFF6FF !important;
+      color: #1D4ED8 !important;
+      border: 1px solid #BFDBFE !important;
+    }
+
+    .chapter-meta {
+      color: #4B5563 !important;
+    }
+
+    .chapter-container h3, .master-intro-card h3 {
+      color: #111827 !important;
+      border-bottom: 1px solid #E5E7EB !important;
+    }
+
+    .chapter-container h4, .master-intro-card h4 {
+      color: #1E3A8A !important;
+    }
+
+    .chapter-container p, .master-intro-card p {
+      color: #374151 !important;
+    }
+
+    .chapter-container ul, .chapter-container ol,
+    .master-intro-card ul, .master-intro-card ol {
+      color: #374151 !important;
+    }
+
+    .math-card {
+      background: #F8FAFC !important;
+      border-left: 4px solid #2563EB !important;
+      border-top: 1px solid #E2E8F0 !important;
+      border-right: 1px solid #E2E8F0 !important;
+      border-bottom: 1px solid #E2E8F0 !important;
+      color: #0F172A !important;
+    }
+
+    .math-title {
+      color: #1E3A8A !important;
+    }
+
+    .math-formula {
+      color: #0F172A !important;
+    }
+
+    .table-wrapper {
+      border: 1px solid #E2E8F0 !important;
+    }
+
+    .engineering-table, .data-table {
+      background: #FFFFFF !important;
+    }
+
+    .engineering-table th, .data-table th {
+      background: #0F172A !important;
+      color: #FFFFFF !important;
+    }
+
+    .engineering-table td, .data-table td {
+      border-bottom: 1px solid #E2E8F0 !important;
+      color: #1F2937 !important;
+    }
+
+    .engineering-table tr:nth-child(even) td, .data-table tr:nth-child(even) td {
+      background: #F8FAFC !important;
+    }
+
+    .diagram-wrapper, .mermaid {
+      background: #FFFFFF !important;
+      border: 1px solid #E2E8F0 !important;
+    }
+
+    .callout {
+      background-color: #EFF6FF !important;
+      border-left: 4px solid #2563EB !important;
+      border-top: 1px solid #DBEAFE !important;
+      border-right: 1px solid #DBEAFE !important;
+      border-bottom: 1px solid #DBEAFE !important;
+      color: #1E3A8A !important;
+    }
+
+    .callout h4 {
+      color: #1E3A8A !important;
+    }
+
+    .callout-warning {
+      background-color: #FFFBEB !important;
+      border-left-color: #F59E0B !important;
+      border-color: #FDE68A !important;
+      color: #92400E !important;
+    }
+
+    /* Chatbot Dark Styling */
+    .chatbot-dock-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+    }
+
+    .chat-bubble.assistant {
+      background: rgba(37, 99, 235, 0.15);
+      border: 1px solid rgba(37, 99, 235, 0.35);
+      color: #E2E8F0;
+    }
+
+    .chat-bubble.user {
+      background: var(--blue-600);
+      color: #FFFFFF;
+    }
+
+    .prompt-chip {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid var(--border-color);
+      color: var(--blue-400);
+    }
+
+    .prompt-chip:hover {
+      background: var(--blue-600);
+      color: #FFFFFF;
+    }
+
+    .chat-input-bar {
+      background: var(--bg-card);
+      border-top: 1px solid var(--border-color);
+    }
+
+    .chat-input-bar input {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      color: #FFFFFF;
+    }
+
+    .chat-input-bar input:focus {
+      border-color: var(--blue-500);
+    }
+
+    /* Pop-out Modal for Diagrams */
+    .modal-content {
+      background: #0F172A;
+      color: #FFFFFF;
+      border: 1px solid var(--border-color);
+    }
+
+    .modal-close-btn {
+      background: #1E293B;
+      color: #FFFFFF;
+      border: 1px solid var(--border-color);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Sticky Header Navbar -->
+  <header class="top-navbar">
+    <div class="brand-group">
+      <a href="#curriculum-overview" class="brand-logo">
+        <span>4 U BY U</span>
+        <span class="brand-pill">OPERATING SYSTEMS MASTERCLASS</span>
+      </a>
+    </div>
+
+    <div class="nav-search-bar">
+      <input type="text" id="section-search" placeholder="Search chapters, algorithms, equations, code..." onkeyup="filterContent()">
+    </div>
+
+    <div class="nav-controls">
+      <a href="#chapter-1" class="btn-nav">Index</a>
+      <button class="btn-nav" onclick="togglePlayer()">Toggle Player</button>
+      <button class="btn-nav" onclick="toggleChat()">Chatbot</button>
+    </div>
+  </header>
+
+  <div class="master-layout">
+    <!-- Left Column: Chapter Navigation Sidebar -->
+    <aside class="chapter-sidebar" id="chapter-sidebar">
+      <div class="sidebar-header">
+        <span>📚 CHAPTER OUTLINE</span>
+      </div>
+      <nav class="sidebar-nav">
+        <a href="#curriculum-overview" class="sidebar-pill active">
+          <span class="pill-badge">00</span>
+          <span class="pill-label">Curriculum Overview</span>
+        </a>
+        <a href="#chapter-1" class="sidebar-pill">
+          <span class="pill-badge">01</span>
+          <span class="pill-label">Architecture & Memory</span>
+        </a>
+        <a href="#chapter-2" class="sidebar-pill">
+          <span class="pill-badge">02</span>
+          <span class="pill-label">Process & fork()</span>
+        </a>
+        <a href="#chapter-3" class="sidebar-pill">
+          <span class="pill-badge">03</span>
+          <span class="pill-label">CPU Scheduling</span>
+        </a>
+        <a href="#chapter-4" class="sidebar-pill">
+          <span class="pill-badge">04</span>
+          <span class="pill-label">MLFQ & Multicore</span>
+        </a>
+        <a href="#chapter-5" class="sidebar-pill">
+          <span class="pill-badge">05</span>
+          <span class="pill-label">Segmentation & Paging</span>
+        </a>
+        <a href="#chapter-6" class="sidebar-pill">
+          <span class="pill-badge">06</span>
+          <span class="pill-label">Virtual Memory & TLB</span>
+        </a>
+        <a href="#chapter-7" class="sidebar-pill">
+          <span class="pill-badge">07</span>
+          <span class="pill-label">Booting & Deadlock</span>
+        </a>
+        <a href="#chapter-8" class="sidebar-pill">
+          <span class="pill-badge">08</span>
+          <span class="pill-label">Synchronization</span>
+        </a>
+        <a href="#chapter-9" class="sidebar-pill">
+          <span class="pill-badge">09</span>
+          <span class="pill-label">Supplemental & Top 30</span>
+        </a>
+      </nav>
+    </aside>
+    <!-- Primary Study Notes Column -->
+    <main class="notes-column">
+      
+      <!-- Quick Navigation Pills -->
+      
+
+      <!-- Executive Overview -->
+      <section class="master-intro-card" id="curriculum-overview">
+        <div class="intro-badge">Curriculum Manifesto &bull; 5-Part Masterclass Ingestion</div>
+        <h2 class="master-intro-title">Complete Operating Systems Placement Curriculum: Theory, Mathematics & Production Code</h2>
+        <div class="master-intro-lead">
+          This comprehensive, engineer-grade study document provides an exhaustive, mathematically rigorous synthesis of the complete 5-part Operating Systems Placement Course instructed by <strong>Vivek Gupta (Ex-Google, ICPC World Finalist, AlgoZenith)</strong>. Spanning more than 5.5 hours of intensive video coursework, solved interview numericals, and systems programming, this volume bridges the gap between hardware architectures and tech placement rounds.
+        </div>
+
+        <div style="margin-top:20px;">
+          <h4 style="margin-bottom:10px;">Pedagogical Progression & Core Coverage</h4>
+          <ol style="margin-left:24px; line-height:1.7;">
+            <li><strong>Part 1 &bull; Core Concepts & Process Management:</strong> Hardware mediation, User vs Kernel Mode (Dual Mode), System Call execution pipeline (<code>syscall</code>/<code>sysret</code>), Program vs Process, <code>top</code> analysis, Process Control Block (PCB) attributes, and Virtual Address Space Segments (Text, Data, BSS, Heap, Stack).</li>
+            <li><strong>Part 1 (Cont.) &bull; Lifecycles & Process Spawning:</strong> 5-State and 7-State process transition models, Context Switch latency and cache coldness overhead, <code>fork()</code>, <code>execvp()</code>, <code>waitpid()</code>, Copy-On-Write (COW), and Zombie vs Orphan processes.</li>
+            <li><strong>Part 2 &bull; CPU Scheduling:</strong> Scheduling criteria, FCFS Convoy Effect, SJF/SRTF, Exponential Smoothing burst estimation ($\tau_{n+1}$), step-by-step Gantt chart numericals, Round Robin optimal time quantum selection, and Priority Scheduling with Aging.</li>
+            <li><strong>Part 2 (Cont.) &bull; Advanced Scheduling & Multicore:</strong> Multilevel Queue (MLQ), Multilevel Feedback Queue (MLFQ) 5 rules, Symmetric Multiprocessing (SMP), Soft/Hard Processor Affinity, NUMA architectures, and Push/Pull load balancing.</li>
+            <li><strong>Part 3 &bull; Memory Management:</strong> Memory hierarchy latency pyramid, Address Binding (Compile/Load/Execution time), Contiguous allocation (MFT/MVT, First/Best/Worst fit, Compaction), Segmentation architecture, and Paging address translation formulas.</li>
+            <li><strong>Part 3 (Cont.) &bull; Virtual Memory & TLB:</strong> Translation Lookaside Buffer (TLB), Effective Memory Access Time (EMAT) calculations, Demand Paging, 7-step Page Fault Service Routine, FIFO Belady's Anomaly, Optimal Algorithm, LRU (Counters & Stack), Clock Second-Chance, and Thrashing Working Set Model.</li>
+            <li><strong>Part 4 &bull; Booting & Deadlocks:</strong> Cold boot problem, CPU reset vector, POST, BIOS vs UEFI, MBR vs GPT, GRUB stages, Coffman's 4 Necessary Conditions, Resource Allocation Graphs (RAG), Banker's Algorithm safety and resource-request numericals, and Deadlock recovery.</li>
+            <li><strong>Part 5 &bull; Concurrency & Synchronization:</strong> Race conditions, Critical section criteria (Mutual Exclusion, Progress, Bounded Waiting), Peterson's Algorithm mathematical proof, Hardware atomics (<code>TSL</code>, <code>CAS</code>), Mutex Locks, Spinlocks, Semaphores (Binary vs Counting, sleep queues), and POSIX implementations of Producer-Consumer, Readers-Writers, and Dining Philosophers.</li>
+            <li><strong>Supplemental &bull; Placement Accelerator:</strong> User vs Kernel Threads, IPC mechanisms (Pipes, FIFOs, Shared Memory, Sockets), Linux VFS and Inodes, Disk Scheduling (SCAN/LOOK), and Top 30 Placement Interview Questions.</li>
+          </ol>
+        </div>
+      </section>
+
+      <!-- Compiled 9 Chapters -->
+<!-- BEGIN chapter_1 -->
+<article class="chapter-container" id="chapter-1" data-chapter="1">
+  <div class="chapter-header">
+    <div class="chapter-badge">Chapter 01 &bull; Video 1 Coverage</div>
+    <h2>Operating System Foundations, Architecture & Process Memory Layout</h2>
+    <p class="chapter-meta">
+      <strong>Source Video:</strong> <a href="https://www.youtube.com/watch?v=kn6rYzVsCEQ" target="_blank">OS Core Concepts Explained | Part 1</a> &bull;
+      <strong>Instructor:</strong> Vivek Gupta (Ex-Google, AlgoZenith) &bull;
+      <strong>Timeline:</strong> 00:00:00 &ndash; 00:48:30
+    </p>
+  </div>
+
+  <div class="callout callout-info">
+    <h4>Core Takeaway for Technical Interviews</h4>
+    <p>An Operating System is not just a resource allocator; it is a hardware virtualizer and isolation engine. Interviewers at Google, Microsoft, and Amazon routinely evaluate candidate clarity on the precise boundary between User Space and Kernel Space, the hardware mechanics of System Calls, and the exact virtual memory segmentation of an executing binary.</p>
+  </div>
+
+  <h3>1.1 The Operating System as a Hardware Mediator</h3>
+  <p>At bare metal, a computer system consists of raw electronic hardware: the Central Processing Unit (CPU), Physical Memory (DRAM), and Peripheral I/O Devices (NVMe SSDs, NICs, keyboards). Without an operating system, every user program would need to interface directly with hardware registers, issue raw memory bus commands, and manage physical cylinder sectors on storage media.</p>
+  
+  <p>The Operating System solves this by functioning as:</p>
+  <ul>
+    <li><strong>Resource Allocator:</strong> Mediates conflicting hardware requests from multiple concurrently running tasks, ensuring fair access, high utilization, and deadlock prevention.</li>
+    <li><strong>Extended Machine / Abstraction Layer:</strong> Hides device-specific low-level complexity (e.g., AHCI/NVMe protocol registers) behind clean, uniform APIs such as standard POSIX file operations (<code>open</code>, <code>read</code>, <code>write</code>, <code>close</code>).</li>
+    <li><strong>Protection and Security Arbiter:</strong> Enforces memory boundaries, preventing Rogue Process A from reading or modifying the address space of Process B or corrupting the OS kernel itself.</li>
+  </ul>
+
+  <div class="mermaid">
+  graph TD
+    UserApps["User Applications (Chrome, IDE, Python)"] -->|POSIX System Calls: read, write, fork| OSKernel["Operating System Kernel (Scheduler, VFS, Memory Mgr)"]
+    OSKernel -->|Privileged CPU Instructions| CPU["CPU (Registers, ALU, MMU)"]
+    OSKernel -->|Memory Controller Bus| DRAM["Main Memory (Physical RAM)"]
+    OSKernel -->|Device Drivers and PCIe| Peripherals["Storage, Network (NIC), Display"]
+  </div>
+
+  <h3>1.2 Dual-Mode Operation & Hardware Protection</h3>
+  <p>To prevent malicious or buggy applications from halting the CPU or overwriting critical memory structures, modern x86-64 and ARM processors implement hardware-enforced execution privilege levels (Hierarchical Protection Domains, often known as <strong>Rings</strong>):</p>
+  <ul>
+    <li><strong>User Mode (Ring 3):</strong> Mode bit set to <code>1</code>. The CPU restricts access to privileged machine instructions. User applications cannot directly disable interrupts, alter page tables, or perform raw I/O port writes. Attempting to execute a privileged instruction in User Mode immediately triggers a hardware general-protection fault trap.</li>
+    <li><strong>Kernel / Supervisor Mode (Ring 0):</strong> Mode bit set to <code>0</code>. The CPU allows unrestricted execution of all machine instructions, direct hardware port access, and full control over system control registers (such as <code>CR0</code>, <code>CR3</code> for page table roots on x86).</li>
+  </ul>
+
+  <h4>The System Call Execution Pipeline</h4>
+  <p>When a user-space application requires hardware access (e.g., printing to terminal or reading a disk block), it cannot execute it directly. It must execute a <strong>System Call</strong> via a software interrupt or specialized machine instruction (<a href="https://www.youtube.com/watch?v=kn6rYzVsCEQ&t=2910s" target="_blank" class="yt-timestamp">⏱️ 48:30</a>):</p>
+  <ol>
+    <li>The user process places system call arguments in designated CPU registers (e.g., on Linux x86-64: <code>RAX</code> holds the system call number, while <code>RDI</code>, <code>RSI</code>, <code>RDX</code> hold parameters).</li>
+    <li>The process executes the <code>syscall</code> (or legacy <code>int 0x80</code>) instruction.</li>
+    <li>The CPU hardware saves user program counter (<code>RIP</code>) and stack pointer (<code>RSP</code>), flips the hardware Mode Bit from <code>1</code> (User) to <code>0</code> (Kernel), and vectors control to the predefined <strong>System Call Table</strong> in kernel memory.</li>
+    <li>The kernel inspects <code>RAX</code>, dispatches the corresponding handler function (e.g., <code>sys_read()</code>), verifies user buffer pointers for memory safety, and performs the operation.</li>
+    <li>Upon completion, the kernel writes the return code into <code>RAX</code> and executes <code>sysret</code>, switching the mode bit back to User Mode (<code>1</code>) and restoring user execution context.</li>
+  </ol>
+
+  <h3>1.3 Program vs. Process: Architectural Distinctions</h3>
+  <p>In placement interviews, candidates often confuse programs with processes (<a href="https://www.youtube.com/watch?v=kn6rYzVsCEQ&t=781s" target="_blank" class="yt-timestamp">⏱️ 13:01</a>):</p>
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>Attribute</th>
+        <th>Program</th>
+        <th>Process</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Nature</strong></td>
+        <td>Passive entity stored on disk (e.g., compiled ELF binary <code>/usr/bin/ls</code>).</td>
+        <td>Active runtime entity loaded into main memory with allocated CPU cycles.</td>
+      </tr>
+      <tr>
+        <td><strong>Lifespan</strong></td>
+        <td>Permanent until deleted from secondary storage.</td>
+        <td>Dynamic; created upon launch, exists through state transitions, destroyed upon termination.</td>
+      </tr>
+      <tr>
+        <td><strong>Resource Footprint</strong></td>
+        <td>Consumes only disk storage space.</td>
+        <td>Allocates RAM, CPU registers, stack/heap, file descriptors, and kernel PCB structures.</td>
+      </tr>
+      <tr>
+        <td><strong>Relationship</strong></td>
+        <td>One program can spawn multiple distinct processes (e.g., opening 4 separate terminal windows).</td>
+        <td>Each process has its own isolated virtual address space and PID.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>1.4 Process Control Block (PCB): The Process Metadata Core</h3>
+  <p>The Operating System represents each process internally using a kernel data structure known as the <strong>Process Control Block (PCB)</strong> (in the Linux kernel, represented by <code>struct task_struct</code>) (<a href="https://www.youtube.com/watch?v=kn6rYzVsCEQ&t=1468s" target="_blank" class="yt-timestamp">⏱️ 24:28</a>). The PCB contains:</p>
+  <ul>
+    <li><strong>Process Identifier (PID):</strong> Unique integer identifier assigned by the kernel (e.g., PID 1 is <code>systemd</code>/<code>init</code>).</li>
+    <li><strong>Process State:</strong> Current status flag (New, Ready, Running, Waiting, Terminated).</li>
+    <li><strong>Program Counter (PC):</strong> Pointer storing the physical/virtual address of the next machine instruction to be executed by the CPU.</li>
+    <li><strong>CPU Registers:</strong> Snapshot of all hardware registers (Accumulator, Index, Stack Pointer <code>RSP</code>, Base Pointer <code>RBP</code>, Flags register) saved whenever the process is preempted.</li>
+    <li><strong>Memory Management Information:</strong> Base and limit register values, or pointers to the top-level Page Table (e.g., <code>CR3</code> register value in x86).</li>
+    <li><strong>Accounting & Scheduling Attributes:</strong> CPU priority, time slice remaining, CPU time consumed, waiting time accumulated.</li>
+    <li><strong>I/O Status & Open Files:</strong> File Descriptor Table (FDT) mapping index integers (<code>0: stdin</code>, <code>1: stdout</code>, <code>2: stderr</code>) to kernel file pointers.</li>
+  </ul>
+
+  <h3>1.5 Process Memory Layout (Virtual Address Space Anatomy)</h3>
+  <p>When the OS loads a program into memory, it assigns it a contiguous-looking private virtual address space divided into 4 primary functional segments (<a href="https://www.youtube.com/watch?v=kn6rYzVsCEQ&t=2029s" target="_blank" class="yt-timestamp">⏱️ 33:49</a>):</p>
+
+  <div class="mermaid">
+  graph TD
+    HighAddr["High Address: 0x7FFFFFFFFFFF"]
+    Stack["Stack Segment (Downwards growth: Local vars, frame pointers)"]
+    Gap["Unallocated Free Address Space"]
+    Heap["Heap Segment (Upwards growth: malloc, dynamic objects)"]
+    BSS["BSS Segment (Uninitialized globals/statics zeroed)"]
+    Data["Data Segment (Initialized globals/statics)"]
+    Text["Text / Code Segment (Machine instructions: Read-Only)"]
+    LowAddr["Low Address: 0x000000000000"]
+    
+    HighAddr --- Stack
+    Stack --> Gap
+    Gap --- Heap
+    Heap --- BSS
+    BSS --- Data
+    Data --- Text
+    Text --- LowAddr
+  </div>
+
+  <ol>
+    <li><strong>Text (Code) Segment:</strong>
+      <ul>
+        <li>Contains the raw compiled executable machine code instructions.</li>
+        <li><strong>Read-Only Protection:</strong> Hardware-enforced read-only permission flag to prevent self-modifying code or buffer overflow exploits from altering program logic.</li>
+        <li><strong>Sharable:</strong> Multiple concurrent processes executing the same binary (e.g., 10 instances of <code>bash</code>) can safely share the single physical copy of the text segment in RAM.</li>
+      </ul>
+    </li>
+    <li><strong>Data Segment (Initialized Data & BSS):</strong>
+      <ul>
+        <li><code>.data</code>: Stores global and static variables explicitly initialized with non-zero values (e.g., <code>int max_users = 500;</code>).</li>
+        <li><code>.bss</code> (Block Started by Symbol): Stores uninitialized or zero-initialized global and static variables (e.g., <code>static int buffer[1024];</code>). Does not consume binary file space on disk; kernel automatically zero-fills this space upon process instantiation.</li>
+      </ul>
+    </li>
+    <li><strong>Heap Segment:</strong>
+      <ul>
+        <li>Allocated dynamically at runtime via library calls such as <code>malloc()</code>, <code>calloc()</code>, <code>realloc()</code> in C, or <code>new</code> in C++.</li>
+        <li>Grows upwards toward higher memory addresses. Managed by runtime allocators (e.g., <code>ptmalloc</code>, <code>jemalloc</code>) which invoke kernel system calls <code>brk()</code> or <code>mmap()</code> when expanding.</li>
+      </ul>
+    </li>
+    <li><strong>Stack Segment:</strong>
+      <ul>
+        <li>Stores activation records (stack frames) for active function calls.</li>
+        <li>Contains function parameters, local automatic variables, caller return addresses, and saved register frames.</li>
+        <li>Grows downwards toward lower memory addresses. Managed automatically by CPU hardware via Stack Pointer (<code>RSP</code>) and Base Pointer (<code>RBP</code>). If stack and heap collide without sufficient address space, a <strong>Stack Overflow</strong> occurs.</li>
+      </ul>
+    </li>
+  </ol>
+</article>
+
+<!-- END chapter_1 -->
+
+<!-- BEGIN chapter_2 -->
+<article class="chapter-container" id="chapter-2" data-chapter="2">
+  <div class="chapter-header">
+    <div class="chapter-badge">Chapter 02 &bull; Video 1 Coverage</div>
+    <h2>Process Lifecycle, Context Switching & Process Creation Mechanics</h2>
+    <p class="chapter-meta">
+      <strong>Source Video:</strong> <a href="https://www.youtube.com/watch?v=kn6rYzVsCEQ" target="_blank">OS Core Concepts Explained | Part 1</a> &bull;
+      <strong>Instructor:</strong> Vivek Gupta (Ex-Google, AlgoZenith) &bull;
+      <strong>Timeline:</strong> 00:48:30 &ndash; 02:06:26
+    </p>
+  </div>
+
+  <div class="callout callout-info">
+    <h4>Placement Interview Benchmark</h4>
+    <p>Candidates are frequently asked to draw the 7-state process lifecycle diagram from memory, explain the hidden cache-invalidation penalty of CPU context switching, write POSIX code demonstrating <code>fork()</code> with return value evaluation, and distinguish between Zombie and Orphan processes with cleanup mechanisms.</p>
+  </div>
+
+  <h3>2.1 The Process State Transition Lifecycle</h3>
+  <p>During its execution span, a process transitions between distinct logical states governed by OS kernel events (<a href="https://www.youtube.com/watch?v=kn6rYzVsCEQ&t=3735s" target="_blank" class="yt-timestamp">⏱️ 01:02:15</a>):</p>
+
+  <div class="mermaid">
+  stateDiagram-v2
+    [*] --> New: Program binary initiated
+    New --> Ready: Admitted by Long-Term Scheduler
+    Ready --> Running: Dispatched by Short-Term Scheduler
+    Running --> Ready: Preempted (Timer Interrupt / Time Slice expired)
+    Running --> Waiting: I/O or Event Wait request (Block)
+    Waiting --> Ready: I/O completed or Event Occurred
+    Running --> Terminated: exit() system call or Exception
+    Terminated --> [*]: PCB harvested by parent wait()
+    
+    Ready --> SuspendReady: Memory pressure (Swapped out to Disk)
+    SuspendReady --> Ready: Swapped into RAM
+    Waiting --> SuspendWaiting: Blocked + Low RAM (Swapped to Disk)
+    SuspendWaiting --> SuspendReady: I/O completed while on Disk
+  </div>
+
+  <h4>State Definitions</h4>
+  <ul>
+    <li><strong>New:</strong> The process is currently being instantiated; memory structures and PCB are being allocated.</li>
+    <li><strong>Ready:</strong> The process resides in primary RAM and is queued in the <strong>Ready Queue</strong> waiting to be assigned CPU execution cycles by the scheduler.</li>
+    <li><strong>Running:</strong> The process's machine instructions are actively executing on a physical CPU core.</li>
+    <li><strong>Waiting / Blocked:</strong> The process cannot execute even if CPU is idle because it is awaiting an asynchronous external event (e.g., disk I/O, network packet, lock release).</li>
+    <li><strong>Terminated:</strong> The process has completed execution via <code>exit()</code>; execution has halted, but its entry remains in the process table until its exit status is collected by its parent.</li>
+    <li><strong>Suspend-Ready & Suspend-Blocked:</strong> When physical RAM is exhausted, the Medium-Term Scheduler (Swapper) swaps process address spaces out of RAM into secondary storage (Swap space).</li>
+  </ul>
+
+  <h3>2.2 Context Switching Mechanics & Overhead Analysis</h3>
+  <p>A <strong>Context Switch</strong> occurs when the CPU scheduler switches the physical processor core from executing Process $P_0$ to executing Process $P_1$ (<a href="https://www.youtube.com/watch?v=kn6rYzVsCEQ&t=4900s" target="_blank" class="yt-timestamp">⏱️ 01:21:40</a>).</p>
+
+  <h4>The Complete Step-by-Step Context Switch Sequence:</h4>
+  <ol>
+    <li>An interrupt (e.g., hardware timer quantum expiration) or a blocking system call traps execution into Kernel Mode.</li>
+    <li>The CPU dispatcher saves the current execution state of $P_0$ (Program Counter, general-purpose registers, stack pointer, floating-point state) into $P_0$'s PCB in kernel space.</li>
+    <li>$P_0$'s state in its PCB is updated from <code>Running</code> to <code>Ready</code> (or <code>Waiting</code>).</li>
+    <li>The scheduler executes its algorithm and selects next process $P_1$ from the Ready Queue.</li>
+    <li>The kernel updates memory mapping structures (e.g., loading $P_1$'s page table address into CPU control register <code>CR3</code>).</li>
+    <li>The CPU dispatcher restores all saved registers, stack pointer, and program counter from $P_1$'s PCB into the physical CPU core.</li>
+    <li>The CPU transitions back to User Mode (Ring 3) and resumes execution of $P_1$ at its saved instruction address.</li>
+  </ol>
+
+  <h4>Direct vs. Indirect Overhead Penalties:</h4>
+  <ul>
+    <li><strong>Direct Overhead:</strong> Time spent executing kernel code to save/restore registers and flush/reload CPU registers (typically 1 to 10 microseconds). Pure computational dead time with zero user-work achieved.</li>
+    <li><strong>Indirect Overhead (Cache Coldness):</strong> Loading a new process invalidates the CPU L1/L2 hardware caches and flushes the Translation Lookaside Buffer (TLB). Consequently, the newly resumed process suffers a surge of cache misses and TLB misses until its working set is reloaded into cache, causing significant execution slowdown.</li>
+  </ul>
+
+  <h3>2.3 Process Creation: The <code>fork()</code> & <code>exec()</code> Paradigm</h3>
+  <p>In UNIX/Linux systems, process creation follows a distinct two-step fork-and-exec architecture (<a href="https://www.youtube.com/watch?v=kn6rYzVsCEQ&t=5780s" target="_blank" class="yt-timestamp">⏱️ 01:36:20</a>):</p>
+
+  <h4>1. The <code>fork()</code> System Call</h4>
+  <p>The <code>fork()</code> system call creates an exact duplicate copy of the calling process:</p>
+  <ul>
+    <li>It returns twice from a single invocation:
+      <ul>
+        <li>Returns <code>0</code> inside the newly created <strong>Child Process</strong>.</li>
+        <li>Returns the Child's <strong>PID</strong> ($>0$) inside the <strong>Parent Process</strong>.</li>
+        <li>Returns a negative integer (<code>-1</code>) if creation fails (e.g., process limit reached).</li>
+      </ul>
+    </li>
+    <li><strong>Copy-On-Write (COW) Optimization:</strong> Modern operating systems do not duplicate physical RAM pages immediately during <code>fork()</code>. Instead, parent and child share the same physical pages marked as <strong>read-only</strong>. If either process attempts to write to a page, a hardware page fault triggers the OS to duplicate that specific single page in RAM, giving the writer its own private writable copy. This makes <code>fork()</code> extremely lightweight and instantaneous.</li>
+  </ul>
+
+  <h4>POSIX Implementation Example:</h4>
+  <pre><code class="language-c">#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;unistd.h&gt;
+#include &lt;sys/types.h&gt;
+#include &lt;sys/wait.h&gt;
+
+int main() {
+    pid_t pid = fork();
+
+    if (pid &lt; 0) {
+        // Fork failure
+        perror("fork failed");
+        exit(EXIT_FAILURE);
+    } else if (pid == 0) {
+        // Child Process execution path
+        printf("[Child Process] PID: %d, Parent PID: %d\n", getpid(), getppid());
+        char *args[] = {"/bin/ls", "-l", NULL};
+        // Replace child memory with ls program
+        execvp(args[0], args);
+        // execvp only returns if error occurs
+        perror("execvp failed");
+        exit(EXIT_FAILURE);
+    } else {
+        // Parent Process execution path
+        printf("[Parent Process] PID: %d, spawned Child PID: %d\n", getpid(), pid);
+        int status;
+        // Wait for child process to terminate and harvest exit status
+        waitpid(pid, &status, 0);
+        if (WIFEXITED(status)) {
+            printf("[Parent Process] Child terminated with exit code %d\n", WEXITSTATUS(status));
+        }
+    }
+    return 0;
+}
+</code></pre>
+
+  <h3>2.4 Process Anomalies: Zombie vs. Orphan Processes</h3>
+  <p>Failure to properly coordinate parent and child lifecycles leads to critical system state anomalies (<a href="https://www.youtube.com/watch?v=kn6rYzVsCEQ&t=6730s" target="_blank" class="yt-timestamp">⏱️ 01:52:10</a>):</p>
+
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>Feature</th>
+        <th>Zombie Process (Defunct)</th>
+        <th>Orphan Process</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Definition</strong></td>
+        <td>A process that has finished execution (invoked <code>exit()</code>), but whose parent has not yet called <code>wait()</code> / <code>waitpid()</code>.</td>
+        <td>A process that is still running, but whose parent process has terminated prematurely.</td>
+      </tr>
+      <tr>
+        <td><strong>Resource Usage</strong></td>
+        <td>Releases all RAM memory (text, data, heap, stack) and closed file descriptors; retains <strong>only</strong> its PCB entry and PID slot in the process table.</td>
+        <td>Continues actively consuming CPU cycles, RAM, and I/O resources as a normal process.</td>
+      </tr>
+      <tr>
+        <td><strong>System Hazard</strong></td>
+        <td>Accumulating thousands of zombie processes causes <strong>PID Exhaustion</strong>, preventing any new process from spawning in the system.</td>
+        <td>Minor; could waste background CPU if forgotten, but safe.</td>
+      </tr>
+      <tr>
+        <td><strong>Resolution / Cleanup</strong></td>
+        <td>The parent must call <code>wait()</code>. If the parent is stuck in a loop, terminating the parent forces adoption by PID 1, which cleans up the zombie.</td>
+        <td>Automatically adopted by system root process (PID 1: <code>systemd</code> or <code>init</code>), which periodically issues <code>wait()</code> to harvest child status upon exit.</td>
+      </tr>
+    </tbody>
+  </table>
+</article>
+
+<!-- END chapter_2 -->
+
+<!-- BEGIN chapter_3 -->
+<article class="chapter-container" id="chapter-3" data-chapter="3">
+  <div class="chapter-header">
+    <div class="chapter-badge">Chapter 03 &bull; Video 2 Coverage</div>
+    <h2>CPU Scheduling Fundamentals & Classic Scheduling Algorithms</h2>
+    <p class="chapter-meta">
+      <strong>Source Video:</strong> <a href="https://www.youtube.com/watch?v=8WxLX-hfZTo" target="_blank">OS Scheduling & Multicore Systems | Part 2</a> &bull;
+      <strong>Instructor:</strong> Vivek Gupta (Ex-Google, AlgoZenith) &bull;
+      <strong>Timeline:</strong> 00:00:00 &ndash; 00:36:29
+    </p>
+  </div>
+
+  <div class="callout callout-info">
+    <h4>Mathematical Rigor in Placement Interviews</h4>
+    <p>CPU scheduling interview problems are intensely quantitative. You will be given a table of 4 to 5 processes with arrival times, burst times, and priorities, and asked to compute exact Completion Time, Turnaround Time, and Waiting Time across FCFS, SJF, SRTF, and Round Robin using clear Gantt Charts.</p>
+  </div>
+
+  <h3>3.1 Scheduling Objectives & Criteria Metrics</h3>
+  <p>The CPU scheduler is the heart of multiprogramming. Since real-world processes alternate between <strong>CPU Bursts</strong> (executing code) and <strong>I/O Bursts</strong> (waiting for network, disk, or user input), scheduling maximizes CPU utilization by giving the CPU to another ready process whenever the current process enters an I/O wait state (<a href="https://www.youtube.com/watch?v=8WxLX-hfZTo&t=284s" target="_blank" class="yt-timestamp">⏱️ 04:44</a>).</p>
+
+  <h4>The 5 Golden Scheduling Performance Metrics:</h4>
+  <ol>
+    <li><strong>CPU Utilization:</strong> The percentage of total time the CPU is actively performing user or system computation (Goal: Maximize, practically 40% to 90%).</li>
+    <li><strong>Throughput:</strong> The number of complete processes executed per unit time (Goal: Maximize).</li>
+    <li><strong>Turnaround Time (TAT):</strong> The total elapsed time from the moment a process is submitted until its complete termination:
+      $$\text{TAT} = \text{Completion Time (CT)} - \text{Arrival Time (AT)}$$
+      (Goal: Minimize).</li>
+    <li><strong>Waiting Time (WT):</strong> The cumulative time a process spends waiting in the Ready Queue:
+      $$\text{WT} = \text{Turnaround Time (TAT)} - \text{Burst Time (BT)}$$
+      (Goal: Minimize).</li>
+    <li><strong>Response Time (RT):</strong> The time elapsed between process arrival and its very first execution on the CPU:
+      $$\text{RT} = \text{Time of First CPU Dispatch} - \text{Arrival Time (AT)}$$
+      (Goal: Minimize; crucial for interactive UX).</li>
+  </ol>
+
+  <h3>3.2 Scheduler Taxonomy & Dispatcher Role</h3>
+  <p>An operating system utilizes three distinct types of schedulers acting at different operational timescales (<a href="https://www.youtube.com/watch?v=8WxLX-hfZTo&t=453s" target="_blank" class="yt-timestamp">⏱️ 07:33</a>):</p>
+  <ul>
+    <li><strong>Long-Term Scheduler (Job Scheduler):</strong> Selects processes from secondary storage (pool of batch jobs) and loads them into primary RAM ready queue. Regulates the <em>Degree of Multiprogramming</em> (total processes in memory). Invoked infrequently (seconds to minutes).</li>
+    <li><strong>Short-Term Scheduler (CPU Scheduler):</strong> Selects which in-memory ready process is allocated the physical CPU. Invoked very frequently (every 10 to 100 milliseconds), hence must be exceptionally fast.</li>
+    <li><strong>Medium-Term Scheduler (Swapper):</strong> Handles swapping out processes from RAM to Swap disk during severe memory pressure, and swapping them back when RAM frees up.</li>
+    <li><strong>Dispatcher:</strong> The low-level kernel module that physically performs the context switch, switches the CPU to user mode, and jumps to the proper location in the user program. The elapsed time taken by the dispatcher to halt one process and start another is called <strong>Dispatch Latency</strong>.</li>
+  </ul>
+
+  <h3>3.3 Preemptive vs. Non-Preemptive Scheduling</h3>
+  <ul>
+    <li><strong>Non-Preemptive Scheduling:</strong> Once a process is allocated the CPU, it holds the CPU until it voluntarily yields control&mdash;either by terminating (<code>exit()</code>) or by requesting I/O (transition to Waiting state). No timer interrupts can forcibly take the CPU away.
+      <br><em>Pros:</em> Simple, low overhead, deterministic.
+      <br><em>Cons:</em> Poor interactive response, vulnerable to rogue infinite loops.</li>
+    <li><strong>Preemptive Scheduling:</strong> The OS kernel can forcibly interrupt and confiscate the CPU from an actively running process (e.g., when a higher-priority job arrives or the hardware timer interrupt signals time slice expiration).
+      <br><em>Pros:</em> Excellent responsiveness, prevents starvation in interactive environments.
+      <br><em>Cons:</em> Incurs higher context switch overhead; requires synchronization locks on shared kernel data structures to prevent race conditions.</li>
+  </ul>
+
+  <h3>3.4 First-Come, First-Served (FCFS) Scheduling</h3>
+  <p>The simplest scheduling algorithm. Implemented via a standard FIFO queue (<a href="https://www.youtube.com/watch?v=8WxLX-hfZTo&t=866s" target="_blank" class="yt-timestamp">⏱️ 14:26</a>). Non-preemptive.</p>
+  
+  <h4>The Convoy Effect Hazard:</h4>
+  <p>If a massive CPU-bound process arrives first, all short, interactive I/O-bound processes are trapped behind it in the ready queue. While the giant process runs on CPU, the I/O devices sit idle. When the giant process finally blocks for I/O, all short processes quickly blast through CPU and block for I/O, leaving the CPU idle. This severe degradation in device and CPU utilization is called the <strong>Convoy Effect</strong>.</p>
+
+  <h3>3.5 Shortest Job First (SJF) & Shortest Remaining Time First (SRTF)</h3>
+  <p>Assigns the CPU to the process with the smallest subsequent CPU burst length (<a href="https://www.youtube.com/watch?v=8WxLX-hfZTo&t=928s" target="_blank" class="yt-timestamp">⏱️ 15:28</a>).</p>
+  <ul>
+    <li><strong>Non-Preemptive SJF:</strong> Once granted, the process runs to completion of its burst. Provably achieves the minimal average waiting time among all non-preemptive algorithms.</li>
+    <li><strong>Preemptive SJF (SRTF):</strong> If a new process arrives with a remaining CPU burst shorter than the remaining burst of the currently running process, the current process is immediately preempted.</li>
+  </ul>
+
+  <h4>Burst Time Estimation via Exponential Smoothing:</h4>
+  <p>Because the OS cannot know future CPU bursts in advance, it predicts the next burst $\tau_{n+1}$ using past historical burst $t_n$ via exponential averaging:</p>
+  $$\tau_{n+1} = \alpha t_n + (1 - \alpha) \tau_n \quad \text{where } 0 \le \alpha \le 1$$
+  <p>Typically $\alpha = 0.5$, balancing recent behavior with long-term historical baseline.</p>
+
+  <h3>3.6 Step-by-Step Solved Placement Numerical: SRTF vs. FCFS</h3>
+  <p>Consider the following process workload table (<a href="https://www.youtube.com/watch?v=8WxLX-hfZTo&t=1376s" target="_blank" class="yt-timestamp">⏱️ 22:56</a>):</p>
+  
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>Process</th>
+        <th>Arrival Time (AT)</th>
+        <th>Burst Time (BT)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>P1</td><td>0 ms</td><td>8 ms</td></tr>
+      <tr><td>P2</td><td>1 ms</td><td>4 ms</td></tr>
+      <tr><td>P3</td><td>2 ms</td><td>9 ms</td></tr>
+      <tr><td>P4</td><td>3 ms</td><td>5 ms</td></tr>
+    </tbody>
+  </table>
+
+  <h4>Preemptive SJF (SRTF) Execution Walkthrough:</h4>
+  <ul>
+    <li><strong>At $t = 0$:</strong> Only P1 is present. P1 starts executing.</li>
+    <li><strong>At $t = 1$:</strong> P2 arrives ($BT = 4$). Remaining burst of P1 is $8 - 1 = 7$. Since $4 < 7$, P1 is preempted and P2 takes the CPU.</li>
+    <li><strong>At $t = 2$:</strong> P3 arrives ($BT = 9$). P2 remaining is $3$. P2 continues.</li>
+    <li><strong>At $t = 3$:</strong> P4 arrives ($BT = 5$). P2 remaining is $2$. P2 continues.</li>
+    <li><strong>At $t = 5$:</strong> P2 finishes ($CT = 5$). Ready processes: P4 ($BT=5$), P1 (rem $7$), P3 ($BT=9$). P4 is chosen.</li>
+    <li><strong>At $t = 10$:</strong> P4 finishes ($CT = 10$). Ready: P1 (rem $7$), P3 ($BT=9$). P1 is chosen.</li>
+    <li><strong>At $t = 17$:</strong> P1 finishes ($CT = 17$). Ready: P3 ($BT=9$). P3 runs.</li>
+    <li><strong>At $t = 26$:</strong> P3 finishes ($CT = 26$).</li>
+  </ul>
+
+  <h4>Gantt Chart Representation:</h4>
+  <div class="mermaid">
+  gantt
+    title SRTF Execution Timeline
+    dateFormat X
+    axisFormat %s ms
+    section CPU
+    P1 (1ms) :0, 1
+    P2 (4ms) :1, 5
+    P4 (5ms) :5, 10
+    P1 (7ms) :10, 17
+    P3 (9ms) :17, 26
+  </div>
+
+  <h4>Final Metrics Summary:</h4>
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>PID</th>
+        <th>AT</th>
+        <th>BT</th>
+        <th>Completion (CT)</th>
+        <th>TAT (CT - AT)</th>
+        <th>Waiting Time (TAT - BT)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>P1</td><td>0</td><td>8</td><td>17</td><td>17 - 0 = 17 ms</td><td>17 - 8 = 9 ms</td></tr>
+      <tr><td>P2</td><td>1</td><td>4</td><td>5</td><td>5 - 1 = 4 ms</td><td>4 - 4 = 0 ms</td></tr>
+      <tr><td>P3</td><td>2</td><td>9</td><td>26</td><td>26 - 2 = 24 ms</td><td>24 - 9 = 15 ms</td></tr>
+      <tr><td>P4</td><td>3</td><td>5</td><td>10</td><td>10 - 3 = 7 ms</td><td>7 - 5 = 2 ms</td></tr>
+    </tbody>
+  </table>
+  <p><strong>Average Turnaround Time:</strong> $\frac{17 + 4 + 24 + 7}{4} = \frac{52}{4} = 13.0 \text{ ms}$</p>
+  <p><strong>Average Waiting Time:</strong> $\frac{9 + 0 + 15 + 2}{4} = \frac{26}{4} = 6.5 \text{ ms}$</p>
+
+  <h3>3.7 Round Robin (RR) Scheduling</h3>
+  <p>Designed specifically for time-sharing interactive systems (<a href="https://www.youtube.com/watch?v=8WxLX-hfZTo&t=1847s" target="_blank" class="yt-timestamp">⏱️ 30:47</a>). Each process is allocated a small unit of CPU time called a <strong>Time Quantum</strong> ($q$) or time slice (typically 10 to 100 ms). Processes are held in a circular FIFO queue.</p>
+  
+  <h4>The Time Quantum Dilemma:</h4>
+  <ul>
+    <li>If $q \to \infty$: Round Robin degenerates into FCFS, suffering from the Convoy Effect.</li>
+    <li>If $q \to 0$: Round Robin approaches <em>Processor Sharing</em>, where $n$ processes run at $1/n$ speed, but the system spends nearly 100% of CPU time executing context switches, collapsing throughput.</li>
+    <li><strong>Rule of Thumb:</strong> Approximately 80% of CPU bursts should be shorter than the time quantum $q$ to minimize context switches while preserving rapid interactive response.</li>
+  </ul>
+
+  <h3>3.8 Priority Scheduling & The Aging Mitigation</h3>
+  <p>Each process is assigned a priority integer $p$. The CPU is allocated to the highest-priority process (<a href="https://www.youtube.com/watch?v=8WxLX-hfZTo&t=2068s" target="_blank" class="yt-timestamp">⏱️ 34:28</a>).</p>
+  <ul>
+    <li><strong>Starvation (Indefinite Blocking):</strong> A low-priority process may sit in the ready queue indefinitely if a steady stream of higher-priority processes keeps arriving. (Legendary real-world case: When the IBM 7094 at MIT was shut down in 1973, a low-priority job submitted in 1967 was discovered still waiting!).</li>
+    <li><strong>Aging Solution:</strong> A technique of gradually incrementing the priority of processes that wait in the system for long durations. Eventually, any aged process achieves the highest priority and is guaranteed CPU dispatch.</li>
+  </ul>
+</article>
+
+<!-- END chapter_3 -->
+
+<!-- BEGIN chapter_4 -->
+<article class="chapter-container" id="chapter-4" data-chapter="4">
+  <div class="chapter-header">
+    <div class="chapter-badge">Chapter 04 &bull; Video 2 Coverage</div>
+    <h2>Multilevel Queues, Multicore Systems & Multiprocessor Scheduling</h2>
+    <p class="chapter-meta">
+      <strong>Source Video:</strong> <a href="https://www.youtube.com/watch?v=8WxLX-hfZTo" target="_blank">OS Scheduling & Multicore Systems | Part 2</a> &bull;
+      <strong>Instructor:</strong> Vivek Gupta (Ex-Google, AlgoZenith) &bull;
+      <strong>Timeline:</strong> 00:36:29 &ndash; 00:55:33
+    </p>
+  </div>
+
+  <div class="callout callout-info">
+    <h4>Placement Relevance: System Architecture & Modern Concurrency</h4>
+    <p>Top tech companies expect candidates to comprehend how CPU scheduling scales beyond single-core setups to modern multi-socket, multicore machines. Key questions involve Multilevel Feedback Queue (MLFQ) parameter design, CPU Cache Affinity (Soft vs Hard), NUMA architectural bottlenecks, and Load Balancing mechanics (Push vs Pull migration).</p>
+  </div>
+
+  <h3>4.1 Multilevel Queue (MLQ) Scheduling</h3>
+  <p>In real-world operating systems, processes differ drastically in their behavioral demands. Interactive foreground UI tasks require rapid response times, while background batch computational tasks require maximum throughput without user interruption (<a href="https://www.youtube.com/watch?v=8WxLX-hfZTo&t=2189s" target="_blank" class="yt-timestamp">⏱️ 36:29</a>).</p>
+
+  <p><strong>Multilevel Queue Scheduling</strong> partitions the single Ready Queue into multiple distinct prioritized queues:</p>
+  <div class="mermaid">
+  graph TD
+    P[Incoming Processes] --> Q1["Queue 1: System Processes (Highest Priority - FCFS/Priority)"]
+    P --> Q2["Queue 2: Interactive UI Processes (Medium-High - Round Robin q=8ms)"]
+    P --> Q3["Queue 3: Interactive Editing Processes (Medium - Round Robin q=16ms)"]
+    P --> Q4["Queue 4: Batch Processing Jobs (Lowest Priority - FCFS)"]
+    
+    Q1 --> CPU[Physical CPU Core]
+    Q2 -.->|Only runs if Q1 empty| CPU
+    Q3 -.->|Only runs if Q1, Q2 empty| CPU
+    Q4 -.->|Only runs if Q1, Q2, Q3 empty| CPU
+  </div>
+
+  <ul>
+    <li>Processes are permanently assigned to one queue based on their inherent characteristics (e.g., memory size, process priority, or type).</li>
+    <li>Each queue executes its own independent scheduling algorithm (e.g., Round Robin for foreground, FCFS for background).</li>
+    <li><strong>Inter-Queue Scheduling:</strong> Typically implemented as strict fixed-priority preemptive scheduling (e.g., Queue 1 preempts Queue 2). If foreground queues are constantly saturated, background batch queues suffer severe <strong>Starvation</strong>.</li>
+  </ul>
+
+  <h3>4.2 Multilevel Feedback Queue (MLFQ) Scheduling</h3>
+  <p>To eliminate process starvation and avoid requiring upfront knowledge of process CPU burst lengths, modern OS kernels implement the <strong>Multilevel Feedback Queue (MLFQ)</strong>. MLFQ allows processes to dynamically migrate between queues based on their observed runtime behavior.</p>
+
+  <h4>The 5 Fundamental Rules of MLFQ:</h4>
+  <ol>
+    <li><strong>Rule 1:</strong> If $\text{Priority}(A) > \text{Priority}(B)$, process $A$ runs and process $B$ does not.</li>
+    <li><strong>Rule 2:</strong> If $\text{Priority}(A) = \text{Priority}(B)$, processes $A$ and $B$ run in Round Robin using the time quantum of that queue.</li>
+    <li><strong>Rule 3:</strong> When a new job enters the system, it is placed at the highest priority queue (assuming it is short/interactive).</li>
+    <li><strong>Rule 4 (Demotion):</strong> Once a process uses up its allocated time allotment at a given priority level (regardless of how many times it yielded the CPU for I/O), its priority is demoted down by one level. (Prevents gaming the scheduler with tiny I/O bursts).</li>
+    <li><strong>Rule 5 (Priority Boost):</strong> After some fixed global time period $S$, all processes in the system are moved to the topmost priority queue. (Solves Starvation for CPU-bound batch jobs and adapts if a batch job transitions into an interactive phase).</li>
+  </ol>
+
+  <h3>4.3 Multiprocessor & Multicore Architecture Overview</h3>
+  <p>Modern computers feature multiple CPUs, multicore dies, and hyper-threaded execution pipelines (<a href="https://www.youtube.com/watch?v=8WxLX-hfZTo&t=2448s" target="_blank" class="yt-timestamp">⏱️ 40:48</a>):</p>
+  <ul>
+    <li><strong>Asymmetric Multiprocessing (AMP):</strong> One master CPU core handles all OS kernel data structures, scheduling, and I/O processing, while worker cores execute only user code. Eliminates data sharing bottlenecks but creates a master CPU bottleneck.</li>
+    <li><strong>Symmetric Multiprocessing (SMP):</strong> Each processor core is self-scheduling. All cores access common ready queues or run private per-core run-queues. Standard architecture in modern Linux, Windows, and macOS.</li>
+    <li><strong>Hardware Multithreading (Hyper-Threading / SMT):</strong> A single physical core provides multiple architectural hardware threads (e.g., 2 virtual cores per physical core). Hardware threads share execution units (ALU, FPU) and caches, interleaving instruction streams whenever one thread stalls on a memory fetch latency.</li>
+  </ul>
+
+  <h3>4.4 Processor Affinity: Soft vs. Hard Affinity</h3>
+  <p>When a process executes on CPU Core 0, its memory footprint (data, variables, stack) is heavily populated into Core 0's private L1 and L2 caches. If the scheduler moves this process to Core 1 on the next time slice, Core 0's cache becomes useless, and the process experiences heavy memory bus latency reloading its cache lines on Core 1.</p>
+  <ul>
+    <li><strong>Processor Affinity:</strong> The OS scheduler attempts to keep a process running on the exact same physical core to exploit warm hardware cache lines.</li>
+    <li><strong>Soft Affinity:</strong> The kernel has a strong policy preference to keep a process on its current core, but permits migration if workload imbalance demands it.</li>
+    <li><strong>Hard Affinity:</strong> The system guarantees that a process will execute <em>strictly</em> on a user-specified subset of cores (e.g., using Linux <code>sched_setaffinity()</code> system call). Frequently configured in high-frequency trading (HFT) and real-time telecom engines.</li>
+  </ul>
+
+  <h3>4.5 Non-Uniform Memory Access (NUMA) Architecture</h3>
+  <p>In multi-socket enterprise servers, memory access latency is non-uniform. Each CPU socket has its own directly attached local RAM bank, connected to other CPU sockets via high-speed interconnects (e.g., Intel UPI, AMD Infinity Fabric):</p>
+  <div class="mermaid">
+  graph LR
+    CPU0["CPU Socket 0 (Cores 0-31)"] --- RAM0["Local Memory Node 0 (Fast ~60ns)"]
+    CPU1["CPU Socket 1 (Cores 32-63)"] --- RAM1["Local Memory Node 1 (Fast ~60ns)"]
+    CPU0 <-->|Interconnect UPI: Slower ~120ns| CPU1
+    CPU0 -.->|Remote Access: High Latency| RAM1
+    CPU1 -.->|Remote Access: High Latency| RAM0
+  </div>
+  <p><strong>NUMA-Aware Scheduling:</strong> The scheduler must allocate memory from the local memory node of the CPU currently executing the thread, and strictly avoid migrating threads across sockets to prevent severe memory bus bottlenecks.</p>
+
+  <h3>4.6 Load Balancing: Push vs. Pull Migration</h3>
+  <p>To maximize parallelism on SMP systems with private per-core run-queues, the kernel must continuously balance workload across cores:</p>
+  <ul>
+    <li><strong>Push Migration:</strong> A dedicated kernel daemon (e.g., <code>ksoftirqd</code> in Linux) periodically monitors the load on all processor cores. If an imbalance exceeds a threshold, it forcibly pushes processes from an overloaded queue into an underloaded or idle core's queue.</li>
+    <li><strong>Pull Migration:</strong> An idle processor core that finishes all tasks in its private queue actively reaches into the queue of a busy core and pulls a waiting process into its own queue.</li>
+    <li><em>Trade-off with Processor Affinity:</em> Aggressive load balancing destroys cache affinity, whereas strict affinity causes load imbalance. Modern schedulers (like Linux Completely Fair Scheduler / CFS) balance these with hierarchical scheduling domains.</li>
+  </ul>
+</article>
+
+<!-- END chapter_4 -->
+
+<!-- BEGIN chapter_5 -->
+<article class="chapter-container" id="chapter-5" data-chapter="5">
+  <div class="chapter-header">
+    <div class="chapter-badge">Chapter 05 &bull; Video 3 Coverage</div>
+    <h2>Memory Management: Contiguous Allocation, Segmentation & Paging</h2>
+    <p class="chapter-meta">
+      <strong>Source Video:</strong> <a href="https://www.youtube.com/watch?v=X077mn-qghM" target="_blank">OS Memory Management Explained | Part 3</a> &bull;
+      <strong>Instructor:</strong> Vivek Gupta (Ex-Google, AlgoZenith) &bull;
+      <strong>Timeline:</strong> 00:00:00 &ndash; 00:33:37
+    </p>
+  </div>
+
+  <div class="callout callout-info">
+    <h4>Placement Benchmark: Memory Architecture & Math</h4>
+    <p>Memory management is one of the highest-yield interview sections. Interviewers focus heavily on: Internal vs. External Fragmentation, Dynamic Storage Allocation algorithms (First-Fit, Best-Fit, Worst-Fit), the exact math of Paging address translation (converting virtual addresses to page number and offset), and Page Table sizing.</p>
+  </div>
+
+  <h3>5.1 The Memory Hierarchy Pyramid</h3>
+  <p>Operating systems must reconcile the physical trade-off between access speed, manufacturing cost per bit, and storage capacity (<a href="https://www.youtube.com/watch?v=X077mn-qghM&t=119s" target="_blank" class="yt-timestamp">⏱️ 01:59</a>):</p>
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>Level</th>
+        <th>Typical Capacity</th>
+        <th>Access Latency</th>
+        <th>Managed By</th>
+        <th>Volatile?</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td><strong>CPU Registers</strong></td><td>~1 KB</td><td>&lt; 0.5 ns</td><td>Compiler / Assembler</td><td>Yes</td></tr>
+      <tr><td><strong>L1 / L2 Cache</strong></td><td>32 KB &ndash; 1 MB</td><td>1 &ndash; 4 ns</td><td>CPU Hardware Controller</td><td>Yes</td></tr>
+      <tr><td><strong>L3 Shared Cache</strong></td><td>16 &ndash; 64 MB</td><td>10 &ndash; 20 ns</td><td>CPU Hardware Controller</td><td>Yes</td></tr>
+      <tr><td><strong>Main Memory (RAM)</strong></td><td>16 &ndash; 128 GB</td><td>50 &ndash; 100 ns</td><td>Operating System (MMU)</td><td>Yes</td></tr>
+      <tr><td><strong>Solid State Drive (NVMe)</strong></td><td>512 GB &ndash; 4 TB</td><td>20 &ndash; 100 &mu;s</td><td>OS File System / I/O</td><td>No</td></tr>
+      <tr><td><strong>Mechanical Hard Disk</strong></td><td>4 &ndash; 20 TB</td><td>4 &ndash; 10 ms</td><td>OS File System / I/O</td><td>No</td></tr>
+    </tbody>
+  </table>
+
+  <h3>5.2 Address Binding: Compile-Time, Load-Time & Execution-Time</h3>
+  <p>Before a program can execute, its instructions and variables must be bound to physical memory addresses (<a href="https://www.youtube.com/watch?v=X077mn-qghM&t=876s" target="_blank" class="yt-timestamp">⏱️ 14:36</a>):</p>
+  <ul>
+    <li><strong>Compile-Time Binding:</strong> If it is known at compile time where the process will reside in memory, absolute physical code is generated (e.g., MS-DOS <code>.COM</code> files). If starting location changes, the entire code must be recompiled.</li>
+    <li><strong>Load-Time Binding:</strong> Compiler generates relocatable code. Final physical binding is delayed until the loader places the program into memory. If the process is swapped out and reloaded at a different physical base, addresses are invalid.</li>
+    <li><strong>Execution-Time (Run-Time) Binding:</strong> Binding is delayed until the exact instant the instruction is executed by the CPU. Requires hardware support: the <strong>Memory Management Unit (MMU)</strong> with dynamic relocation base and limit registers. This is the universal standard in all modern multi-tasking operating systems.</li>
+  </ul>
+
+  <h3>5.3 Contiguous Memory Allocation & Fragmentation</h3>
+  <p>In early multiprogramming systems, each process was loaded into a single contiguous block of physical RAM (<a href="https://www.youtube.com/watch?v=X077mn-qghM&t=1045s" target="_blank" class="yt-timestamp">⏱️ 17:25</a>):</p>
+
+  <h4>1. Fixed Partitioning (Multiprogramming with Fixed Tasks - MFT):</h4>
+  <ul>
+    <li>RAM is divided into fixed-sized partitions at boot time.</li>
+    <li><strong>Internal Fragmentation:</strong> Occurs when the memory allocated to a process is slightly larger than the memory requested by the process. The unused space within the allocated partition is wasted and cannot be used by other processes.</li>
+  </ul>
+
+  <h4>2. Variable Partitioning (Multiprogramming with Variable Tasks - MVT):</h4>
+  <ul>
+    <li>Partitions are created dynamically to match the exact size requested by incoming processes.</li>
+    <li><strong>External Fragmentation:</strong> As processes terminate and leave holes in RAM, the total free memory across the system is sufficient to satisfy an incoming request, but it is broken up into small, non-contiguous fragments.</li>
+    <li><strong>Compaction:</strong> Moving all allocated blocks to one end of memory to coalesce scattered holes into one large block. Heavy CPU and bus overhead; only possible if run-time dynamic relocation is supported.</li>
+  </ul>
+
+  <h4>Dynamic Storage Allocation Strategies:</h4>
+  <ul>
+    <li><strong>First-Fit:</strong> Allocate the <em>first</em> available hole that is large enough. Search stops immediately upon finding a valid hole. (Fastest, very efficient in practice).</li>
+    <li><strong>Best-Fit:</strong> Allocate the <em>smallest</em> hole that is large enough. Requires searching the entire free list (unless sorted). Leaves behind tiny, unusable leftover holes.</li>
+    <li><strong>Worst-Fit:</strong> Allocate the <em>largest</em> available hole. Requires searching entire list. Leaves behind largest leftover hole, which may be useful for subsequent allocations. (Performs worst in practice).</li>
+  </ul>
+
+  <h3>5.4 Segmentation: Programmer-Centric Logical Architecture</h3>
+  <p>A user program does not view memory as a linear array of bytes; rather, it views memory as a collection of variable-length logical segments: the main function, helper routines, stack, heap, and symbol tables (<a href="https://www.youtube.com/watch?v=X077mn-qghM&t=1292s" target="_blank" class="yt-timestamp">⏱️ 21:32</a>).</p>
+
+  <h4>Hardware Address Translation in Segmentation:</h4>
+  <p>A logical address is a tuple $\langle s, d \rangle$, where $s$ is the Segment Number and $d$ is the Segment Offset:</p>
+  <div class="mermaid">
+  graph TD
+    LogicalAddr["Logical Address: &lt;Segment s, Offset d&gt;"] --> Split[Split s and d]
+    Split --> CheckLimit{"Is d &lt; Limit?"}
+    CheckLimit -->|No| Trap["Trap: Segmentation Fault (Addressing Error)"]
+    CheckLimit -->|Yes| Adder["Adder: Base Address + d"]
+    Adder --> PhysicalMem["Physical Memory RAM Address"]
+    
+    ST["Segment Table (Base, Limit)"] -.->|Look up entry s| CheckLimit
+    ST -.->|Fetch Base| Adder
+  </div>
+  <ul>
+    <li>The segment number $s$ indexes into the <strong>Segment Table</strong>.</li>
+    <li>The hardware checks: if $d \ge \text{Limit}$, the MMU triggers a CPU trap (<strong>Segmentation Fault</strong>).</li>
+    <li>Otherwise, $\text{Physical Address} = \text{Base} + d$.</li>
+    <li><em>Limitation:</em> Since segments vary in length, allocation of segments in physical memory still suffers from <strong>External Fragmentation</strong>.</li>
+  </ul>
+
+  <h3>5.5 Paging: The Universal Non-Contiguous Solution</h3>
+  <p><strong>Paging</strong> breaks physical memory and logical address space into fixed-sized chunks, eliminating external fragmentation completely (<a href="https://www.youtube.com/watch?v=X077mn-qghM&t=1575s" target="_blank" class="yt-timestamp">⏱️ 26:15</a>):</p>
+  <ul>
+    <li><strong>Frames:</strong> Physical memory is divided into fixed-sized blocks called <strong>Frames</strong> (typically 4 KB).</li>
+    <li><strong>Pages:</strong> Logical address space is divided into blocks of the <strong>exact same size</strong> called <strong>Pages</strong>.</li>
+    <li>Any free physical frame can be assigned to any page of any process.</li>
+  </ul>
+
+  <h4>Mathematical Address Translation in Paging:</h4>
+  <p>Let the virtual address space be $2^n$ bytes and page size be $2^m$ bytes:</p>
+  <ul>
+    <li>The higher $n - m$ bits represent the <strong>Page Number ($p$)</strong>.</li>
+    <li>The lower $m$ bits represent the <strong>Page Offset ($d$)</strong> within the page.</li>
+  </ul>
+  <div class="mermaid">
+  graph LR
+    VAddr["Virtual Address: [Page p (n-m bits)] | [Offset d (m bits)]"]
+    VAddr --> PT["Page Table (Indexed by p)"]
+    PT --> FrameVal["Extract Frame Number f"]
+    FrameVal --> PAddr["Physical Address: [Frame f] | [Offset d]"]
+  </div>
+
+  <h4>Solved Concrete Interview Example:</h4>
+  <p><strong>Problem:</strong> Consider a 32-bit system with a 4 KB page size. What is the breakdown of the logical address, and how large is a linear Page Table assuming each Page Table Entry (PTE) is 4 bytes?</p>
+  <ul>
+    <li>Page size $= 4 \text{ KB} = 2^{12} \text{ bytes} \implies m = 12 \text{ bits}$ for Page Offset ($d$).</li>
+    <li>Virtual address space $= 32 \text{ bits} \implies n = 32 \text{ bits}$.</li>
+    <li>Page Number bits $= n - m = 32 - 12 = 20 \text{ bits}$.</li>
+    <li>Total pages per process $= 2^{20} = 1,048,576 \text{ pages}$.</li>
+    <li>Page Table Size $= 2^{20} \text{ entries} \times 4 \text{ bytes/entry} = 4 \text{ MB per process!}$</li>
+  </ul>
+  <p><em>Internal Fragmentation in Paging:</em> Paging completely eliminates External Fragmentation. However, it incurs slight <strong>Internal Fragmentation</strong> on the very last page of a process (on average, half a page $\approx 2 \text{ KB}$).</p>
+</article>
+
+<!-- END chapter_5 -->
+
+<!-- BEGIN chapter_6 -->
+<article class="chapter-container" id="chapter-6" data-chapter="6">
+  <div class="chapter-header">
+    <div class="chapter-badge">Chapter 06 &bull; Video 3 Coverage</div>
+    <h2>Virtual Memory, TLB Performance & Page Replacement Algorithms</h2>
+    <p class="chapter-meta">
+      <strong>Source Video:</strong> <a href="https://www.youtube.com/watch?v=X077mn-qghM" target="_blank">OS Memory Management Explained | Part 3</a> &bull;
+      <strong>Instructor:</strong> Vivek Gupta (Ex-Google, AlgoZenith) &bull;
+      <strong>Timeline:</strong> 00:33:37 &ndash; 01:07:50
+    </p>
+  </div>
+
+  <div class="callout callout-info">
+    <h4>Core Interview Numericals</h4>
+    <p>In technical interviews for systems engineering roles, candidates must know how to calculate Effective Memory Access Time (EMAT) with TLB hit ratios, detail the exact 7-step hardware/kernel page fault routine, trace Belady's Anomaly in FIFO replacement with reference strings, and explain the working set model for Thrashing prevention.</p>
+  </div>
+
+  <h3>6.1 Translation Lookaside Buffer (TLB) & EMAT Calculations</h3>
+  <p>In basic paging, every memory reference requires <strong>two</strong> physical RAM accesses: first to read the Page Table Entry (PTE) from RAM, and second to read/write the actual operand. This doubles memory latency and halves processor throughput (<a href="https://www.youtube.com/watch?v=X077mn-qghM&t=2017s" target="_blank" class="yt-timestamp">⏱️ 33:37</a>).</p>
+
+  <p>The <strong>Translation Lookaside Buffer (TLB)</strong> is an associative hardware cache embedded directly inside the Memory Management Unit (MMU) that stores recent $\langle \text{Page Number}, \text{Frame Number} \rangle$ translations.</p>
+
+  <h4>The Complete EMAT Formula:</h4>
+  <p>Let $h$ be the TLB Hit Ratio ($0 \le h \le 1$), $t_{\text{tlb}}$ be the TLB search time, and $t_{\text{mem}}$ be the physical RAM access time:</p>
+  $$\text{EMAT} = h \cdot (t_{\text{tlb}} + t_{\text{mem}}) + (1 - h) \cdot (t_{\text{tlb}} + 2 \cdot t_{\text{mem}})$$
+
+  <h4>Solved Placement Numerical:</h4>
+  <p><strong>Given:</strong> TLB access time $t_{\text{tlb}} = 10 \text{ ns}$, RAM access time $t_{\text{mem}} = 100 \text{ ns}$, TLB Hit Ratio $h = 95\% = 0.95$.</p>
+  <p>$$\text{On TLB Hit:} \quad 10 + 100 = 110 \text{ ns}$$</p>
+  <p>$$\text{On TLB Miss:} \quad 10 + 100 (\text{page table}) + 100 (\text{data}) = 210 \text{ ns}$$</p>
+  <p>$$\text{EMAT} = 0.95 \times 110 + 0.05 \times 210 = 104.5 + 10.5 = 115 \text{ ns}$$</p>
+  <p>Notice that with a 95% hit ratio, effective access slows from 100 ns to only 115 ns (a mere 15% slowdown instead of a 100% doubling!).</p>
+
+  <h3>6.2 Virtual Memory & Demand Paging Mechanics</h3>
+  <p><strong>Virtual Memory</strong> decouples the logical address space perceived by user programs from physical RAM capacity (<a href="https://www.youtube.com/watch?v=X077mn-qghM&t=2247s" target="_blank" class="yt-timestamp">⏱️ 37:27</a>). An application can allocate a 64 GB address space on a machine with only 8 GB of physical RAM.</p>
+
+  <h4>Demand Paging & The Valid-Invalid Bit:</h4>
+  <p>Under <strong>Demand Paging</strong>, pages are not preloaded into RAM at startup. Pages are loaded lazily only when the executing CPU actively references an instruction or data byte residing on that page.</p>
+  <ul>
+    <li>Each entry in the Page Table includes a <strong>Valid-Invalid Bit</strong> ($v/i$):
+      <ul>
+        <li><code>Valid (v):</code> The page is legally present in physical RAM. Translation proceeds immediately at hardware speed.</li>
+        <li><code>Invalid (i):</code> The page is either outside the legal address space of the process, or is a valid page currently residing on secondary swap storage. Access triggers a <strong>Page Fault</strong>.</li>
+      </ul>
+    </li>
+  </ul>
+
+  <h3>6.3 The 7-Step Page Fault Handling Routine</h3>
+  <p>When the CPU attempts to access an address marked with an invalid bit, the MMU cannot complete the translation and raises a hardware trap to the OS kernel (<a href="https://www.youtube.com/watch?v=X077mn-qghM&t=2390s" target="_blank" class="yt-timestamp">⏱️ 39:50</a>):</p>
+  <div class="mermaid">
+  graph TD
+    Step1["1. CPU executes instruction referencing page marked 'Invalid' (i)"] --> Step2["2. MMU hardware triggers Page Fault Trap to Kernel"]
+    Step2 --> Step3["3. Kernel saves user registers and checks PCB internal tables"]
+    Step3 --> Step4{"Is reference legal?"}
+    Step4 -->|Illegal| Abort["Abort process: Segmentation Fault"]
+    Step4 -->|Legal| Step5["4. Find free physical frame (or invoke Page Replacement)"]
+    Step5 --> Step6["5. Issue disk I/O to read page from swap space into frame"]
+    Step6 --> Step7["6. Disk interrupt: Kernel updates Page Table to 'Valid' (v)"]
+    Step7 --> Step8["7. Restore user registers & restart aborted instruction"]
+  </div>
+
+  <h4>Page Fault Overhead Impact:</h4>
+  <p>Disk I/O latency is approximately $8 \text{ ms} = 8,000,000 \text{ ns}$, whereas RAM access is $100 \text{ ns}$. If the page fault rate is denoted $p$, the effective access time is:</p>
+  $$\text{EAT} = (1 - p) \cdot 100 \text{ ns} + p \cdot 8,000,000 \text{ ns}$$
+  <p>Even if only 1 out of 100,000 accesses ($p = 0.00001$) triggers a page fault, memory access speed slows down by almost a factor of two! Hence, optimal page replacement algorithms are critical.</p>
+
+  <h3>6.4 Page Replacement Algorithms</h3>
+  <p>When a page fault occurs and all physical frames in RAM are occupied, the OS must select a <strong>victim frame</strong> to page out to disk (<a href="https://www.youtube.com/watch?v=X077mn-qghM&t=2900s" target="_blank" class="yt-timestamp">⏱️ 48:20</a>):</p>
+
+  <h4>1. First-In, First-Out (FIFO) & Belady's Anomaly:</h4>
+  <p>The oldest loaded page in memory is chosen as victim.</p>
+  <div class="callout callout-warning">
+    <h4>Belady's Anomaly Defined</h4>
+    <p>Normally, providing more physical RAM frames reduces the number of page faults. In <strong>FIFO Page Replacement</strong>, however, increasing the number of allocated physical frames can paradoxically <em>increase</em> the total number of page faults for certain reference strings! (e.g., Reference string: <code>1, 2, 3, 4, 1, 2, 5, 1, 2, 3, 4, 5</code> yields 9 faults with 3 frames, but 10 faults with 4 frames!). Stack-based algorithms (OPT, LRU) are provably immune to Belady's Anomaly.</p>
+  </div>
+
+  <h4>2. Optimal Page Replacement (OPT / MIN):</h4>
+  <p>Replace the page that will <strong>not be referenced for the longest duration of time in the future</strong>. Provably guarantees the lowest possible page fault rate for any fixed number of frames. However, it is unimplementable in general-purpose systems because the OS cannot foresee the future. It serves as an optimal theoretical upper bound benchmark for evaluating practical algorithms.</p>
+
+  <h4>3. Least Recently Used (LRU) Algorithm:</h4>
+  <p>Approximates the Optimal algorithm by using the recent past as an approximation of the near future: replace the page that has not been referenced for the longest period of time (<a href="https://www.youtube.com/watch?v=X077mn-qghM&t=3125s" target="_blank" class="yt-timestamp">⏱️ 52:05</a>).</p>
+  <ul>
+    <li><strong>Counter / Timestamp Implementation:</strong> Every page table entry contains a time-of-use field. On every memory access, copy CPU clock into the PTE. On replacement, scan all entries for smallest time value. High overhead ($O(N)$ scan).</li>
+    <li><strong>Doubly-Linked List Stack:</strong> Maintain a stack of page numbers. Whenever a page is accessed, unlink it and move it to the top of the stack. The bottom of the stack is always the LRU victim frame ($O(1)$ replacement, but memory pointer updates on every access).</li>
+  </ul>
+
+  <h4>4. Clock / Second-Chance Algorithm:</h4>
+  <p>Hardware approximation of LRU. Uses a circular queue and a single <strong>Reference Bit</strong> per frame:</p>
+  <ul>
+    <li>When a page is accessed, hardware sets Reference Bit $= 1$.</li>
+    <li>When replacement is needed, the pointer moves circularly through the frames:
+      <ul>
+        <li>If Reference Bit $== 1$: Clear bit to $0$ and advance pointer (gives page a second chance).</li>
+        <li>If Reference Bit $== 0$: Select this frame as victim immediately!</li>
+      </ul>
+    </li>
+  </ul>
+
+  <h3>6.5 Thrashing & The Working Set Model</h3>
+  <p>If a process does not have enough physical frames allocated to hold its currently active working pages, it faults rapidly. The CPU scheduler sees processes blocking on I/O, assumes the CPU is underutilized, and increases the Degree of Multiprogramming by admitting more processes into RAM. This further starves existing processes of frames, plunging the system into <strong>Thrashing</strong>: a pathological state where the computer spends nearly 100% of its time swapping pages in and out of disk, while productive CPU utilization collapses to near zero (<a href="https://www.youtube.com/watch?v=X077mn-qghM&t=3500s" target="_blank" class="yt-timestamp">⏱️ 58:20</a>).</p>
+
+  <h4>Solution: The Working Set Model ($W(t, \Delta)$):</h4>
+  <p>Peter Denning's <strong>Working Set Model</strong> defines the working set of a process as the set of distinct pages referenced in the most recent $\Delta$ page references (the Working Set Window). The OS calculates total demand $D = \sum |W_i|$. If $D > \text{Total Physical Frames}$, the OS immediately suspends/swaps out an entire process to free up frames, guaranteeing thrashing never occurs.</p>
+</article>
+
+<!-- END chapter_6 -->
+
+<!-- BEGIN chapter_7 -->
+<article class="chapter-container" id="chapter-7" data-chapter="7">
+  <div class="chapter-header">
+    <div class="chapter-badge">Chapter 07 &bull; Video 4 Coverage</div>
+    <h2>Booting Sequence, BIOS/UEFI & Deadlock Management</h2>
+    <p class="chapter-meta">
+      <strong>Source Video:</strong> <a href="https://www.youtube.com/watch?v=U08bLZfEcXg" target="_blank">Booting Process & Deadlock in OS | Part 4</a> &bull;
+      <strong>Instructor:</strong> Vivek Gupta (Ex-Google, AlgoZenith) &bull;
+      <strong>Timeline:</strong> 00:00:00 &ndash; 00:48:18
+    </p>
+  </div>
+
+  <div class="callout callout-info">
+    <h4>Placement Masterclass Focus</h4>
+    <p>Candidates must clearly articulate the hardware execution path from CPU Power-On to User Login Shell, state Coffman's 4 Necessary Conditions verbatim with formal proofs, differentiate cycle implications in Single vs Multi-Instance Resource Allocation Graphs, and execute Banker's Safety and Resource-Request matrix calculations without calculation errors.</p>
+  </div>
+
+  <h3>7.1 The Cold Boot Problem & Hardware Power-On Sequence</h3>
+  <p>When a computer is powered off, physical RAM is completely empty (volatile memory). How can a CPU, which can only fetch and execute instructions from memory, begin executing when RAM contains no code? This fundamental dilemma is known as the <strong>Cold Boot Problem</strong> (<a href="https://www.youtube.com/watch?v=U08bLZfEcXg&t=144s" target="_blank" class="yt-timestamp">⏱️ 02:24</a>).</p>
+
+  <h4>The 6-Phase Hardware Boot Pipeline:</h4>
+  <ol>
+    <li><strong>Phase 1: Power Supply Good & CPU Reset Vector:</strong> The Power Supply Unit (PSU) stabilizes voltages and asserts the <code>POWER_GOOD</code> signal to the motherboard. The CPU receives hardware reset and hardwires its Program Counter (Instruction Pointer) to a fixed read-only memory address (e.g., <code>0xFFFFFFF0</code> in x86), pointing directly into non-volatile Flash ROM where the firmware resides.</li>
+    <li><strong>Phase 2: Power-On Self-Test (POST):</strong> The firmware executes diagnostic checks: testing CPU registers, validating system timer ICs, probing DRAM memory integrity, initializing PCI Express buses, and detecting attached boot drives (<a href="https://www.youtube.com/watch?v=U08bLZfEcXg&t=266s" target="_blank" class="yt-timestamp">⏱️ 04:26</a>).</li>
+    <li><strong>Phase 3: Firmware Initialization (BIOS vs. UEFI):</strong>
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Characteristic</th>
+            <th>Legacy BIOS</th>
+            <th>Modern UEFI</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>Processor Mode</strong></td><td>16-bit Real Mode (1 MB addressable RAM)</td><td>32-bit or 64-bit Protected / Long Mode</td></tr>
+          <tr><td><strong>Partition Scheme</strong></td><td>Master Boot Record (MBR) (Max 2 TB drive, 4 primary partitions)</td><td>GUID Partition Table (GPT) (Up to 9.4 ZB, 128 partitions)</td></tr>
+          <tr><td><strong>Security</strong></td><td>None; vulnerable to MBR rootkits</td><td>Secure Boot (Cryptographic signature verification of bootloaders)</td></tr>
+          <tr><td><strong>Boot Performance</strong></td><td>Slow hardware probing; sequential</td><td>Fast parallel driver initialization; EFI System Partition (ESP)</td></tr>
+        </tbody>
+      </table>
+    </li>
+    <li><strong>Phase 4: Bootloader Execution (GRUB Architecture):</strong> The firmware reads the bootloader from the boot sector or ESP (<a href="https://www.youtube.com/watch?v=U08bLZfEcXg&t=495s" target="_blank" class="yt-timestamp">⏱️ 08:15</a>). In Linux Grand Unified Bootloader (GRUB):
+      <ul>
+        <li><em>Stage 1:</em> Tiny boot code in MBR / EFI stub whose only job is to load Stage 1.5.</li>
+        <li><em>Stage 1.5 / Core:</em> Contains filesystem drivers (ext4, XFS, FAT32) to read the <code>/boot</code> directory.</li>
+        <li><em>Stage 2:</em> Displays the OS boot menu, loads the compressed kernel image (<code>vmlinuz</code>) and Initial RAM Disk (<code>initramfs</code>) into RAM, and jumps to the kernel entry point.</li>
+      </ul>
+    </li>
+    <li><strong>Phase 5: Kernel Initialization:</strong> The kernel decompresses itself in RAM, switches CPU to 64-bit long mode with paging enabled, initializes device drivers, sets up Interrupt Descriptor Tables (IDT), and mounts the root filesystem (<code>/</code>) (<a href="https://www.youtube.com/watch?v=U08bLZfEcXg&t=727s" target="_blank" class="yt-timestamp">⏱️ 12:07</a>).</li>
+    <li><strong>Phase 6: Root User Process (PID 1):</strong> The kernel spawns the first user-space process: <code>init</code> or <code>systemd</code> with Process ID 1. PID 1 launches system daemons (networking, logging, SSH) and initializes login shells/GUI managers (<a href="https://www.youtube.com/watch?v=U08bLZfEcXg&t=818s" target="_blank" class="yt-timestamp">⏱️ 13:38</a>).</li>
+  </ol>
+
+  <h3>7.2 Introduction to Deadlocks</h3>
+  <p>A <strong>Deadlock</strong> is a situation where a set of concurrent processes are permanently blocked because each process holds a resource and waits for another resource held by another process in the same set (<a href="https://www.youtube.com/watch?v=U08bLZfEcXg&t=942s" target="_blank" class="yt-timestamp">⏱️ 15:42</a>).</p>
+
+  <div class="mermaid">
+  graph LR
+    P1((Process P1)) -->|Request Edge: Waiting for R2| R2[Resource R2]
+    R2 -->|Assignment Edge: Held by P2| P2((Process P2))
+    P2 -->|Request Edge: Waiting for R1| R1[Resource R1]
+    R1 -->|Assignment Edge: Held by P1| P1
+  </div>
+
+  <h4>Deadlock vs. Starvation vs. Livelock:</h4>
+  <ul>
+    <li><strong>Deadlock:</strong> Two or more processes are trapped in a circular waiting state. No process can make progress, and no CPU cycles are consumed.</li>
+    <li><strong>Starvation (Indefinite Blocking):</strong> A process waits indefinitely because other higher-priority processes continually preempt the resources. The system as a whole makes progress, but the victim process does not.</li>
+    <li><strong>Livelock:</strong> Two or more processes actively change their states in response to each other, but without doing any useful work (e.g., two polite people in a narrow hallway continually stepping to the same side simultaneously). Consumes 100% CPU.</li>
+  </ul>
+
+  <h3>7.3 Coffman's 4 Necessary Conditions for Deadlock</h3>
+  <p>Edward G. Coffman Jr. proved in 1971 that a deadlock can arise <strong>if and only if</strong> all four of the following conditions hold simultaneously (<a href="https://www.youtube.com/watch?v=U08bLZfEcXg&t=1207s" target="_blank" class="yt-timestamp">⏱️ 20:07</a>):</p>
+  <ol>
+    <li><strong>Mutual Exclusion:</strong> At least one resource must be non-shareable (only one process can use the resource at any given instant).</li>
+    <li><strong>Hold and Wait:</strong> A process must be currently holding at least one resource and simultaneously requesting additional resources held by other processes.</li>
+    <li><strong>No Preemption:</strong> Resources cannot be forcibly seized from a process; they can only be released voluntarily by the process holding them after task completion.</li>
+    <li><strong>Circular Wait:</strong> A closed chain of processes $\{P_0, P_1, \dots, P_n\}$ exists such that $P_0$ is waiting for a resource held by $P_1$, $P_1$ is waiting for a resource held by $P_2$, $\dots$, and $P_n$ is waiting for a resource held by $P_0$.</li>
+  </ol>
+
+  <h3>7.4 Resource Allocation Graph (RAG) Architecture</h3>
+  <p>The OS tracks resource allocations using a directed bipartite graph $G = (V, E)$ (<a href="https://www.youtube.com/watch?v=U08bLZfEcXg&t=1394s" target="_blank" class="yt-timestamp">⏱️ 23:14</a>):</p>
+  <ul>
+    <li><strong>Vertices $V$:</strong> Process nodes $P = \{P_1, \dots, P_n\}$ (drawn as circles) and Resource nodes $R = \{R_1, \dots, R_m\}$ (drawn as rectangles containing dots representing individual resource instances).</li>
+    <li><strong>Edges $E$:</strong>
+      <ul>
+        <li><strong>Request Edge ($P_i \to R_j$):</strong> Directed from process circle to resource rectangle; indicates process $P_i$ has requested an instance of $R_j$ and is currently waiting.</li>
+        <li><strong>Assignment Edge ($R_j \to P_i$):</strong> Directed from a specific instance dot inside $R_j$ to process circle $P_i$; indicates the instance has been granted to $P_i$.</li>
+      </ul>
+    </li>
+  </ul>
+
+  <h4>The Cycle Theorem in Deadlock Detection:</h4>
+  <div class="callout callout-info">
+    <h4>Single-Instance vs. Multi-Instance Cycle Theorem</h4>
+    <ul>
+      <li><strong>If each resource type has exactly 1 instance:</strong> A cycle in the Resource Allocation Graph is a <strong>necessary AND sufficient</strong> condition for deadlock. Cycle $\iff$ Deadlock!</li>
+      <li><strong>If resource types have multiple instances:</strong> A cycle is a <strong>necessary but NOT sufficient</strong> condition for deadlock. A cycle may exist without deadlock if processes outside the cycle eventually release other instances of the contentious resources, breaking the dependency.</li>
+    </ul>
+  </div>
+
+  <h3>7.5 Deadlock Handling Strategies & Prevention</h3>
+  <ol>
+    <li><strong>Deadlock Ignorance (The Ostrich Algorithm):</strong> Stick your head in the sand and pretend deadlocks never happen (<a href="https://www.youtube.com/watch?v=U08bLZfEcXg&t=1749s" target="_blank" class="yt-timestamp">⏱️ 29:09</a>). Because deadlocks occur rarely in well-written software and formal avoidance algorithms carry heavy runtime overhead, this is the standard strategy chosen by modern general-purpose operating systems like Linux and Windows. If a deadlock occurs, reboot or kill the offending process manually.</li>
+    <li><strong>Deadlock Prevention:</strong> Formally guarantee that at least one of Coffman's 4 conditions can <em>never</em> hold:
+      <ul>
+        <li><em>Eliminate Mutual Exclusion:</em> Make resources sharable (e.g., read-only files, print spoolers). Impossible for intrinsically non-shareable hardware like mutexes or tape drives.</li>
+        <li><em>Eliminate Hold and Wait:</em> Protocol 1: Require processes to request all needed resources at once at startup. Protocol 2: Process must release all currently held resources before requesting any new ones. (Causes low resource utilization and starvation).</li>
+        <li><em>Eliminate No Preemption:</em> If a process holding resources requests an unavailable resource, the OS forcibly preempts all currently held resources and puts them into a waiting pool until all can be acquired together.</li>
+        <li><em>Eliminate Circular Wait:</em> Impose a global strict total ordering on all resources: $F: R \to \mathbb{N}$. A process can only request resource $R_j$ if $F(R_j) > F(R_i)$ for all currently held resources $R_i$. <em>This is the most practical and widely implemented prevention strategy.</em></li>
+      </ul>
+    </li>
+  </ol>
+
+  <h3>7.6 Deadlock Avoidance: Banker's Algorithm Solved Numerical</h3>
+  <p>Rather than statically restricting resource requests, <strong>Deadlock Avoidance</strong> dynamically inspects every resource allocation request to verify that granting it keeps the system in a <strong>Safe State</strong> (<a href="https://www.youtube.com/watch?v=U08bLZfEcXg&t=1988s" target="_blank" class="yt-timestamp">⏱️ 33:08</a>).</p>
+
+  <p>A state is defined as <strong>Safe</strong> if there exists at least one safe execution sequence $\langle P_0, P_1, \dots, P_{n-1} \rangle$ where each process can finish using currently available resources plus resources released by all predecessor processes.</p>
+
+  <h4>The Banker's Algorithm Data Structures:</h4>
+  <ul>
+    <li>$\text{Available}[m]$: Vector of length $m$ (available instances of each resource type).</li>
+    <li>$\text{Max}[n][m]$: Maximum demand of process $P_i$ for resource $R_j$.</li>
+    <li>$\text{Allocation}[n][m]$: Currently allocated instances to process $P_i$.</li>
+    <li>$\text{Need}[n][m] = \text{Max}[i][j] - \text{Allocation}[i][j]$: Remaining instances process $P_i$ may request.</li>
+  </ul>
+
+  <h4>Concrete Placement Interview Numerical:</h4>
+  <p>Consider 5 processes ($P_0$ to $P_4$) and 3 resource types ($A=10, B=5, C=7$). At time $t_0$, current snapshot is (<a href="https://www.youtube.com/watch?v=U08bLZfEcXg&t=2217s" target="_blank" class="yt-timestamp">⏱️ 36:57</a>):</p>
+
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>Process</th>
+        <th>Allocation (A B C)</th>
+        <th>Max (A B C)</th>
+        <th>Need = Max - Alloc</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>P0</td><td>0 1 0</td><td>7 5 3</td><td>7 4 3</td></tr>
+      <tr><td>P1</td><td>2 0 0</td><td>3 2 2</td><td>1 2 2</td></tr>
+      <tr><td>P2</td><td>3 0 2</td><td>9 0 2</td><td>6 0 0</td></tr>
+      <tr><td>P3</td><td>2 1 1</td><td>2 2 2</td><td>0 1 1</td></tr>
+      <tr><td>P4</td><td>0 0 2</td><td>4 3 3</td><td>4 3 1</td></tr>
+    </tbody>
+  </table>
+  <p><strong>Total Allocated:</strong> $A = 0+2+3+2+0 = 7, \quad B = 1+0+0+1+0 = 2, \quad C = 0+0+2+1+2 = 5$.</p>
+  <p><strong>Available Vector:</strong> $\text{Available} = [10-7, 5-2, 7-5] = [3, 3, 2]$.</p>
+
+  <h4>Safety Algorithm Step-by-Step Execution:</h4>
+  <ol>
+    <li>Initialize $\text{Work} = [3, 3, 2]$, $\text{Finish} = [\text{false}, \text{false}, \text{false}, \text{false}, \text{false}]$.</li>
+    <li><strong>Check P0:</strong> $\text{Need}_0 = [7, 4, 3] \le [3, 3, 2]$? <em>False.</em> Cannot run yet.</li>
+    <li><strong>Check P1:</strong> $\text{Need}_1 = [1, 2, 2] \le [3, 3, 2]$? <em>True!</em>
+      <br>$\text{Work} = \text{Work} + \text{Alloc}_1 = [3, 3, 2] + [2, 0, 0] = [5, 3, 2]$. Set $\text{Finish}[1] = \text{true}$.</li>
+    <li><strong>Check P3:</strong> $\text{Need}_3 = [0, 1, 1] \le [5, 3, 2]$? <em>True!</em>
+      <br>$\text{Work} = [5, 3, 2] + [2, 1, 1] = [7, 4, 3]$. Set $\text{Finish}[3] = \text{true}$.</li>
+    <li><strong>Check P0:</strong> $\text{Need}_0 = [7, 4, 3] \le [7, 4, 3]$? <em>True!</em>
+      <br>$\text{Work} = [7, 4, 3] + [0, 1, 0] = [7, 5, 3]$. Set $\text{Finish}[0] = \text{true}$.</li>
+    <li><strong>Check P2:</strong> $\text{Need}_2 = [6, 0, 0] \le [7, 5, 3]$? <em>True!</em>
+      <br>$\text{Work} = [7, 5, 3] + [3, 0, 2] = [10, 5, 5]$. Set $\text{Finish}[2] = \text{true}$.</li>
+    <li><strong>Check P4:</strong> $\text{Need}_4 = [4, 3, 1] \le [10, 5, 5]$? <em>True!</em>
+      <br>$\text{Work} = [10, 5, 5] + [0, 0, 2] = [10, 5, 7]$. Set $\text{Finish}[4] = \text{true}$.</li>
+  </ol>
+  <p><strong>Result:</strong> Since all processes completed, the system is in a <strong>Safe State</strong> with safe execution sequence: <strong>$\langle P_1, P_3, P_0, P_2, P_4 \rangle$</strong>.</p>
+</article>
+
+<!-- END chapter_7 -->
+
+<!-- BEGIN chapter_8 -->
+<article class="chapter-container" id="chapter-8" data-chapter="8">
+  <div class="chapter-header">
+    <div class="chapter-badge">Chapter 08 &bull; Video 5 Coverage</div>
+    <h2>Process Synchronization, Concurrency & Classic IPC Problems</h2>
+    <p class="chapter-meta">
+      <strong>Source Video:</strong> <a href="https://www.youtube.com/watch?v=34spZiZ7CnA" target="_blank">Synchronization in OS Explained | Part 5</a> &bull;
+      <strong>Instructor:</strong> Vivek Gupta (Ex-Google, AlgoZenith) &bull;
+      <strong>Timeline:</strong> 00:00:00 &ndash; 00:38:09
+    </p>
+  </div>
+
+  <div class="callout callout-info">
+    <h4>Top Placement Coding & Systems Round Focus</h4>
+    <p>Concurrency is the hallmark of modern software engineering. Interviewers routinely evaluate Peterson's solution proofs, differences between binary and counting semaphores, mutex locks vs spinlocks, handling busy-waiting via sleep queues, and bug-free C/C++ multithreaded implementations of Producer-Consumer, Readers-Writers, and Dining Philosophers.</p>
+  </div>
+
+  <h3>8.1 Race Conditions & The Critical Section Problem</h3>
+  <p>When multiple cooperating processes or threads concurrently read and write shared memory or global variables, the final output depends unpredictably on the exact sequence and timing of instruction execution. This non-deterministic timing bug is called a <strong>Race Condition</strong> (<a href="https://www.youtube.com/watch?v=34spZiZ7CnA&t=0s" target="_blank" class="yt-timestamp">⏱️ 00:00</a>).</p>
+
+  <h4>The 4 Code Sections of Cooperating Processes:</h4>
+  <ol>
+    <li><strong>Entry Section:</strong> Requests permission to access the shared resource.</li>
+    <li><strong>Critical Section:</strong> The code region where shared memory, files, or tables are actively manipulated.</li>
+    <li><strong>Exit Section:</strong> Signals completion and releases access permissions.</li>
+    <li><strong>Remainder Section:</strong> Non-shared, private computational execution.</li>
+  </ol>
+
+  <h4>The 3 Mandatory Criteria for Any Valid Critical Section Solution:</h4>
+  <ol>
+    <li><strong>Mutual Exclusion:</strong> If process $P_i$ is executing in its critical section, no other process can be executing in their critical sections simultaneously.</li>
+    <li><strong>Progress:</strong> If no process is in its critical section and some processes wish to enter, only those processes not executing in their remainder sections can participate in deciding who enters next, and this selection cannot be postponed indefinitely (no deadlock).</li>
+    <li><strong>Bounded Waiting:</strong> There must exist a bound (limit) on the number of times other processes are allowed to enter their critical sections after a process has made a request to enter and before that request is granted (no starvation).</li>
+  </ol>
+
+  <h3>8.2 Software Solutions: Peterson's Algorithm</h3>
+  <p>Gary Peterson proposed an elegant pure software solution for 2 processes ($P_0$ and $P_1$) in 1981 (<a href="https://www.youtube.com/watch?v=34spZiZ7CnA&t=208s" target="_blank" class="yt-timestamp">⏱️ 03:28</a>):</p>
+
+  <h4>Shared State Variables:</h4>
+  <pre><code class="language-c">int turn;          // Indicates whose turn it is to enter
+bool flag[2];      // flag[i] == true indicates Pi is ready to enter
+</code></pre>
+
+  <h4>Process $P_i$ Implementation (where $j = 1 - i$):</h4>
+  <pre><code class="language-c">while (true) {
+    flag[i] = true;      // Declare intention to enter
+    turn = j;            // Be polite: grant priority to competitor
+    
+    // Busy wait while competitor is interested AND it is their turn
+    while (flag[j] && turn == j);
+    
+    // CRITICAL SECTION
+    // Access shared memory variables safely
+    
+    flag[i] = false;     // EXIT SECTION: revoke intention
+    
+    // REMAINDER SECTION
+}
+</code></pre>
+
+  <h4>Proof of Correctness:</h4>
+  <ul>
+    <li><strong>Mutual Exclusion:</strong> For both $P_0$ and $P_1$ to enter the critical section simultaneously, both <code>flag[0] == true</code> and <code>flag[1] == true</code>. However, the value of variable <code>turn</code> can only be either $0$ or $1$ at any given moment, never both. If <code>turn == 0</code>, $P_1$ is trapped in its <code>while</code> loop. Thus, Mutual Exclusion is guaranteed.</li>
+    <li><strong>Progress:</strong> A process cannot enter unless the other process sets <code>flag[j] = true</code> and <code>turn = i</code>. If $P_j$ is in remainder section, <code>flag[j] == false</code>, allowing $P_i$ to enter instantly without delay.</li>
+    <li><strong>Bounded Waiting:</strong> Once $P_j$ exits, it sets <code>flag[j] = false</code>. If it immediately loops and tries to re-enter, it sets <code>turn = i</code>, forcing itself to wait and granting $P_i$ access. $P_i$ waits at most 1 turn.</li>
+  </ul>
+  <p><em>Limitation on Modern CPUs:</em> Out-of-order execution, instruction pipelines, and compiler memory reordering can swap the statements <code>flag[i] = true</code> and <code>turn = j</code> on modern multicore hardware, breaking software-only synchronization unless explicit <strong>Memory Barriers</strong> are inserted.</p>
+
+  <h3>8.3 Hardware-Assisted Atomic Instructions</h3>
+  <p>Modern architectures provide hardware-enforced atomic instructions that execute in a single uninterruptible memory bus cycle (<a href="https://www.youtube.com/watch?v=34spZiZ7CnA&t=817s" target="_blank" class="yt-timestamp">⏱️ 13:37</a>):</p>
+  <ul>
+    <li><strong>Test-and-Set (TSL):</strong> Reads a memory location and writes <code>true</code> atomically.
+      <pre><code class="language-c">bool test_and_set(bool *target) {
+    bool rv = *target;
+    *target = true;
+    return rv;
+}
+// Entry code: while (test_and_set(&lock));
+// Exit code:  lock = false;
+</code></pre>
+    </li>
+    <li><strong>Compare-and-Swap (CAS):</strong> Compares memory contents with expected value, updating to new value only if match occurs. Foundational to lock-free lockless algorithms in Java/C++.</li>
+  </ul>
+
+  <h3>8.4 Mutex Locks vs. Spinlocks</h3>
+  <ul>
+    <li><strong>Mutex Lock (Mutual Exclusion):</strong> A boolean lock variable provided by the kernel (e.g., <code>pthread_mutex_t</code>). If the lock is held, the calling thread is put to sleep by the kernel and yields CPU to other processes.</li>
+    <li><strong>Spinlock:</strong> A mutex lock where waiting threads loop continuously (busy-wait) on the CPU checking the lock condition (<a href="https://www.youtube.com/watch?v=34spZiZ7CnA&t=1001s" target="_blank" class="yt-timestamp">⏱️ 16:41</a>).
+      <br><em>Engineering Trade-off:</em> Spinlocks waste CPU cycles on single-core systems. On multi-core systems, however, if the critical section is extremely brief (shorter than the context switch latency of 5 &mu;s), a spinlock is substantially faster than putting a thread to sleep and waking it back up!</li>
+  </ul>
+
+  <h3>8.5 Semaphores: Binary vs. Counting</h3>
+  <p>Invented by Edsger Dijkstra, a <strong>Semaphore</strong> $S$ is an integer variable accessed exclusively through two standard atomic operations: <code>wait()</code> (or $P$ from Dutch <em>proberen</em> to test) and <code>signal()</code> (or $V$ from <em>verhogen</em> to increment) (<a href="https://www.youtube.com/watch?v=34spZiZ7CnA&t=1187s" target="_blank" class="yt-timestamp">⏱️ 19:47</a>):</p>
+  <ul>
+    <li><strong>Binary Semaphore:</strong> Integer value restricted between $0$ and $1$. Functions identically to a Mutex lock.</li>
+    <li><strong>Counting Semaphore:</strong> Value initialized to integer $N$, controlling access to a finite pool of $N$ identical resource instances.</li>
+  </ul>
+
+  <h4>Eliminating Busy-Waiting via Blocking Queue Semaphores:</h4>
+  <p>To eliminate CPU wasting during <code>wait()</code>, the semaphore maintains a linked list of blocked processes (<a href="https://www.youtube.com/watch?v=34spZiZ7CnA&t=1471s" target="_blank" class="yt-timestamp">⏱️ 24:31</a>):</p>
+  <pre><code class="language-c">typedef struct {
+    int value;
+    struct task_struct *wait_queue;
+} semaphore_t;
+
+void wait(semaphore_t *s) {
+    s->value--;
+    if (s->value &lt; 0) {
+        // Add current calling process to s->wait_queue
+        // Transition process state to WAITING / SLEEP
+        // Invoke CPU scheduler to yield CPU (block();)
+    }
+}
+
+void signal(semaphore_t *s) {
+    s->value++;
+    if (s->value &lt;= 0) {
+        // Remove process P from s->wait_queue
+        // Transition P to READY state (wakeup(P);)
+    }
+}
+</code></pre>
+
+  <h3>8.6 Classic Concurrency Problems with C POSIX Implementations</h3>
+
+  <h4>1. The Bounded-Buffer (Producer-Consumer) Problem (<a href="https://www.youtube.com/watch?v=34spZiZ7CnA&t=1656s" target="_blank" class="yt-timestamp">⏱️ 27:36</a>)</h4>
+  <p>Producers insert items into a fixed-capacity buffer of size $N$; Consumers remove items. Semaphores required:</p>
+  <ul>
+    <li><code>sem_t mutex;</code> initialized to <code>1</code> (mutual exclusion on buffer access).</li>
+    <li><code>sem_t empty;</code> initialized to <code>N</code> (tracks available empty slots).</li>
+    <li><code>sem_t full;</code> initialized to <code>0</code> (tracks available filled items).</li>
+  </ul>
+  <pre><code class="language-c">// Producer Thread
+void *producer(void *arg) {
+    while (1) {
+        item_t item = produce_item();
+        sem_wait(&empty);    // Decrement empty slots (blocks if buffer full)
+        sem_wait(&mutex);    // Acquire buffer lock
+        
+        insert_into_buffer(item);
+        
+        sem_post(&mutex);    // Release buffer lock
+        sem_post(&full);     // Increment full slots (wakes consumer)
+    }
+}
+
+// Consumer Thread
+void *consumer(void *arg) {
+    while (1) {
+        sem_wait(&full);     // Decrement full slots (blocks if buffer empty)
+        sem_wait(&mutex);    // Acquire buffer lock
+        
+        item_t item = remove_from_buffer();
+        
+        sem_post(&mutex);    // Release buffer lock
+        sem_post(&empty);    // Increment empty slots (wakes producer)
+        consume_item(item);
+    }
+}
+</code></pre>
+  <div class="callout callout-warning">
+    <h4>Deadlock Trap in Placement Interviews</h4>
+    <p>If the producer executes <code>sem_wait(&mutex)</code> <em>before</em> <code>sem_wait(&empty)</code> when the buffer is completely full, it locks the buffer and blocks waiting for empty space. The consumer tries to run, but blocks on <code>mutex</code>, producing an immediate, permanent <strong>Deadlock</strong>!</p>
+  </div>
+
+  <h4>2. The Readers-Writers Problem (<a href="https://www.youtube.com/watch?v=34spZiZ7CnA&t=1961s" target="_blank" class="yt-timestamp">⏱️ 32:41</a>)</h4>
+  <p>Multiple concurrent readers can read simultaneously, but writers must have exclusive access.</p>
+  <ul>
+    <li><code>sem_t rw_mutex;</code> initialized to <code>1</code> (locks the shared database).</li>
+    <li><code>sem_t mutex;</code> initialized to <code>1</code> (protects reader counter).</li>
+    <li><code>int read_count = 0;</code></li>
+  </ul>
+  <pre><code class="language-c">// Reader Routine
+void *reader(void *arg) {
+    sem_wait(&mutex);
+    read_count++;
+    if (read_count == 1) {
+        sem_wait(&rw_mutex); // First reader locks out all writers
+    }
+    sem_post(&mutex);
+
+    // Reading dataset concurrently
+
+    sem_wait(&mutex);
+    read_count--;
+    if (read_count == 0) {
+        sem_post(&rw_mutex); // Last reader releases lock for writers
+    }
+    sem_post(&mutex);
+}
+
+// Writer Routine
+void *writer(void *arg) {
+    sem_wait(&rw_mutex);     // Exclusive access
+    // Writing/modifying dataset
+    sem_post(&rw_mutex);
+}
+</code></pre>
+
+  <h4>3. The Dining Philosophers Problem (<a href="https://www.youtube.com/watch?v=34spZiZ7CnA&t=2144s" target="_blank" class="yt-timestamp">⏱️ 35:44</a>)</h4>
+  <p>5 philosophers sit around a table with 5 bowls of rice and 5 chopsticks. A philosopher needs both adjacent chopsticks to eat.</p>
+  <ul>
+    <li><strong>Deadlock Hazard:</strong> If all 5 philosophers simultaneously pick up their left chopstick, all right chopsticks are occupied, creating a circular wait cycle.</li>
+    <li><strong>Standard Solutions:</strong>
+      <ol>
+        <li>Allow at most 4 philosophers to sit at the table simultaneously.</li>
+        <li><strong>Asymmetric Solution:</strong> Odd-numbered philosophers pick up left chopstick first, then right; even-numbered philosophers pick up right chopstick first, then left. Breaks Circular Wait condition!</li>
+      </ol>
+    </li>
+  </ul>
+</article>
+
+<!-- END chapter_8 -->
+
+<!-- BEGIN chapter_9 -->
+<article class="chapter-container" id="chapter-9" data-chapter="9">
+  <div class="chapter-header">
+    <div class="chapter-badge">[Supplemental / Beyond Video Syllabus] &bull; Placement Accelerator</div>
+    <h2>Threads, IPC, File Systems, Disk Scheduling & Top 30 Interview Questions</h2>
+    <p class="chapter-meta">
+      <strong>Category:</strong> Supplemental High-Yield Placement Modules &bull;
+      <strong>Scope:</strong> Advanced Systems Interview Coverage & Bullseye Preparation
+    </p>
+  </div>
+
+  <div class="callout callout-info">
+    <h4>Why This Chapter is Critical</h4>
+    <p>While the video playlist covers core processes, scheduling, memory, deadlocks, and synchronization in masterclass depth, product companies (Google, Microsoft, Meta, Uber, Adobe) frequently test these four additional high-frequency pillars: Thread Models, Inter-Process Communication (IPC), Linux File Systems (Inodes), and Disk Scheduling algorithms.</p>
+  </div>
+
+  <h3>9.1 Threads vs. Processes</h3>
+  <p>A <strong>Thread</strong> is the fundamental unit of CPU utilization. It represents an independent thread of execution within a parent process.</p>
+  
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>Attribute</th>
+        <th>Process</th>
+        <th>Thread (Lightweight Process - LWP)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td><strong>Address Space</strong></td><td>Isolated private virtual address space.</td><td>Shares Code, Data, and Heap with peer threads in same process.</td></tr>
+      <tr><td><strong>Private State</strong></td><td>All memory segments, PCB, file table.</td><td>Private Stack, Program Counter (PC), and CPU Registers only.</td></tr>
+      <tr><td><strong>Creation Overhead</strong></td><td>High; involves page table creation and memory mapping.</td><td>Low (10x faster); only requires allocating a private stack.</td></tr>
+      <tr><td><strong>Context Switch Overhead</strong></td><td>High; requires TLB flush and page table switch.</td><td>Low; page tables remain unchanged, only registers and stack swapped.</td></tr>
+      <tr><td><strong>Communication</strong></td><td>Requires heavy IPC (Pipes, Sockets, Shared Memory).</td><td>Direct shared memory variables (requires synchronization locks).</td></tr>
+    </tbody>
+  </table>
+
+  <h4>User-Level Threads (ULT) vs. Kernel-Level Threads (KLT):</h4>
+  <ul>
+    <li><strong>User-Level Threads (Many-to-One Model):</strong> Managed completely by user-space runtime thread library (e.g., Green threads). Kernel is completely unaware of thread existence. Switching threads does not require kernel mode trap.
+      <br><em>Flaw:</em> If one ULT makes a blocking system call (e.g., disk read), the entire process and all peer threads block! Cannot run in parallel on multicore CPUs.</li>
+    <li><strong>Kernel-Level Threads (One-to-One Model):</strong> Supported and scheduled directly by the OS kernel (e.g., Linux <code>pthreads</code>, Windows threads). Each user thread maps to a distinct kernel thread. True multicore hardware parallelism; if one thread blocks, others continue executing. Modern standard.</li>
+  </ul>
+
+  <h3>9.2 Inter-Process Communication (IPC) Mechanisms</h3>
+  <p>Because processes run in isolated address spaces, they must use explicit IPC mechanisms to exchange data:</p>
+  <ol>
+    <li><strong>Ordinary Pipes:</strong> Unidirectional byte stream for parent-child processes. Controlled via file descriptors <code>fd[0]</code> (read) and <code>fd[1]</code> (write). Exists only while processes live.</li>
+    <li><strong>Named Pipes (FIFOs):</strong> Bidirectional pipe with a directory entry on disk (<code>mkfifo</code>). Unrelated processes can communicate by opening the FIFO file.</li>
+    <li><strong>Shared Memory:</strong> Fastest IPC mechanism. OS maps a common physical memory region into the virtual address spaces of both processes. Processes read and write at raw RAM bus speed without kernel intervention (requires semaphores to coordinate access).</li>
+    <li><strong>Message Queues:</strong> Kernel-managed linked list of messages. Processes deposit and retrieve structured messages. Asynchronous and safe, but requires kernel mode transitions.</li>
+    <li><strong>Network Sockets:</strong> Endpoint communication across network boundaries (TCP/IP) or local loopback (UNIX Domain Sockets). Universal for microservices and distributed systems.</li>
+  </ol>
+
+  <h3>9.3 Linux File System Architecture & Inodes</h3>
+  <p>The Linux Virtual File System (VFS) abstracts all physical storage devices as files ("Everything is a file" philosophy):</p>
+  <ul>
+    <li><strong>Superblock:</strong> Stores metadata about the overall filesystem (filesystem type, size, total block count, free block count, mount status).</li>
+    <li><strong>Inode (Index Node):</strong> The fundamental metadata record for an individual file. Stores:
+      <ul>
+        <li>File type and permissions (<code>rwxr-xr-x</code>).</li>
+        <li>Owner User ID (UID) and Group ID (GID).</li>
+        <li>File size in bytes.</li>
+        <li>Timestamps: Access time (<code>atime</code>), Modification time (<code>mtime</code>), Change time (<code>ctime</code>).</li>
+        <li>Direct and Indirect Block Pointers pointing to actual data blocks on disk.</li>
+        <li><em>Crucial Note:</em> The Inode does <strong>NOT</strong> store the file name! Directory entries map file names to Inode numbers.</li>
+      </ul>
+    </li>
+    <li><strong>Hard Link vs. Soft (Symbolic) Link:</strong>
+      <ul>
+        <li><em>Hard Link:</em> An additional directory entry pointing to the <strong>exact same Inode</strong>. Deleting the original file does not delete the data until all hard links (link count $== 0$) are removed. Cannot link across different filesystems.</li>
+        <li><em>Soft Link (Symlink):</em> A unique file with its own distinct Inode whose data block contains the string path of the target file. If original file is deleted, the symlink becomes a dangling/broken link. Works across filesystems.</li>
+      </ul>
+    </li>
+  </ul>
+
+  <h3>9.4 Disk Scheduling Algorithms</h3>
+  <p>Minimizes mechanical disk head movement (Seek Time) on traditional Hard Disk Drives (HDDs):</p>
+  <ul>
+    <li><strong>First-Come First-Served (FCFS):</strong> Requests serviced in order of arrival. Simple, but incurs massive head swings across the disk platters.</li>
+    <li><strong>Shortest Seek Time First (SSTF):</strong> Selects the request with the minimum seek time from the current head position. Minimizes average seek time, but causes <strong>Starvation</strong> for requests at extreme cylinder edges.</li>
+    <li><strong>SCAN (Elevator Algorithm):</strong> Disk arm moves in one direction servicing all requests until it hits the end cylinder of the disk, then reverses direction servicing requests on the way back. Eliminates starvation.</li>
+    <li><strong>C-SCAN (Circular SCAN):</strong> Moves in one direction servicing requests until reaching the end, then immediately returns to the beginning of the disk without servicing requests on the return trip. Provides uniform waiting time.</li>
+    <li><strong>LOOK and C-LOOK:</strong> Practical variants of SCAN and C-SCAN. The arm moves only as far as the <em>final request</em> in each direction, reversing without going all the way to the physical boundary cylinder of the disk.</li>
+  </ul>
+
+  <h3>9.5 Top 30 High-Frequency Placement Interview Questions</h3>
+  <div class="faq-list">
+    <div class="faq-item">
+      <h4>Q1: What is the main difference between a process and a thread?</h4>
+      <p>A process is an isolated program in execution with its own virtual address space, PCB, and resources. A thread is an execution unit within a process sharing the code, data, and heap segments, while maintaining its own private stack, registers, and program counter.</p>
+    </div>
+    <div class="faq-item">
+      <h4>Q2: What happens during a Context Switch?</h4>
+      <p>The OS saves the CPU registers, program counter, and stack pointer of the active process into its PCB in kernel memory, updates its state to Ready or Waiting, selects another process from the Ready Queue, switches memory page table registers (CR3), and restores the saved registers of the new process.</p>
+    </div>
+    <div class="faq-item">
+      <h4>Q3: Why is Peterson's Algorithm not sufficient on modern hardware?</h4>
+      <p>Modern multi-core processors use instruction pipelining, speculative execution, out-of-order execution, and store buffers, which can reorder read/write operations on memory, breaking software-only synchronization assumptions unless hardware memory fences/barriers are used.</p>
+    </div>
+    <div class="faq-item">
+      <h4>Q4: What is Belady's Anomaly and which algorithms exhibit it?</h4>
+      <p>Belady's Anomaly is the phenomenon where increasing the number of physical page frames allocated to a process paradoxically results in an increase in the number of page faults. It occurs in FIFO page replacement, but cannot occur in stack-based algorithms like LRU or Optimal.</p>
+    </div>
+    <div class="faq-item">
+      <h4>Q5: What are Coffman's four conditions for deadlock?</h4>
+      <p>Mutual Exclusion, Hold and Wait, No Preemption, and Circular Wait. Deadlock can arise if and only if all four conditions hold simultaneously.</p>
+    </div>
+    <div class="faq-item">
+      <h4>Q6: How does Copy-On-Write (COW) optimize fork()?</h4>
+      <p>During <code>fork()</code>, instead of duplicating physical RAM pages, the kernel shares pages between parent and child marked as read-only. When either process attempts to write, a page fault triggers the OS to duplicate that single page in RAM, saving immense CPU time and memory.</p>
+    </div>
+    <div class="faq-item">
+      <h4>Q7: What is Thrashing and how can the OS resolve it?</h4>
+      <p>Thrashing occurs when a process spends more time paging data between RAM and swap disk than executing instructions, collapsing CPU utilization. It is resolved using the Working Set Model by ensuring processes receive their complete working set of frames, or by suspending processes to reduce multiprogramming degree.</p>
+    </div>
+    <div class="faq-item">
+      <h4>Q8: Differentiate between Internal and External Fragmentation.</h4>
+      <p>Internal fragmentation occurs when allocated memory blocks exceed the memory requested by the process, wasting space inside the partition (common in Fixed Partitioning and Paging). External fragmentation occurs when total free memory is adequate but broken into non-contiguous scattered holes (common in Variable Partitioning and Segmentation).</p>
+    </div>
+    <div class="faq-item">
+      <h4>Q9: What is a Spinlock and when is it preferred over a Mutex?</h4>
+      <p>A spinlock busy-waits in a loop on the CPU until the lock becomes free. It is preferred over a Mutex on multicore systems when the critical section is extrem      <h4>Q10: What is the difference between Zombie and Orphan processes?</h4>
+      <p>An Orphan process is running after its parent has terminated; it is adopted by PID 1 (<code>systemd</code>/<code>init</code>). A Zombie process has terminated via <code>exit()</code>, but its parent has not yet called <code>wait()</code>; it occupies a process table slot until harvested.</p>
+    </div>
+    
+    <!-- Gate Smashers Placement Series (PLUDPUBNI7KL4) OS High-Yield Additions -->
+    <div class="faq-item" style="border-left: 4px solid var(--blue-600); padding-left: 14px; margin-top: 18px;">
+      <span class="topic-tag" style="background:#EFF6FF; color:#1D4ED8; font-size:11px; font-weight:700;">Gate Smashers Placement Series &bull; High-Yield Q&amp;As</span>
+      <h4 style="margin-top:6px;">Q11: What is the exact difference between a Process and a Thread?</h4>
+      <p>A Process is an executing instance of a program with its own isolated address space (Text, Data, BSS, Heap, Stack) and Process Control Block (PCB). A Thread (Lightweight Process / LWP) is a basic unit of CPU utilization within a process; threads share the parent process's code section, data section, heap, and open OS resources (file descriptors), but maintain their own independent Program Counter, registers, and Stack in a Thread Control Block (TCB). Context switching between threads is an order of magnitude faster because page tables and TLB caches remain valid.</p>
+    </div>
+    <div class="faq-item">
+      <h4>Q12: What is Priority Inversion and how does Priority Inheritance solve it?</h4>
+      <p>Priority Inversion occurs when a high-priority process ($P_H$) is blocked waiting for a shared lock held by a low-priority process ($P_L$), and a medium-priority process ($P_M$) preempts $P_L$, indirectly starving $P_H$. The Priority Inheritance Protocol (PIP) resolves this by dynamically boosting $P_L$'s priority to match $P_H$'s until $P_L$ releases the critical resource, preventing $P_M$ from preempting it.</p>
+    </div>
+    <div class="faq-item">
+      <h4>Q13: Compare Disk Scheduling Algorithms: SSTF vs SCAN vs C-SCAN vs C-LOOK.</h4>
+      <p>Shortest Seek Time First (SSTF) serves requests closest to current head position, but risks starvation of outer tracks. SCAN (Elevator algorithm) sweeps across the disk from one end to the other, serving requests in its path, then reverses. C-SCAN (Circular SCAN) sweeps in only one direction, then immediately returns to the start without serving requests on the return trip, providing uniform wait times. C-LOOK optimizes C-SCAN by only traveling as far as the final request in each direction rather than traversing all the way to the physical disk platter edge.</p>
+    </div>
+    <div class="faq-item">
+      <h4>Q14: How does a UNIX Inode structure allocate blocks for large files?</h4>
+      <p>A standard UNIX Inode contains 12 direct block pointers (pointing directly to data blocks for small files), 1 single indirect pointer (points to a disk block containing addresses of data blocks), 1 double indirect pointer (points to a block of indirect pointers), and 1 triple indirect pointer. This hierarchical multi-level index allows fast $O(1)$ access for small files while supporting multi-terabyte files without external fragmentation.</p>
+    </div>
+  </div>
+</article>
+
+<!-- END chapter_9 -->
+    </main>
+
+    <!-- Dedicated Full-Height Study Assistant Dock (No Broken Embedded Video) -->
+    <aside class="auxiliary-dock" id="auxiliary-dock">
+      
+      <div class="chatbot-dock-card" id="chatbot-dock" style="height: 100%; display: flex; flex-direction: column;">
+        <div class="dock-header">
+          <div style="display:flex; align-items:center; gap:8px;">
+            <span style="font-weight:700; font-size:13.5px;">OS Study Assistant</span>
+            <span style="font-size:10px; background:var(--blue-600); padding:2px 7px; border-radius:9999px; color:#fff; font-weight:600;">Active RAG</span>
+          </div>
+          <span style="font-size:11px; color:#94A3B8;">&bull; Timestamp Linked</span>
+        </div>
+        
+        <div class="chat-messages" id="chat-messages">
+          <div class="chat-bubble assistant">
+            Hello! I am your Operating Systems study assistant with full retrieval of these placement masterclass notes. Every response includes a direct YouTube timeline link to the exact video lecture second and a guide jump button!
+            
+            <div class="suggested-prompts">
+              <span class="prompt-chip" onclick="askQuestion('What is Belady\'s Anomaly and which algorithms suffer from it?')">Belady's Anomaly?</span>
+              <span class="prompt-chip" onclick="askQuestion('Explain Coffman\'s 4 conditions for deadlock.')">Coffman's Conditions?</span>
+              <span class="prompt-chip" onclick="askQuestion('Prove Peterson\'s solution satisfies Mutual Exclusion.')">Peterson's Proof?</span>
+              <span class="prompt-chip" onclick="askQuestion('How does Banker\'s Algorithm test for a Safe State?')">Banker's Algorithm?</span>
+              <span class="prompt-chip" onclick="askQuestion('What is the difference between a Process and a Thread?')">Process vs Thread?</span>
+              <span class="prompt-chip" onclick="askQuestion('Explain Priority Inversion and how PIP solves it.')">Priority Inversion?</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="chat-input-bar">
+          <input type="text" id="chat-query" placeholder="Ask an OS placement question..." onkeypress="if(event.key==='Enter') submitChat()">
+          <button onclick="submitChat()">Ask</button>
+        </div>
+      </div>
+
+    </aside>
+  </div>
+
+  <!-- Modal for Diagram Pop-Out Pan & Zoom -->
+  <div class="modal-overlay" id="diagram-modal" onclick="closeModal(event)">
+    <button class="modal-close-btn" onclick="closeModal(event)">&times;</button>
+    <div class="modal-content" id="modal-content" onclick="event.stopPropagation()">
+      <!-- Dynamic SVG injected here -->
+    </div>
+  </div>
+
+  <!-- Interactive Logic Scripts -->
+  <script>
+    // 1. Guide Navigation
+    function jumpToChapter(chapterId) {
+      const el = document.getElementById(chapterId);
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }
+
+    // 2. Interactive Real-Time Section Filter
+    function filterContent() {
+      const query = document.getElementById('section-search').value.toLowerCase();
+      document.querySelectorAll('.chapter-container, .master-intro-card').forEach(chapter => {
+        const text = chapter.innerText.toLowerCase();
+        if (text.includes(query) || query === '') {
+          chapter.style.display = 'block';
+        } else {
+          chapter.style.display = 'none';
+        }
+      });
+    }
+
+    // 3. Diagram Click-to-Zoom Modal
+    document.querySelectorAll('.mermaid, .diagram-wrapper').forEach(wrapper => {
+      wrapper.addEventListener('click', function() {
+        const modal = document.getElementById('diagram-modal');
+        const modalContent = document.getElementById('modal-content');
+        modalContent.innerHTML = this.innerHTML;
+        modal.style.display = 'flex';
+      });
+    });
+
+    function closeModal(e) {
+      document.getElementById('diagram-modal').style.display = 'none';
+    }
+
+    // 4. In-Memory RAG Knowledge Assistant with Dual Redirection
+    const osKnowledgeBase = [
+      {
+        keys: ['belady', 'page fault', 'fifo'],
+        title: "Belady's Anomaly & Page Replacement",
+        body: "Belady's Anomaly is the counter-intuitive phenomenon where allocating more physical page frames to a process causes an increase in page faults! It occurs in FIFO page replacement because FIFO is not a stack algorithm. Stack algorithms like LRU and Optimal are mathematically immune.",
+        videoId: "X077mn-qghM",
+        seconds: 2820,
+        ytLabel: "Vivek Gupta &bull; Part 3 (47:00)",
+        chapterId: "chapter_06"
+      },
+      {
+        keys: ['coffman', 'deadlock', 'conditions'],
+        title: "Coffman's 4 Conditions for Deadlock",
+        body: "Deadlock requires all 4 Coffman conditions simultaneously: 1) Mutual Exclusion (non-shareable resources), 2) Hold and Wait (holding resources while requesting others), 3) No Preemption (resources cannot be seized forcibly), and 4) Circular Wait (a closed loop of waiting processes).",
+        videoId: "U08bLZfEcXg",
+        seconds: 1450,
+        ytLabel: "Vivek Gupta &bull; Part 4 (24:10)",
+        chapterId: "chapter_07"
+      },
+      {
+        keys: ['peterson', 'critical section', 'synchronization'],
+        title: "Peterson's Algorithm & Mathematical Proof",
+        body: "Peterson's Algorithm uses shared variables `flag[2]` and `turn`. Mutual Exclusion holds because `turn` can only be either 0 or 1. Progress holds because an idle process has `flag=false` allowing the other to enter instantly. Bounded Waiting holds because a process politely yields `turn = competitor` on re-entry.",
+        videoId: "34spZiZ7CnA",
+        seconds: 960,
+        ytLabel: "Vivek Gupta &bull; Part 5 (16:00)",
+        chapterId: "chapter_08"
+      },
+      {
+        keys: ['banker', 'safe state', 'avoidance'],
+        title: "Banker's Algorithm & Safety Check",
+        body: "Banker's Algorithm tests if allocating a requested resource leaves the system in a Safe State. It uses `Available`, `Allocation`, and `Need = Max - Allocation`. It simulates running processes one by one where `Need <= Work` and reclaims their allocations until a full safe sequence is found.",
+        videoId: "U08bLZfEcXg",
+        seconds: 2160,
+        ytLabel: "Vivek Gupta &bull; Part 4 (36:00)",
+        chapterId: "chapter_07"
+      },
+      {
+        keys: ['thread', 'process', 'tcb', 'pcb'],
+        title: "Process vs Thread (Gate Smashers Placement Series)",
+        body: "A Process has an independent address space and heavy PCB. A Thread is a lightweight process sharing code, data, heap, and open files with peer threads in the same process, but maintaining its own private stack and register state in a TCB. Context switching between threads avoids page table and TLB invalidation.",
+        videoId: "skvCwFPZ7zM",
+        seconds: 180,
+        ytLabel: "Gate Smashers Placement One Shot",
+        chapterId: "chapter_09"
+      },
+      {
+        keys: ['priority inversion', 'pip', 'inheritance'],
+        title: "Priority Inversion & Priority Inheritance Protocol",
+        body: "Priority Inversion occurs when a high-priority process is blocked by a low-priority process holding a lock, and a medium-priority process preempts the low-priority process, indirectly starving the high-priority process. Priority Inheritance temporarily boosts the low-priority process's priority to prevent medium processes from preempting it.",
+        videoId: "34spZiZ7CnA",
+        seconds: 1800,
+        ytLabel: "Vivek Gupta &bull; Part 5 (30:00)",
+        chapterId: "chapter_08"
+      },
+      {
+        keys: ['context switch', 'pcb', 'overhead'],
+        title: "Context Switching Overhead & Dual Mode",
+        body: "A Context Switch saves the CPU registers and program counter into the active PCB, reloads page tables and registers from another ready process's PCB, incurring direct register overhead and indirect cache/TLB invalidation penalty.",
+        videoId: "kn6rYzVsCEQ",
+        seconds: 4890,
+        ytLabel: "Vivek Gupta &bull; Part 1 (1:21:30)",
+        chapterId: "chapter_02"
+      },
+      {
+        keys: ['fork', 'cow', 'copy on write', 'zombie', 'orphan'],
+        title: "Process Lifecycle: fork(), COW, Zombie & Orphan",
+        body: "fork() creates an exact duplicate process using Copy-On-Write (COW). It returns 0 in child, PID in parent. A Zombie has terminated via exit() without parent wait(). An Orphan's parent has died and is adopted by PID 1 (systemd/init).",
+        videoId: "kn6rYzVsCEQ",
+        seconds: 6420,
+        ytLabel: "Vivek Gupta &bull; Part 1 (1:47:00)",
+        chapterId: "chapter_02"
+      },
+      {
+        keys: ['tlb', 'emat', 'paging', 'page table'],
+        title: "Paging Math & Effective Memory Access Time",
+        body: "TLB is an associative hardware cache in the MMU. EMAT = h*(t_tlb + t_mem) + (1-h)*(t_tlb + 2*t_mem). Multi-level paging resolves giant page tables by breaking them into hierarchical directory pages.",
+        videoId: "X077mn-qghM",
+        seconds: 1980,
+        ytLabel: "Vivek Gupta &bull; Part 3 (33:00)",
+        chapterId: "chapter_05"
+      }
+    ];
+
+    function askQuestion(promptText) {
+      document.getElementById('chat-query').value = promptText;
+      submitChat();
+    }
+
+    function submitChat() {
+      const input = document.getElementById('chat-query');
+      const text = input.value.trim();
+      if (!text) return;
+
+      const container = document.getElementById('chat-messages');
+
+      // User Bubble
+      const userBubble = document.createElement('div');
+      userBubble.className = 'chat-bubble user';
+      userBubble.innerText = text;
+      container.appendChild(userBubble);
+      input.value = '';
+      container.scrollTop = container.scrollHeight;
+
+      // Assistant Retrieval Logic
+      setTimeout(() => {
+        const lower = text.toLowerCase();
+        let match = osKnowledgeBase.find(item => item.keys.some(k => lower.includes(k))) || osKnowledgeBase[0];
+
+        const botBubble = document.createElement('div');
+        botBubble.className = 'chat-bubble assistant';
+        
+        let html = `<strong>${match.title}</strong><br><br>${match.body}`;
+        html += `
+          <div style="display:flex; align-items:center; flex-wrap:wrap; gap:8px; margin-top:10px; padding-top:8px; border-top:1px solid rgba(0,0,0,0.1);">
+            <a href="https://www.youtube.com/watch?v=${match.videoId}&t=${match.seconds}s" target="_blank" style="display:inline-flex; align-items:center; gap:5px; background:rgba(239,68,68,0.15); border:1px solid rgba(239,68,68,0.35); color:#DC2626; font-size:11px; font-weight:600; padding:3px 9px; border-radius:6px; text-decoration:none;">
+              &#9654; Watch on YouTube (${match.ytLabel})
+            </a>
+            <button onclick="jumpToChapter('${match.chapterId}')" style="display:inline-flex; align-items:center; gap:5px; background:rgba(37,99,235,0.15); border:1px solid rgba(37,99,235,0.35); color:#1D4ED8; font-size:11px; font-weight:600; padding:3px 9px; border-radius:6px; cursor:pointer;">
+              📄 View in Guide (${match.chapterId.toUpperCase()})
+            </button>
+          </div>
+        `;
+
+        botBubble.innerHTML = html;
+        container.appendChild(botBubble);
+        container.scrollTop = container.scrollHeight;
+      }, 250);
+    }
+  </script>
+</body>
+</html>
+

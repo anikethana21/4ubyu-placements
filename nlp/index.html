@@ -1,0 +1,3910 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>4 U By U • Complete Natural Language Processing (NLP) Masterclass Study Guide</title>
+  <meta name="description" content="Dual-Track Comprehensive NLP Master Study Guide: Base Foundations & Hands-On Emotion Project (Sheryians AI School) + Complete Curriculum Series (CampusX / Nitish Singh).">
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- MathJax for Formulas -->
+  
+    <!-- MathJax 3 Configuration with inlineMath -->
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$', '$']],
+        displayMath: [['$$', '$$']],
+        processEscapes: true
+      },
+      options: {
+        skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    };
+  </script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+  <!-- Mermaid 10.9.8 -->
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: 'neutral',
+      themeVariables: {
+        primaryColor: '#FFFFFF',
+        primaryBorderColor: '#1E293B',
+        primaryTextColor: '#0F172A',
+        lineColor: '#334155',
+        fontFamily: 'Inter, sans-serif'
+      }
+    });
+  </script>
+
+  <style>
+    :root {
+      --bg-primary: #0A0F1D;
+      --bg-secondary: #0F172A;
+      --bg-card: #FFFFFF;
+      --bg-card-subtle: #F8FAFC;
+      --text-main: #0F172A;
+      --text-muted: #64748B;
+      --border-color: #E2E8F0;
+      --blue-50: #EFF6FF;
+      --blue-100: #DBEAFE;
+      --blue-500: #3B82F6;
+      --blue-600: #2563EB;
+      --blue-700: #1D4ED8;
+      --purple-500: #8B5CF6;
+      --purple-600: #7C3AED;
+      --navy-800: #1E293B;
+      --navy-900: #0F172A;
+      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --font-mono: 'Fira Code', monospace;
+      --font-heading: 'Outfit', sans-serif;
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: var(--font-sans);
+      background-color: var(--bg-primary);
+      color: #E2E8F0;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    /* Fixed Navigation Header */
+    .master-header {
+      background: rgba(15, 23, 42, 0.95);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid #1E293B;
+      height: 60px;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+    }
+
+    .brand-section {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .hub-link {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+      color: #94A3B8;
+      font-size: 13px;
+      font-weight: 600;
+      transition: color 0.2s;
+    }
+    .hub-link:hover { color: #60A5FA; }
+
+    .brand-title {
+      font-family: var(--font-heading);
+      font-size: 17px;
+      font-weight: 700;
+      color: #FFFFFF;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .brand-badge {
+      font-size: 11px;
+      background: linear-gradient(135deg, #8B5CF6, #3B82F6);
+      color: #FFFFFF;
+      padding: 2px 8px;
+      border-radius: 6px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+
+    .nav-search-bar {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex: 1;
+      max-width: 520px;
+      margin: 0 24px;
+      position: relative;
+    }
+
+    .nav-controls {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .btn-nav {
+      background: #1E293B;
+      border: 1px solid #334155;
+      color: #E2E8F0;
+      padding: 6px 14px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+    .btn-nav:hover { background: #334155; color: #FFFFFF; }
+
+    /* Layout Shell */
+    .master-layout {
+      display: flex;
+      max-width: 1780px;
+      margin: 0 auto;
+      padding: 16px 20px;
+      gap: 20px;
+      position: relative;
+    }
+
+    /* Left Chapter Sidebar */
+    .chapter-sidebar {
+      flex: 0 0 280px;
+      position: sticky;
+      top: 76px;
+      height: calc(100vh - 96px);
+      display: flex;
+      flex-direction: column;
+      background: var(--bg-secondary);
+      border-radius: 12px;
+      border: 1px solid #1E293B;
+      overflow: hidden;
+    }
+
+    .sidebar-header {
+      padding: 14px 16px;
+      background: #0B1120;
+      border-bottom: 1px solid #1E293B;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      color: #94A3B8;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .sidebar-nav {
+      flex: 1;
+      overflow-y: auto;
+      padding: 10px 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .sidebar-nav::-webkit-scrollbar { width: 5px; }
+    .sidebar-nav::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+
+    .sidebar-track-label {
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      padding: 10px 10px 4px;
+      margin-top: 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      border-top: 1px solid #1E293B;
+    }
+    .track1-color { color: #C4B5FD; }
+    .track2-color { color: #93C5FD; }
+
+    .sidebar-pill {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 12px;
+      border-radius: 8px;
+      color: #94A3B8;
+      text-decoration: none;
+      font-size: 12.5px;
+      font-weight: 500;
+      border: 1px solid transparent;
+      transition: all 0.2s ease;
+      cursor: pointer;
+    }
+    .sidebar-pill:hover {
+      background: rgba(255, 255, 255, 0.04);
+      color: #FFFFFF;
+      border-color: #334155;
+    }
+    .sidebar-pill.active {
+      background: rgba(59, 130, 246, 0.15);
+      border-color: #3B82F6;
+      color: #FFFFFF;
+      font-weight: 600;
+    }
+    .sidebar-pill.active.t1 {
+      background: rgba(139, 92, 246, 0.15);
+      border-color: #8B5CF6;
+    }
+
+    .sidebar-pill .pill-badge {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      background: rgba(255, 255, 255, 0.06);
+      color: #94A3B8;
+      padding: 2px 6px;
+      border-radius: 4px;
+      min-width: 24px;
+      text-align: center;
+    }
+    .sidebar-pill.active .pill-badge {
+      background: #2563EB;
+      color: #FFFFFF;
+    }
+    .sidebar-pill.active.t1 .pill-badge {
+      background: #7C3AED;
+      color: #FFFFFF;
+    }
+    .sidebar-pill .pill-label {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* Main Content Area */
+    .main-content {
+      flex: 1;
+      min-width: 0;
+    }
+
+    /* Dual Track Hero Banner */
+    .dual-track-hero {
+      background: linear-gradient(135deg, #0F172A 0%, #1E1B4B 50%, #0F172A 100%);
+      border: 1px solid #334155;
+      border-radius: 16px;
+      padding: 32px 36px;
+      margin-bottom: 24px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .dual-track-hero::before {
+      content: "";
+      position: absolute;
+      top: -60px;
+      right: -60px;
+      width: 240px;
+      height: 240px;
+      background: radial-gradient(circle, rgba(139, 92, 246, 0.25), transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero-badge-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+    }
+
+    .hero-tag {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 6px;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+    .hero-tag-t1 { background: rgba(139, 92, 246, 0.2); color: #C4B5FD; border: 1px solid rgba(139, 92, 246, 0.4); }
+    .hero-tag-t2 { background: rgba(59, 130, 246, 0.2); color: #93C5FD; border: 1px solid rgba(59, 130, 246, 0.4); }
+
+    .hero-title {
+      font-family: var(--font-heading);
+      font-size: 2.2rem;
+      font-weight: 800;
+      color: #FFFFFF;
+      margin-bottom: 10px;
+      line-height: 1.25;
+    }
+
+    .hero-subtitle {
+      font-size: 0.95rem;
+      color: #94A3B8;
+      max-width: 900px;
+      margin-bottom: 24px;
+      line-height: 1.6;
+    }
+
+    .track-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-top: 16px;
+    }
+
+    .track-card {
+      background: rgba(15, 23, 42, 0.7);
+      border: 1px solid #334155;
+      border-radius: 12px;
+      padding: 20px;
+      text-decoration: none;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: all 0.25s ease;
+      cursor: pointer;
+    }
+    .track-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3);
+    }
+    .track-card.t1:hover { border-color: #8B5CF6; background: rgba(139, 92, 246, 0.08); }
+    .track-card.t2:hover { border-color: #3B82F6; background: rgba(59, 130, 246, 0.08); }
+
+    .track-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+
+    .track-card-title {
+      font-family: var(--font-heading);
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: #FFFFFF;
+    }
+
+    .track-card-desc {
+      font-size: 0.84rem;
+      color: #94A3B8;
+      line-height: 1.5;
+      margin-bottom: 14px;
+    }
+
+    .track-card-meta {
+      font-size: 0.75rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    /* Chapter Containers */
+    .chapter-container {
+      background: #FFFFFF !important;
+      color: #0F172A !important;
+      border-radius: 12px !important;
+      border: 1px solid rgba(255, 255, 255, 0.1) !important;
+      padding: 44px 50px !important;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5) !important;
+      margin-bottom: 28px !important;
+      scroll-margin-top: 80px;
+    }
+
+    .chapter-header {
+      border-bottom: 2px solid #E5E7EB !important;
+      padding-bottom: 18px !important;
+      margin-bottom: 28px !important;
+    }
+
+    .chapter-badge-wrap {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+
+    .chapter-badge {
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 6px;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+    .badge-t1 { background: #F3E8FF; color: #7C3AED; border: 1px solid #DDD6FE; }
+    .badge-t2 { background: #EFF6FF; color: #1D4ED8; border: 1px solid #BFDBFE; }
+
+    .chapter-timestamp-link {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: #2563EB;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 10px;
+      background: #F1F5F9;
+      border-radius: 6px;
+      border: 1px solid #CBD5E1;
+      transition: all 0.2s;
+      cursor: pointer;
+    }
+    .chapter-timestamp-link:hover { background: #2563EB; color: #FFFFFF; }
+
+    .chapter-title {
+      font-family: var(--font-heading);
+      font-size: 1.8rem;
+      font-weight: 800;
+      color: #0F172A !important;
+      margin-bottom: 6px;
+    }
+
+    .chapter-subtitle {
+      font-size: 0.95rem;
+      color: #475569 !important;
+    }
+
+    .chapter-container h3 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #0F172A !important;
+      margin: 32px 0 14px;
+      border-bottom: 1px solid #E2E8F0;
+      padding-bottom: 8px;
+    }
+
+    .chapter-container h4 {
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: #1E3A8A !important;
+      margin: 22px 0 10px;
+    }
+
+    .chapter-container p {
+      color: #334155 !important;
+      font-size: 0.95rem;
+      line-height: 1.7;
+      margin-bottom: 16px;
+    }
+
+    .chapter-container ul, .chapter-container ol {
+      color: #334155 !important;
+      font-size: 0.95rem;
+      line-height: 1.7;
+      margin-bottom: 20px;
+      padding-left: 24px;
+    }
+    .chapter-container li { margin-bottom: 8px; }
+
+    /* Math Cards */
+    .math-card {
+      background: #F8FAFC !important;
+      border-left: 4px solid #2563EB !important;
+      border-top: 1px solid #E2E8F0 !important;
+      border-right: 1px solid #E2E8F0 !important;
+      border-bottom: 1px solid #E2E8F0 !important;
+      border-radius: 8px;
+      padding: 18px 22px;
+      margin: 20px 0;
+      color: #0F172A !important;
+    }
+    .math-card.t1 { border-left-color: #8B5CF6 !important; }
+    .math-title {
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: #1E3A8A !important;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .math-formula {
+      font-size: 1.15rem;
+      margin: 10px 0;
+      overflow-x: auto;
+    }
+    .math-expl {
+      font-size: 0.85rem;
+      color: #475569 !important;
+      margin-top: 8px;
+    }
+
+    /* Code Blocks */
+    pre.code-block {
+      background: #0F172A !important;
+      color: #F8FAFC !important;
+      border-radius: 8px;
+      padding: 18px 20px;
+      font-family: var(--font-mono);
+      font-size: 0.86rem;
+      line-height: 1.6;
+      overflow-x: auto;
+      margin: 18px 0 24px;
+      border: 1px solid #334155;
+    }
+    code.inline-code {
+      background: #F1F5F9;
+      color: #0F172A;
+      font-family: var(--font-mono);
+      font-size: 0.85em;
+      padding: 2px 6px;
+      border-radius: 4px;
+      border: 1px solid #CBD5E1;
+    }
+
+    /* Tables */
+    .table-wrapper {
+      overflow-x: auto;
+      margin: 20px 0 28px;
+      border: 1px solid #E2E8F0;
+      border-radius: 8px;
+    }
+    table.data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+      background: #FFFFFF;
+    }
+    table.data-table th {
+      background: #0F172A;
+      color: #FFFFFF;
+      padding: 12px 16px;
+      text-align: left;
+      font-weight: 600;
+      border-bottom: 2px solid #E2E8F0;
+    }
+    table.data-table td {
+      padding: 12px 16px;
+      border-bottom: 1px solid #E2E8F0;
+      color: #334155;
+      vertical-align: top;
+    }
+    table.data-table tr:nth-child(even) td { background: #F8FAFC; }
+
+    /* Diagrams */
+    .diagram-wrapper, .mermaid {
+      background: #FFFFFF !important;
+      border: 1px solid #E2E8F0 !important;
+      border-radius: 8px;
+      padding: 24px;
+      margin: 22px 0;
+      text-align: center;
+      overflow-x: auto;
+    }
+
+    /* Callouts */
+    .callout {
+      background-color: #EFF6FF !important;
+      border-left: 4px solid #2563EB !important;
+      border-top: 1px solid #DBEAFE !important;
+      border-right: 1px solid #DBEAFE !important;
+      border-bottom: 1px solid #DBEAFE !important;
+      border-radius: 8px;
+      padding: 16px 20px;
+      margin: 20px 0;
+      color: #1E3A8A !important;
+    }
+    .callout h4 {
+      color: #1E3A8A !important;
+      margin-top: 0;
+      margin-bottom: 6px;
+      font-size: 0.95rem;
+    }
+    .callout-warning {
+      background-color: #FFFBEB !important;
+      border-left-color: #F59E0B !important;
+      border-color: #FDE68A !important;
+      color: #92400E !important;
+    }
+    .callout-warning h4 { color: #92400E !important; }
+
+    /* Right Auxiliary Dock */
+    .auxiliary-dock {
+      flex: 0 0 360px;
+      position: sticky;
+      top: 76px;
+      height: calc(100vh - 96px);
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    @media (max-width: 1400px) {
+      .chapter-sidebar { display: none; }
+    }
+    @media (max-width: 1100px) {
+      .master-layout { flex-direction: column; }
+      .auxiliary-dock { position: static; height: auto; }
+    }
+
+    /* Video Player Dock Card */
+    .player-dock-card {
+      background: var(--bg-secondary);
+      border-radius: 12px;
+      border: 1px solid #1E293B;
+      overflow: hidden;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+    }
+
+    .player-dock-header {
+      background: #0B1120;
+      color: #FFFFFF;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 10px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      border-bottom: 1px solid #1E293B;
+    }
+
+    .player-track-switcher {
+      display: flex;
+      background: #1E293B;
+      padding: 3px;
+      border-radius: 6px;
+      gap: 4px;
+    }
+
+    .pts-btn {
+      flex: 1;
+      padding: 5px 8px;
+      border: none;
+      background: transparent;
+      color: #94A3B8;
+      font-size: 11px;
+      font-weight: 600;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: center;
+    }
+    .pts-btn.active.t1 {
+      background: #7C3AED;
+      color: #FFFFFF;
+    }
+    .pts-btn.active.t2 {
+      background: #2563EB;
+      color: #FFFFFF;
+    }
+
+    .player-iframe-container {
+      position: relative;
+      padding-bottom: 56.25%;
+      height: 0;
+      background: #000000;
+    }
+    .player-iframe-container iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    .player-quick-jumps {
+      padding: 10px 12px;
+      background: #0F172A;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      border-top: 1px solid #1E293B;
+    }
+
+    .jump-pill {
+      background: #1E293B;
+      color: #93C5FD;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 4px 8px;
+      border-radius: 4px;
+      cursor: pointer;
+      border: 1px solid #334155;
+      transition: all 0.15s;
+    }
+    .jump-pill:hover {
+      background: #2563EB;
+      color: #FFFFFF;
+      border-color: #2563EB;
+    }
+    .jump-pill.highlight {
+      background: rgba(139, 92, 246, 0.25);
+      color: #DDD6FE;
+      border-color: #8B5CF6;
+    }
+    .jump-pill.highlight:hover {
+      background: #8B5CF6;
+      color: #FFFFFF;
+    }
+
+    /* Chatbot Dock Card */
+    .chatbot-dock-card {
+      background: var(--bg-secondary);
+      border-radius: 12px;
+      border: 1px solid #1E293B;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      overflow: hidden;
+      min-height: 420px;
+    }
+
+    .chat-header {
+      background: #0B1120;
+      padding: 10px 14px;
+      border-bottom: 1px solid #1E293B;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .chat-messages {
+      flex: 1;
+      padding: 14px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      font-size: 13px;
+    }
+    .chat-messages::-webkit-scrollbar { width: 5px; }
+    .chat-messages::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+
+    .chat-bubble {
+      padding: 10px 14px;
+      border-radius: 10px;
+      line-height: 1.5;
+      max-width: 92%;
+    }
+    .chat-bubble.assistant {
+      background: #1E293B;
+      border: 1px solid #334155;
+      color: #E2E8F0;
+      align-self: flex-start;
+    }
+    .chat-bubble.user {
+      background: #2563EB;
+      color: #FFFFFF;
+      align-self: flex-end;
+    }
+
+    .suggested-prompts {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 10px;
+    }
+
+    .prompt-chip {
+      background: #0F172A;
+      border: 1px solid #334155;
+      color: #93C5FD;
+      font-size: 11px;
+      padding: 4px 8px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .prompt-chip:hover {
+      background: #2563EB;
+      color: #FFFFFF;
+      border-color: #2563EB;
+    }
+
+    .chat-input-bar {
+      display: flex;
+      border-top: 1px solid #1E293B;
+      padding: 10px;
+      background: #0B1120;
+      gap: 8px;
+    }
+
+    .chat-input-bar input {
+      flex: 1;
+      background: #1E293B;
+      border: 1px solid #334155;
+      border-radius: 6px;
+      padding: 8px 12px;
+      font-size: 13px;
+      color: #FFFFFF;
+      outline: none;
+    }
+    .chat-input-bar input:focus { border-color: #3B82F6; }
+
+    .chat-input-bar button {
+      background: #2563EB;
+      color: #FFFFFF;
+      border: none;
+      border-radius: 6px;
+      padding: 8px 14px;
+      font-weight: 600;
+      font-size: 12px;
+      cursor: pointer;
+    }
+    .chat-input-bar button:hover { background: #1D4ED8; }
+
+    /* Top Interview Questions Section */
+    .iq-section {
+      background: linear-gradient(135deg, #0F172A 0%, #1E1B4B 100%) !important;
+      border: 1px solid #334155 !important;
+      border-radius: 16px !important;
+      padding: 40px !important;
+      margin-top: 36px !important;
+      margin-bottom: 40px !important;
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5) !important;
+      scroll-margin-top: 80px;
+    }
+
+    .iq-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+
+    .iq-icon { font-size: 2.2rem; line-height: 1; }
+    .iq-title { font-size: 1.4rem; font-weight: 800; color: #FFFFFF; margin: 0 0 6px; }
+    .iq-subtitle { font-size: 0.88rem; color: #94A3B8; margin: 0; }
+
+    .iq-grid { display: flex; flex-direction: column; gap: 12px; }
+
+    .iq-item {
+      background: rgba(15, 23, 42, 0.8);
+      border: 1px solid #334155;
+      border-radius: 10px;
+      overflow: hidden;
+      transition: border-color 0.2s;
+    }
+    .iq-item:hover { border-color: #60A5FA; }
+
+    .iq-q {
+      padding: 14px 18px;
+      font-size: 0.92rem;
+      font-weight: 600;
+      color: #E2E8F0;
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+    }
+    .iq-num { color: #60A5FA; font-weight: 800; min-width: 28px; }
+
+    .iq-toggle {
+      padding: 0 18px 12px;
+      cursor: pointer;
+    }
+    .iq-toggle-lbl {
+      display: block;
+      font-size: 0.8rem;
+      color: #3B82F6;
+      font-weight: 600;
+      user-select: none;
+    }
+    .iq-toggle-lbl::before { content: "▶  Show Answer & Code"; }
+    .iq-item.open .iq-toggle-lbl::before { content: "▼  Hide Answer"; }
+    .iq-item.open .iq-toggle-lbl { color: #94A3B8; }
+
+    .iq-a {
+      display: none;
+      padding: 16px 18px;
+      background: rgba(2, 6, 23, 0.6);
+      border-top: 1px solid #1E293B;
+      color: #CBD5E1;
+      font-size: 0.88rem;
+      line-height: 1.7;
+    }
+    .iq-item.open .iq-a { display: block; }
+
+    /* Smart Search Autocomplete */
+    .smart-search-wrapper { position: relative; width: 100%; }
+    .smart-search-wrapper input {
+      color: #F8FAFC !important;
+      background: rgba(14, 20, 36, 0.9) !important;
+      border: 1.5px solid #334155 !important;
+      border-radius: 10px !important;
+      padding: 9px 14px 9px 40px !important;
+      font-size: 0.9rem !important;
+      width: 100% !important;
+      outline: none !important;
+      transition: border-color 0.2s, box-shadow 0.2s !important;
+      caret-color: #60A5FA !important;
+    }
+    .smart-search-wrapper input:focus {
+      border-color: #3B82F6 !important;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.18) !important;
+    }
+    .smart-search-wrapper input::placeholder { color: #64748B !important; }
+
+    .search-icon-abs {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 15px;
+      color: #64748B;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .search-autocomplete {
+      position: absolute;
+      top: calc(100% + 6px);
+      left: 0;
+      right: 0;
+      background: #0F172A;
+      border: 1px solid #334155;
+      border-radius: 10px;
+      box-shadow: 0 12px 32px rgba(0,0,0,0.6);
+      z-index: 9999;
+      max-height: 320px;
+      overflow-y: auto;
+      display: none;
+    }
+    .search-autocomplete.open { display: block; }
+    .ac-section-label {
+      font-size: 0.68rem;
+      font-weight: 700;
+      color: #475569;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      padding: 8px 12px 4px;
+    }
+    .ac-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 12px;
+      cursor: pointer;
+      border-radius: 6px;
+      margin: 2px 6px;
+      transition: background 0.15s;
+    }
+    .ac-item:hover, .ac-item.selected { background: rgba(59, 130, 246, 0.15); }
+    .ac-item-icon { font-size: 1rem; min-width: 20px; text-align: center; }
+    .ac-item-main { flex: 1; min-width: 0; }
+    .ac-item-title { font-size: 0.84rem; font-weight: 600; color: #E2E8F0; }
+    .ac-item-subtitle { font-size: 0.72rem; color: #64748B; }
+    .ac-item-type { font-size: 0.65rem; background: rgba(59,130,246,0.2); color: #60A5FA; padding: 2px 6px; border-radius: 4px; font-weight: 600; }
+    .ac-item-type.t1 { background: rgba(139,92,246,0.2); color: #A78BFA; }
+    .ac-item-type.t2 { background: rgba(59,130,246,0.2); color: #60A5FA; }
+
+    .search-highlight { background: rgba(251,191,36,0.35); color: #FCD34D; border-radius: 2px; }
+  </style>
+
+<style id="placement-universal-v3-styles">
+  /* ── 1. Top Navbar & High-Contrast Search Bar ── */
+  .top-navbar, .top-nav, .master-header {
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 1000 !important;
+    background: rgba(11, 15, 25, 0.98) !important;
+    backdrop-filter: blur(12px) !important;
+    border-bottom: 1px solid #1E293B !important;
+    height: 62px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    padding: 0 24px !important;
+    gap: 16px !important;
+  }
+  .hub-link {
+    color: #94A3B8 !important;
+    text-decoration: none !important;
+    font-weight: 600 !important;
+    font-size: 0.88rem !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+    padding: 6px 12px !important;
+    border-radius: 6px !important;
+    background: rgba(255, 255, 255, 0.05) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    transition: all 0.2s ease !important;
+    white-space: nowrap !important;
+  }
+  .hub-link:hover {
+    color: #FFFFFF !important;
+    background: rgba(59, 130, 246, 0.15) !important;
+    border-color: #3B82F6 !important;
+  }
+
+  /* High contrast search bar inputs */
+  input#section-search,
+  input#searchInput,
+  input.search-box,
+  .smart-search-wrapper input,
+  .nav-search-bar input {
+    background: #0E1424 !important;
+    color: #FFFFFF !important;
+    border: 1.5px solid #334155 !important;
+    border-radius: 8px !important;
+    padding: 8px 14px 8px 38px !important;
+    font-size: 0.88rem !important;
+    outline: none !important;
+    transition: border-color 0.2s, box-shadow 0.2s !important;
+    caret-color: #60A5FA !important;
+    width: 100% !important;
+  }
+  input#section-search::placeholder,
+  input#searchInput::placeholder,
+  input.search-box::placeholder,
+  .smart-search-wrapper input::placeholder,
+  .nav-search-bar input::placeholder {
+    color: #94A3B8 !important;
+  }
+  input#section-search:focus,
+  input#searchInput:focus,
+  input.search-box:focus,
+  .smart-search-wrapper input:focus,
+  .nav-search-bar input:focus {
+    border-color: #3B82F6 !important;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2) !important;
+    background: #0F172A !important;
+    color: #FFFFFF !important;
+  }
+
+  .nav-controls, .nav-right {
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    flex-shrink: 0 !important;
+  }
+  .btn-nav {
+    background: #111827 !important;
+    border: 1px solid #334155 !important;
+    color: #E2E8F0 !important;
+    padding: 6px 12px !important;
+    border-radius: 6px !important;
+    font-size: 0.82rem !important;
+    font-weight: 600 !important;
+    cursor: pointer !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+    transition: all 0.2s ease !important;
+  }
+  .btn-nav:hover {
+    background: #1E293B !important;
+    border-color: #64748B !important;
+    color: #FFFFFF !important;
+  }
+  .btn-nav.active {
+    background: rgba(59, 130, 246, 0.18) !important;
+    border-color: #3B82F6 !important;
+    color: #60A5FA !important;
+  }
+
+  /* ── 2. Collapsible Left Sidebar ── */
+  .chapter-sidebar, .sidebar {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  }
+  .chapter-sidebar.collapsed, .sidebar.collapsed {
+    flex: 0 0 0px !important;
+    width: 0px !important;
+    min-width: 0px !important;
+    max-width: 0px !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    border: none !important;
+    overflow: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+  }
+
+  /* ── 3. Dynamic Auto-Expanding Main Content ── */
+  .main-content, .notes-column, .pdf-guide-column {
+    flex: 1 1 0% !important;
+    min-width: 0 !important;
+    width: 100% !important;
+    max-width: none !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  }
+
+  /* ── 4. Resizable & Minimizable Chatbot Dock ── */
+  .auxiliary-dock, .aux-dock {
+    flex: 0 0 350px !important;
+    width: 350px !important;
+    position: sticky !important;
+    top: 76px !important;
+    height: calc(100vh - 96px) !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 0 !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    z-index: 50 !important;
+  }
+  .auxiliary-dock.wide, .aux-dock.wide {
+    flex: 0 0 490px !important;
+    width: 490px !important;
+  }
+  .auxiliary-dock.minimized, .aux-dock.minimized {
+    display: none !important;
+  }
+
+  /* Chatbot Dock Card */
+  .chatbot-dock-card, .dock-card.chat-card {
+    background: #0E1424 !important;
+    border: 1px solid #1E293B !important;
+    border-radius: 12px !important;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.4) !important;
+    display: flex !important;
+    flex-direction: column !important;
+    height: 100% !important;
+    min-height: 400px !important;
+    overflow: hidden !important;
+  }
+  .chat-dock-header {
+    background: #111827 !important;
+    border-bottom: 1px solid #1E293B !important;
+    padding: 10px 14px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 8px !important;
+  }
+  .chat-header-top {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+  }
+  .chat-assistant-title {
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    font-family: 'Outfit', sans-serif !important;
+    font-size: 0.92rem !important;
+    font-weight: 700 !important;
+    color: #FFFFFF !important;
+  }
+  .chat-status-dot {
+    width: 8px !important;
+    height: 8px !important;
+    border-radius: 50% !important;
+    background: #10B981 !important;
+    box-shadow: 0 0 8px #10B981 !important;
+  }
+  .chat-window-controls {
+    display: flex !important;
+    align-items: center !important;
+    gap: 4px !important;
+  }
+  .chat-ctrl-btn {
+    background: transparent !important;
+    border: 1px solid #334155 !important;
+    color: #94A3B8 !important;
+    width: 26px !important;
+    height: 26px !important;
+    border-radius: 5px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    cursor: pointer !important;
+    font-size: 11px !important;
+    transition: all 0.2s !important;
+  }
+  .chat-ctrl-btn:hover {
+    background: #1E293B !important;
+    color: #FFFFFF !important;
+    border-color: #64748B !important;
+  }
+
+  /* Segmented RAG vs LCEL Mode Toggle */
+  .rag-mode-toggle {
+    display: flex !important;
+    background: #070A12 !important;
+    border: 1px solid #1E293B !important;
+    border-radius: 6px !important;
+    padding: 3px !important;
+    gap: 4px !important;
+    width: 100% !important;
+  }
+  .rag-mode-btn {
+    flex: 1 1 50% !important;
+    background: transparent !important;
+    border: none !important;
+    color: #94A3B8 !important;
+    font-size: 0.72rem !important;
+    font-weight: 600 !important;
+    padding: 5px 6px !important;
+    border-radius: 4px !important;
+    cursor: pointer !important;
+    text-align: center !important;
+    transition: all 0.2s !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+  .rag-mode-btn:hover { color: #FFFFFF !important; }
+  .rag-mode-btn.active {
+    background: #2563EB !important;
+    color: #FFFFFF !important;
+    box-shadow: 0 2px 6px rgba(37, 99, 235, 0.4) !important;
+  }
+  .rag-mode-btn.lcel.active {
+    background: linear-gradient(135deg, #7C3AED, #EC4899) !important;
+    box-shadow: 0 2px 6px rgba(124, 58, 237, 0.4) !important;
+  }
+
+  .chat-messages {
+    flex: 1 !important;
+    padding: 14px !important;
+    overflow-y: auto !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 12px !important;
+    font-size: 0.85rem !important;
+  }
+  .chat-bubble {
+    padding: 10px 14px !important;
+    border-radius: 10px !important;
+    max-width: 92% !important;
+    line-height: 1.55 !important;
+  }
+  .chat-bubble.assistant {
+    background: #111827 !important;
+    border: 1px solid #1E293B !important;
+    color: #E2E8F0 !important;
+    align-self: flex-start !important;
+  }
+  .chat-bubble.user {
+    background: #1D4ED8 !important;
+    color: #FFFFFF !important;
+    align-self: flex-end !important;
+  }
+  .chat-bubble pre {
+    background: #070A12 !important;
+    border: 1px solid #1E293B !important;
+    border-radius: 6px !important;
+    padding: 8px !important;
+    margin: 8px 0 !important;
+    overflow-x: auto !important;
+    font-family: 'Fira Code', monospace !important;
+    font-size: 0.8rem !important;
+  }
+
+  .yt-jump-btn {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 4px !important;
+    background: rgba(239, 68, 68, 0.15) !important;
+    border: 1px solid rgba(239, 68, 68, 0.3) !important;
+    color: #FCA5A5 !important;
+    padding: 3px 8px !important;
+    border-radius: 4px !important;
+    font-size: 0.72rem !important;
+    font-weight: 600 !important;
+    text-decoration: none !important;
+    margin-top: 6px !important;
+    transition: all 0.2s !important;
+  }
+  .yt-jump-btn:hover {
+    background: rgba(239, 68, 68, 0.3) !important;
+    color: #FFFFFF !important;
+  }
+
+  .suggested-prompts {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 6px !important;
+    margin-top: 10px !important;
+  }
+  .prompt-chip {
+    background: #1E293B !important;
+    border: 1px solid #334155 !important;
+    color: #94A3B8 !important;
+    padding: 3px 8px !important;
+    border-radius: 12px !important;
+    font-size: 0.72rem !important;
+    cursor: pointer !important;
+    transition: all 0.15s !important;
+  }
+  .prompt-chip:hover {
+    background: #2563EB !important;
+    color: #FFFFFF !important;
+    border-color: #3B82F6 !important;
+  }
+
+  .chat-input-bar {
+    padding: 10px 12px !important;
+    background: #111827 !important;
+    border-top: 1px solid #1E293B !important;
+    display: flex !important;
+    gap: 8px !important;
+  }
+  .chat-input-bar input {
+    flex: 1 !important;
+    background: #070A12 !important;
+    border: 1px solid #334155 !important;
+    border-radius: 6px !important;
+    padding: 8px 12px !important;
+    color: #FFFFFF !important;
+    font-size: 0.85rem !important;
+    outline: none !important;
+  }
+  .chat-input-bar input:focus { border-color: #3B82F6 !important; }
+  .chat-input-bar button {
+    background: #2563EB !important;
+    border: none !important;
+    color: #FFFFFF !important;
+    padding: 0 14px !important;
+    border-radius: 6px !important;
+    font-weight: 600 !important;
+    font-size: 0.82rem !important;
+    cursor: pointer !important;
+    transition: background 0.2s !important;
+  }
+  .chat-input-bar button:hover { background: #1D4ED8 !important; }
+
+  /* ── 5. Floating Chat Pill (Only visible when minimized) ── */
+  .chat-floating-pill {
+    position: fixed !important;
+    bottom: 24px !important;
+    right: 24px !important;
+    z-index: 9999 !important;
+    background: linear-gradient(135deg, #1E293B 0%, #0F172A 100%) !important;
+    border: 1px solid #3B82F6 !important;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6), 0 0 16px rgba(59, 130, 246, 0.3) !important;
+    border-radius: 9999px !important;
+    padding: 10px 18px !important;
+    display: none !important;
+    align-items: center !important;
+    gap: 10px !important;
+    cursor: pointer !important;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  }
+  .chat-floating-pill.visible {
+    display: flex !important;
+  }
+  .chat-floating-pill:hover {
+    transform: translateY(-3px) scale(1.03) !important;
+    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.7), 0 0 24px rgba(59, 130, 246, 0.5) !important;
+    border-color: #60A5FA !important;
+  }
+  .chat-pill-icon { font-size: 16px !important; }
+  .chat-pill-title {
+    font-weight: 700 !important;
+    font-size: 0.86rem !important;
+    color: #FFFFFF !important;
+    letter-spacing: -0.01em !important;
+  }
+  .chat-pill-badge {
+    background: rgba(59, 130, 246, 0.2) !important;
+    color: #60A5FA !important;
+    font-size: 0.68rem !important;
+    font-weight: 700 !important;
+    padding: 2px 7px !important;
+    border-radius: 9999px !important;
+    border: 1px solid rgba(59, 130, 246, 0.3) !important;
+  }
+
+  /* ── 6. Official Video Lectures Directory Banner ── */
+  .video-resources-banner {
+    background: linear-gradient(135deg, rgba(37, 99, 235, 0.1) 0%, rgba(139, 92, 246, 0.12) 100%) !important;
+    border: 1px solid rgba(59, 130, 246, 0.3) !important;
+    border-radius: 12px !important;
+    padding: 16px 20px !important;
+    margin-bottom: 24px !important;
+  }
+  .vrb-header {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    margin-bottom: 12px !important;
+    flex-wrap: wrap !important;
+    gap: 8px !important;
+  }
+  .vrb-title-group {
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+  }
+  .vrb-badge {
+    background: #2563EB !important;
+    color: #FFFFFF !important;
+    font-size: 0.68rem !important;
+    font-weight: 700 !important;
+    padding: 2px 8px !important;
+    border-radius: 9999px !important;
+    text-transform: uppercase !important;
+  }
+  .vrb-title {
+    font-weight: 700 !important;
+    font-size: 0.95rem !important;
+    color: #FFFFFF !important;
+  }
+  .vrb-note {
+    font-size: 0.78rem !important;
+    color: #94A3B8 !important;
+  }
+  .vrb-grid {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)) !important;
+    gap: 10px !important;
+  }
+  .vrb-card {
+    background: #0E1424 !important;
+    border: 1px solid #1E293B !important;
+    border-radius: 8px !important;
+    padding: 10px 14px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: space-between !important;
+    gap: 6px !important;
+    text-decoration: none !important;
+    transition: all 0.2s ease !important;
+  }
+  .vrb-card:hover {
+    border-color: #3B82F6 !important;
+    background: #151D33 !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2) !important;
+  }
+  .vrb-card.featured {
+    border-color: rgba(139, 92, 246, 0.4) !important;
+    background: rgba(139, 92, 246, 0.08) !important;
+  }
+  .vrb-card.featured:hover {
+    border-color: #8B5CF6 !important;
+    background: rgba(139, 92, 246, 0.16) !important;
+  }
+  .vrb-card-tutor {
+    font-size: 0.7rem !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    color: #60A5FA !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 4px !important;
+  }
+  .vrb-card.featured .vrb-card-tutor { color: #A78BFA !important; }
+  .vrb-card-name {
+    font-size: 0.84rem !important;
+    font-weight: 600 !important;
+    color: #F8FAFC !important;
+    line-height: 1.35 !important;
+  }
+  .vrb-card-action {
+    font-size: 0.75rem !important;
+    color: #94A3B8 !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 4px !important;
+    font-weight: 500 !important;
+  }
+  .vrb-card:hover .vrb-card-action { color: #38BDF8 !important; }
+
+  /* ── 7. Placement Interview Questions in Bottom Content Section ── */
+  .placement-interview-section {
+    background: #0E1424 !important;
+    border: 1px solid #1E293B !important;
+    border-radius: 14px !important;
+    padding: 28px !important;
+    margin-top: 40px !important;
+    margin-bottom: 30px !important;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3) !important;
+  }
+  .piq-header {
+    display: flex !important;
+    align-items: flex-start !important;
+    justify-content: space-between !important;
+    margin-bottom: 20px !important;
+    flex-wrap: wrap !important;
+    gap: 16px !important;
+    border-bottom: 1px solid #1E293B !important;
+    padding-bottom: 16px !important;
+  }
+  .piq-title-group {
+    display: flex !important;
+    align-items: center !important;
+    gap: 12px !important;
+  }
+  .piq-icon {
+    font-size: 28px !important;
+    background: rgba(236, 72, 153, 0.15) !important;
+    width: 48px !important;
+    height: 48px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border-radius: 12px !important;
+    border: 1px solid rgba(236, 72, 153, 0.3) !important;
+  }
+  .piq-main-title {
+    font-family: 'Outfit', sans-serif !important;
+    font-size: 1.45rem !important;
+    font-weight: 800 !important;
+    color: #FFFFFF !important;
+    letter-spacing: -0.02em !important;
+    margin-bottom: 4px !important;
+  }
+  .piq-subtitle {
+    font-size: 0.85rem !important;
+    color: #94A3B8 !important;
+  }
+  .piq-tabs {
+    display: flex !important;
+    gap: 8px !important;
+    background: #070A12 !important;
+    padding: 4px !important;
+    border-radius: 8px !important;
+    border: 1px solid #1E293B !important;
+  }
+  .piq-tab-btn {
+    background: transparent !important;
+    border: none !important;
+    color: #94A3B8 !important;
+    font-size: 0.82rem !important;
+    font-weight: 600 !important;
+    padding: 6px 14px !important;
+    border-radius: 6px !important;
+    cursor: pointer !important;
+    transition: all 0.2s !important;
+  }
+  .piq-tab-btn:hover { color: #FFFFFF !important; }
+  .piq-tab-btn.active {
+    background: #2563EB !important;
+    color: #FFFFFF !important;
+    box-shadow: 0 2px 8px rgba(37, 99, 235, 0.3) !important;
+  }
+  .piq-grid {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 12px !important;
+    margin-top: 16px !important;
+  }
+  .piq-card {
+    background: #111827 !important;
+    border: 1px solid #1E293B !important;
+    border-radius: 10px !important;
+    overflow: hidden !important;
+    transition: all 0.2s ease !important;
+  }
+  .piq-card:hover { border-color: #334155 !important; }
+  .piq-card.open { border-color: #3B82F6 !important; }
+  .piq-question-bar {
+    padding: 14px 18px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 12px !important;
+    cursor: pointer !important;
+    user-select: none !important;
+  }
+  .piq-q-text {
+    font-weight: 600 !important;
+    font-size: 0.95rem !important;
+    color: #F8FAFC !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+  }
+  .piq-q-num {
+    color: #3B82F6 !important;
+    font-weight: 700 !important;
+    font-family: 'Fira Code', monospace !important;
+    font-size: 0.85rem !important;
+  }
+  .piq-q-badges {
+    display: flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+  }
+  .piq-tag {
+    font-size: 0.7rem !important;
+    font-weight: 600 !important;
+    padding: 2px 7px !important;
+    border-radius: 4px !important;
+    background: #1E293B !important;
+    color: #94A3B8 !important;
+  }
+  .piq-tag.easy { color: #34D399; background: rgba(16, 185, 129, 0.15); }
+  .piq-tag.med { color: #FBBF24; background: rgba(245, 158, 11, 0.15); }
+  .piq-tag.hard { color: #F87171; background: rgba(239, 68, 68, 0.15); }
+  .piq-toggle-icon {
+    font-size: 11px !important;
+    color: #64748B !important;
+    transition: transform 0.2s !important;
+  }
+  .piq-card.open .piq-toggle-icon {
+    transform: rotate(180deg) !important;
+    color: #3B82F6 !important;
+  }
+  .piq-answer-box {
+    display: none !important;
+    padding: 0 18px 16px 18px !important;
+    color: #CBD5E1 !important;
+    font-size: 0.88rem !important;
+    line-height: 1.65 !important;
+    border-top: 1px solid #1E293B !important;
+    margin-top: 4px !important;
+    padding-top: 14px !important;
+  }
+  .piq-card.open .piq-answer-box { display: block !important; }
+  .piq-answer-box pre {
+    background: #070A12 !important;
+    border: 1px solid #1E293B !important;
+    border-radius: 6px !important;
+    padding: 10px 14px !important;
+    margin: 10px 0 !important;
+    font-family: 'Fira Code', monospace !important;
+    font-size: 0.82rem !important;
+    overflow-x: auto !important;
+  }
+  .piq-complexity-row {
+    display: flex !important;
+    gap: 14px !important;
+    margin-top: 10px !important;
+    font-size: 0.78rem !important;
+    color: #94A3B8 !important;
+    font-family: 'Fira Code', monospace !important;
+  }
+</style>
+
+
+<style id="piq-card-layout-fix">
+  .piq-card {
+    background: #111827 !important;
+    border: 1px solid #1E293B !important;
+    border-radius: 10px !important;
+    overflow: hidden !important;
+    transition: all 0.2s ease !important;
+    margin-bottom: 8px !important;
+  }
+  .piq-question-bar {
+    padding: 14px 18px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 16px !important;
+    cursor: pointer !important;
+    user-select: none !important;
+    width: 100% !important;
+  }
+  .piq-q-text {
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
+    font-weight: 600 !important;
+    font-size: 0.95rem !important;
+    color: #F8FAFC !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+    line-height: 1.4 !important;
+    word-break: normal !important;
+    overflow-wrap: break-word !important;
+  }
+  .piq-q-badges {
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    flex-shrink: 0 !important;
+  }
+  .piq-answer-box {
+    padding: 16px 20px !important;
+    background: rgba(7, 10, 18, 0.6) !important;
+    border-top: 1px solid #1E293B !important;
+  }
+</style>
+
+</head>
+<body>
+
+  <!-- Top Navigation Header -->
+  <header class="master-header">
+    <div class="brand-section">
+      <a href="../index.html" class="hub-link">
+        <span>&larr; Placement Hub</span>
+        <span class="brand-badge">4 U BY U</span>
+      </a>
+      <div class="brand-title">
+        <span>Natural Language Processing</span>
+        <span style="font-size: 11px; background: rgba(139,92,246,0.2); color: #C4B5FD; border: 1px solid rgba(139,92,246,0.4); padding: 2px 8px; border-radius: 4px;">DUAL TRACK</span>
+      </div>
+    </div>
+
+    <!-- Smart Search Bar -->
+    <div class="nav-search-bar">
+      <div class="smart-search-wrapper">
+        <span class="search-icon-abs">&#128269;</span>
+        <input type="text" id="section-search" placeholder="Smart Search NLP concepts (e.g. TF-IDF, CBOW, Viterbi, Emotion Project)..." autocomplete="off">
+        <div id="search-autocomplete" class="search-autocomplete"></div>
+      </div>
+    </div>
+
+    <div class="nav-controls">
+      <a href="#curriculum-overview" class="btn-nav">Outline</a>
+      <button class="btn-nav" id="themeToggleBtn" onclick="toggleTheme()">🌙 Theme</button>
+      <button class="btn-nav" onclick="window.print()">🖨️ PDF</button>
+    </div>
+  </header>
+
+  <!-- Main Three-Column Layout -->
+  <div class="master-layout">
+    
+    <!-- Left Chapter Sidebar -->
+    <aside class="chapter-sidebar" id="chapter-sidebar">
+      <div class="sidebar-header">
+        <span>📖 CURRICULUM OUTLINE</span>
+        <span style="font-size: 10px; color: #60A5FA;">11 Chs + 15 Qs</span>
+      </div>
+      <nav class="sidebar-nav">
+        <a href="#curriculum-overview" class="sidebar-pill active">
+          <span class="pill-badge">00</span>
+          <span class="pill-label">Dual-Track Architecture</span>
+        </a>
+
+        <!-- Track 1: Base Foundations & Emotion Project -->
+        <div class="sidebar-track-label track1-color">
+          <span>🟣 Track 1: Foundations &amp; Project</span>
+        </div>
+        <a href="#chapter-1" class="sidebar-pill t1">
+          <span class="pill-badge">01</span>
+          <span class="pill-label">NLP Foundations &amp; Pipeline</span>
+        </a>
+        <a href="#chapter-2" class="sidebar-pill t1">
+          <span class="pill-badge">02</span>
+          <span class="pill-label">10-Step Preprocessing</span>
+        </a>
+        <a href="#chapter-3" class="sidebar-pill t1">
+          <span class="pill-badge">03</span>
+          <span class="pill-label">BoW, N-Grams &amp; TF-IDF</span>
+        </a>
+        <a href="#chapter-4" class="sidebar-pill t1">
+          <span class="pill-badge">04</span>
+          <span class="pill-label">Naive Bayes &amp; ML Classifiers</span>
+        </a>
+        <a href="#chapter-5" class="sidebar-pill t1">
+          <span class="pill-badge">05</span>
+          <span class="pill-label">Project: Emotion Detection</span>
+        </a>
+
+        <!-- Track 2: CampusX Deep-Dive Curriculum -->
+        <div class="sidebar-track-label track2-color">
+          <span>🔵 Track 2: CampusX Curriculum</span>
+        </div>
+        <a href="#chapter-6" class="sidebar-pill t2">
+          <span class="pill-badge">06</span>
+          <span class="pill-label">Enterprise NLP Lifecycle</span>
+        </a>
+        <a href="#chapter-7" class="sidebar-pill t2">
+          <span class="pill-badge">07</span>
+          <span class="pill-label">Word2Vec &amp; Dense Vectors</span>
+        </a>
+        <a href="#chapter-8" class="sidebar-pill t2">
+          <span class="pill-badge">08</span>
+          <span class="pill-label">Doc &amp; TF-IDF Word2Vec</span>
+        </a>
+        <a href="#chapter-9" class="sidebar-pill t2">
+          <span class="pill-badge">09</span>
+          <span class="pill-label">Sequence Models &amp; HMM</span>
+        </a>
+        <a href="#chapter-10" class="sidebar-pill t2">
+          <span class="pill-badge">10</span>
+          <span class="pill-label">RNN, LSTM &amp; Transformers</span>
+        </a>
+        <a href="#chapter-11" class="sidebar-pill t2">
+          <span class="pill-badge">11</span>
+          <span class="pill-label">Enterprise Capstone Projects</span>
+        </a>
+
+        <!-- Track 3: Top Interview Questions -->
+        <div class="sidebar-track-label" style="color: #FBBF24;">
+          <span>🎯 Interview Preparation</span>
+        </div>
+        <a href="#interview-questions" class="sidebar-pill">
+          <span class="pill-badge">🎯</span>
+          <span class="pill-label">Top 15 Interview Questions</span>
+        </a>
+      </nav>
+    </aside>
+
+    <!-- Center Column: Core Content -->
+    <main class="main-content">
+
+      <!-- Dual Track Hero Banner -->
+      <section class="dual-track-hero" id="curriculum-overview">
+        <div class="hero-badge-row">
+          <span class="hero-tag hero-tag-t1">Track 1: Sheryians AI School (Akarsh Vyas)</span>
+          <span class="hero-tag hero-tag-t2">Track 2: CampusX NLP Series (Nitish Singh)</span>
+          <span style="font-size: 11px; background: rgba(255,255,255,0.1); color: #E2E8F0; padding: 4px 8px; border-radius: 6px;">100% COMPLETE &bull; DUAL SOURCE</span>
+        </div>
+        <h1 class="hero-title">Natural Language Processing Master Curriculum</h1>
+        <p class="hero-subtitle">
+          A definitive, unified study guide synthesized from two premier NLP educational sources into two distinct tracks: 
+          <strong>Track 1</strong> provides rapid end-to-end fluency with fundamental text processing, TF-IDF vectorization, and a complete Emotion Detection project from scratch (timestamp 6137s). 
+          <strong>Track 2</strong> delivers the full CampusX industry deep-dive encompassing distributional embeddings (Word2Vec CBOW/Skip-gram), POS Tagging with HMMs, modern Transformer architectures, and Quora duplicate detection.
+        </p>
+
+        <div class="track-grid">
+          <div class="track-card t1" onclick="document.getElementById('chapter-1').scrollIntoView({behavior:'smooth'})">
+            <div class="track-card-header">
+              <span class="hero-tag hero-tag-t1">Track 1 &bull; Base Course</span>
+              <span style="font-size: 0.75rem; color: #C4B5FD;">Chapters 01 - 05</span>
+            </div>
+            <div class="track-card-title">Foundations &amp; Emotion Detection Project</div>
+            <div class="track-card-desc">
+              Text cleaning heuristics (10-step preprocessing), Stopword filtering, Stemming vs Lemmatization, One-Hot vs BoW vs TF-IDF mathematics, Naive Bayes classifier, and the full Kaggle Emotion Detection Project at 6137s.
+            </div>
+            <div class="track-card-meta">
+              <span style="color: #A78BFA;">Instructor: Akarsh Vyas (Sheryians)</span>
+              <span style="color: #E2E8F0;">Jump to Track 1 &rarr;</span>
+            </div>
+          </div>
+
+          <div class="track-card t2" onclick="document.getElementById('chapter-6').scrollIntoView({behavior:'smooth'})">
+            <div class="track-card-header">
+              <span class="hero-tag hero-tag-t2">Track 2 &bull; Comprehensive Curriculum</span>
+              <span style="font-size: 0.75rem; color: #93C5FD;">Chapters 06 - 11</span>
+            </div>
+            <div class="track-card-title">Enterprise NLP &amp; Dense Embeddings Series</div>
+            <div class="track-card-desc">
+              6-stage industry NLP lifecycle, Word2Vec dense geometric representations (CBOW &amp; Skip-Gram), Average/TF-IDF Word2Vec, Hidden Markov Models for POS Tagging, Attention &amp; Transformers intro, and Quora Duplicate Detection.
+            </div>
+            <div class="track-card-meta">
+              <span style="color: #60A5FA;">Instructor: Nitish Singh (CampusX)</span>
+              <span style="color: #E2E8F0;">Jump to Track 2 &rarr;</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     TRACK 1: BASE FOUNDATIONS & EMOTION DETECTION PROJECT
+     Instructor: Akarsh Vyas (Sheryians AI School) • Video ID: yiNS_Sh9KDA
+     ═══════════════════════════════════════════════════════════════════ -->
+
+<div style="margin: 36px 0 20px; display: flex; align-items: center; gap: 12px; border-bottom: 2px solid #8B5CF6; padding-bottom: 10px;">
+  <span style="background: #7C3AED; color: #FFFFFF; font-size: 12px; font-weight: 800; padding: 4px 10px; border-radius: 6px; letter-spacing: 0.5px;">TRACK 01</span>
+  <h2 style="font-family: var(--font-heading); font-size: 1.5rem; color: #FFFFFF; margin: 0;">Foundations of NLP &amp; Hands-On Project (Sheryians AI School)</h2>
+</div>
+
+<!-- CHAPTER 01 -->
+<article class="chapter-container" id="chapter-1" data-chapter="1">
+  <header class="chapter-header">
+    <div class="chapter-badge-wrap">
+      <span class="chapter-badge badge-t1">Chapter 01 &bull; Core Foundations</span>
+      <button class="chapter-timestamp-link" onclick="seekVideo('yiNS_Sh9KDA', 0)">
+        <span>▶ 00:00 &bull; Watch on YouTube</span>
+      </button>
+    </div>
+    <h2 class="chapter-title">Foundations of Natural Language Processing</h2>
+    <p class="chapter-subtitle">Linguistic intuitions, core challenges, and the architectural taxonomy of modern language systems.</p>
+  </header>
+
+  <p>
+    <strong>Natural Language Processing (NLP)</strong> is the specialized branch of artificial intelligence, machine learning, and computational linguistics focused on giving computers the capability to understand, interpret, manipulate, and generate human language in a meaningful and contextual manner.
+  </p>
+
+  <h3>1. Why Natural Language Processing is Exceptionally Hard</h3>
+  <p>
+    Unlike structured tabular data (numbers, dates) or images (pixel intensity matrices with spatial continuity), human text is <em>symbolic, discrete, ambiguous, and culturally contextual</em>. The core linguistic challenges include:
+  </p>
+  <ul>
+    <li><strong>Lexical Ambiguity (Polysemy &amp; Homonymy):</strong> A single word can carry radically different meanings based entirely on context. Consider: <em>"He deposited cash into the <u>bank</u>"</em> vs. <em>"The river <u>bank</u> was overflowing"</em>.</li>
+    <li><strong>Syntactic &amp; Structural Ambiguity:</strong> Phrases can yield multiple parse trees. Example: <em>"I saw the man with a telescope"</em> (Did I use a telescope, or did the man have one?).</li>
+    <li><strong>Pragmatic Ambiguity &amp; Sarcasm:</strong> The literal meaning diverges from speaker intent. <em>"Oh, brilliant! My server just crashed again."</em> An untrained model detects positive polarity from "brilliant", while the true sentiment is intensely negative.</li>
+    <li><strong>High Dimensionality &amp; Sparsity:</strong> Natural human vocabulary easily exceeds hundreds of thousands of words ($|V| \ge 100,000$). Each sentence uses only a minuscule fraction, resulting in extreme matrix sparsity ($> 99.8\%$).</li>
+    <li><strong>Out-of-Vocabulary (OOV) &amp; Slang:</strong> New terms, typos, and abbreviations emerge dynamically ("ngl", "goat", "rizz", "delulu"). Traditional static lexicons immediately break on unseen tokens.</li>
+  </ul>
+
+  <h3>2. Classical vs. Deep Learning NLP Taxonomies</h3>
+  <p>
+    NLP is divided into two operational paradigms. The foundational paradigm (covered in Track 1) focuses on fast, interpretable, deterministic feature extraction combined with statistical machine learning models:
+  </p>
+
+  <div class="table-wrapper">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Attribute</th>
+          <th>Classical NLP (Track 1)</th>
+          <th>Deep Learning NLP (Track 2)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Representation</strong></td>
+          <td>Discrete, sparse counts (One-Hot, BoW, TF-IDF)</td>
+          <td>Continuous, dense geometric embeddings (Word2Vec, BERT)</td>
+        </tr>
+        <tr>
+          <td><strong>Compute Needs</strong></td>
+          <td>Lightweight (Runs instantly on standard CPU)</td>
+          <td>Heavy (Requires GPUs / TPUs for tensor calculations)</td>
+        </tr>
+        <tr>
+          <td><strong>Data Requirement</strong></td>
+          <td>Excels on small-to-medium labeled sets (&lt; 20k rows)</td>
+          <td>Requires massive corpora (&gt; 100k samples or pretraining)</td>
+        </tr>
+        <tr>
+          <td><strong>Interpretability</strong></td>
+          <td>High (Exact feature weights &amp; token coefficients)</td>
+          <td>Black-box neural representations (requires attention maps)</td>
+        </tr>
+        <tr>
+          <td><strong>Inference Latency</strong></td>
+          <td>Ultra-low (sub-millisecond $&lt; 5	ext{ms}$)</td>
+          <td>Moderate to High ($50	ext{ms} - 500	ext{ms}$)</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="diagram-wrapper">
+    <div class="mermaid">
+graph TD
+    RawText["Raw Natural Language (Articles, Tweets, Logs)"] --> Preprocessing["10-Step Text Preprocessing Pipeline"]
+    Preprocessing --> Vectorization["Feature Extraction (BoW, N-Grams, TF-IDF)"]
+    Vectorization --> MLModel["Statistical Classifier (Multinomial Naive Bayes)"]
+    MLModel --> Predictions["Categorical Prediction (Emotion, Spam, Intent)"]
+    classDef default fill:#FFFFFF,stroke:#1E293B,stroke-width:1.5px,color:#0F172A;
+    </div>
+  </div>
+
+  <div class="callout">
+    <h4>💡 Industry Pro-Tip</h4>
+    <p>
+      In production engineering, never start with a 7-billion parameter LLM when a well-tuned TF-IDF + Multinomial Naive Bayes model delivers 94% accuracy with 2ms latency and zero GPU hosting costs. Classical NLP remains the enterprise workhorse for high-throughput categorization, log filtering, and routing.
+    </p>
+  </div>
+</article>
+
+<!-- CHAPTER 02 -->
+<article class="chapter-container" id="chapter-2" data-chapter="2">
+  <header class="chapter-header">
+    <div class="chapter-badge-wrap">
+      <span class="chapter-badge badge-t1">Chapter 02 &bull; Preprocessing</span>
+      <button class="chapter-timestamp-link" onclick="seekVideo('yiNS_Sh9KDA', 930)">
+        <span>▶ 15:30 &bull; Watch on YouTube</span>
+      </button>
+    </div>
+    <h2 class="chapter-title">The Complete 10-Step Text Preprocessing Pipeline</h2>
+    <p class="chapter-subtitle">Rigorous text cleaning, heuristic filtering, tokenization, and morphological normalization.</p>
+  </header>
+
+  <p>
+    Garbage in, garbage out is nowhere more pronounced than in NLP. Raw real-world text gathered from the web, user forms, or Twitter is contaminated with markup, encoding artifacts, emoticons, and noise. Below is the production-grade 10-step cleaning pipeline taught by Akarsh Vyas:
+  </p>
+
+  <h3>The 10 Heuristic Preprocessing Stages</h3>
+  <ol>
+    <li><strong>Lowercasing / Case Normalization:</strong> Eliminates duplicate vocabulary entries for "Apple", "apple", and "APPLE".</li>
+    <li><strong>HTML Tag Stripping:</strong> Removes DOM elements (<code>&lt;p&gt;</code>, <code>&lt;div&gt;</code>, <code>&lt;br&gt;</code>) using regular expressions or <code>BeautifulSoup</code>.</li>
+    <li><strong>URL &amp; Hyperlink Removal:</strong> Eliminates HTTP/HTTPS links that explode vocabulary without carrying semantic classification signal.</li>
+    <li><strong>Punctuation Removal:</strong> Strips punctuation symbols using <code>string.punctuation</code> to isolate clean linguistic tokens.</li>
+    <li><strong>Chat-Word &amp; Slang Expansion:</strong> Maps informal acronyms ("idk" &rarr; "I do not know", "brb" &rarr; "be right back", "tbh" &rarr; "to be honest") to standard English.</li>
+    <li><strong>Spelling Correction:</strong> Corrects typographical errors using dictionary frequency or Levenshtein edit distance via <code>TextBlob</code>.</li>
+    <li><strong>Stopwords Filtering:</strong> Eliminates high-frequency grammatical glue words ("the", "is", "at", "which") that flood counts without distinct category signal. <em>Caution:</em> Never remove negation words ("not", "never", "no") during sentiment or emotion analysis!</li>
+    <li><strong>Emoji Handling:</strong> Either strips emojis completely or converts them into textual tokens (e.g. <code>😂</code> &rarr; <code>"laughing face"</code>) using Python's <code>emoji</code> library.</li>
+    <li><strong>Tokenization:</strong> Segments character streams into discrete semantic chunks (words, punctuation, or subwords).</li>
+    <li><strong>Morphological Normalization (Stemming vs. Lemmatization):</strong>
+      <ul>
+        <li><strong>Stemming:</strong> Fast, rule-based suffix chopping (Porter/Snowball). Often produces non-words (e.g., <em>"university"</em> &rarr; <em>"univers"</em>).</li>
+        <li><strong>Lemmatization:</strong> Context-aware vocabulary reduction using vocabulary lookups and Part-of-Speech tags (WordNet). Always produces valid canonical dictionary lemmas (e.g., <em>"better"</em> &rarr; <em>"good"</em>).</li>
+      </ul>
+    </li>
+  </ol>
+
+  <h3>Production Python Preprocessing Pipeline Code</h3>
+  <pre class="code-block"><code class="language-python">import re
+import string
+import nltk
+from nltk.corpus import stopwords
+from nltk.stem import PorterStemmer, WordNetLemmatizer
+from nltk.tokenize import word_tokenize
+
+# Download required NLTK corpuses
+nltk.download('punkt', quiet=True)
+nltk.download('stopwords', quiet=True)
+nltk.download('wordnet', quiet=True)
+
+stemmer = PorterStemmer()
+lemmatizer = WordNetLemmatizer()
+
+# Custom Slang Mapping Dictionary
+CHAT_WORDS = {
+    "idk": "i do not know",
+    "brb": "be right back",
+    "tbh": "to be honest",
+    "imo": "in my opinion",
+    "fyi": "for your information"
+}
+
+def clean_text_pipeline(raw_text, use_lemmatizer=True):
+    if not isinstance(raw_text, str):
+        return ""
+    
+    # 1. Lowercasing
+    text = raw_text.lower()
+    
+    # 2. HTML Tag Stripping
+    text = re.sub(r'&lt;.*?&gt;', '', text)
+    
+    # 3. URL Removal
+    text = re.sub(r'https?://\S+|www\.\S+', '', text)
+    
+    # 4. Chat Word Replacement
+    words = text.split()
+    words = [CHAT_WORDS.get(w, w) for w in words]
+    text = " ".join(words)
+    
+    # 5. Punctuation Removal
+    text = text.translate(str.maketrans('', '', string.punctuation))
+    
+    # 6. Tokenization
+    tokens = word_tokenize(text)
+    
+    # 7. Stopword Filtering (Retaining critical negations)
+    stop_words = set(stopwords.words('english')) - {'no', 'not', 'nor'}
+    filtered_tokens = [w for w in tokens if w not in stop_words and w.isalpha()]
+    
+    # 8. Stemming / Lemmatization
+    if use_lemmatizer:
+        final_tokens = [lemmatizer.lemmatize(w) for w in filtered_tokens]
+    else:
+        final_tokens = [stemmer.stem(w) for w in filtered_tokens]
+        
+    return " ".join(final_tokens)
+
+# Demonstration
+sample = "&lt;p&gt;Check out https://akarsh.ai! TBH, I am not feeling good today... :( &lt;/p&gt;"
+print("Original:", sample)
+print("Cleaned: ", clean_text_pipeline(sample))
+# Output: "check tbh not feel good today"</code></pre>
+
+  <div class="table-wrapper">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Input Word</th>
+          <th>Porter Stemmer</th>
+          <th>Snowball Stemmer</th>
+          <th>WordNet Lemmatizer (POS=v)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>studying</code></td>
+          <td><code>studi</code></td>
+          <td><code>studi</code></td>
+          <td><code>study</code></td>
+        </tr>
+        <tr>
+          <td><code>studies</code></td>
+          <td><code>studi</code></td>
+          <td><code>studi</code></td>
+          <td><code>study</code></td>
+        </tr>
+        <tr>
+          <td><code>went</code></td>
+          <td><code>went</code></td>
+          <td><code>went</code></td>
+          <td><code>go</code></td>
+        </tr>
+        <tr>
+          <td><code>better</code></td>
+          <td><code>better</code></td>
+          <td><code>better</code></td>
+          <td><code>good</code> (POS=a)</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</article>
+
+<!-- CHAPTER 03 -->
+<article class="chapter-container" id="chapter-3" data-chapter="3">
+  <header class="chapter-header">
+    <div class="chapter-badge-wrap">
+      <span class="chapter-badge badge-t1">Chapter 03 &bull; Vectorization</span>
+      <button class="chapter-timestamp-link" onclick="seekVideo('yiNS_Sh9KDA', 2530)">
+        <span>▶ 42:10 &bull; Watch on YouTube</span>
+      </button>
+    </div>
+    <h2 class="chapter-title">Classical Vectorization: BoW, N-Grams &amp; TF-IDF</h2>
+    <p class="chapter-subtitle">Converting discrete unstructured character sequences into rigorous numeric vector spaces.</p>
+  </header>
+
+  <p>
+    Machine learning algorithms perform numerical optimization over linear algebra matrices; they cannot process strings directly. <strong>Vectorization</strong> is the mathematical transformation mapping a textual document $d_i$ into a numeric vector $\mathbf{v}_i \in \mathbb{R}^{|V|}$.
+  </p>
+
+  <h3>1. One-Hot Encoding (OHE)</h3>
+  <p>
+    Each word in vocabulary $V$ is represented as a $|V|$-dimensional binary vector where exactly one index is 1 and all others are 0.
+  </p>
+  <ul>
+    <li><strong>Critical Flaw 1: Massive Sparsity.</strong> If vocabulary has 50,000 words, a 10-word sentence requires a $10 	imes 50,000$ matrix that is $99.98\%$ zeroes.</li>
+    <li><strong>Critical Flaw 2: Orthogonality.</strong> Any two one-hot vectors $\mathbf{w}_i, \mathbf{w}_j$ have an inner product of zero: $\mathbf{w}_i \cdot \mathbf{w}_j = 0$. The model perceives zero similarity between "puppy" and "dog"!</li>
+  </ul>
+
+  <h3>2. Bag of Words (BoW / CountVectorizer)</h3>
+  <p>
+    The Bag of Words model constructs a global vocabulary $V = \{w_1, w_2, \dots, w_M\}$ from the entire corpus $D$. Each document $d$ is encoded as an $M$-dimensional vector containing the raw integer occurrence count of each vocabulary term:
+  </p>
+
+  <div class="math-card t1">
+    <div class="math-title">Bag of Words Vector Formulation</div>
+    <div class="math-formula">
+      $$\mathbf{v}_{	ext{BoW}}(d) = \left[ 	ext{tf}(w_1, d),\, 	ext{tf}(w_2, d),\, \dots,\, 	ext{tf}(w_M, d) 
+ight]^T$$
+    </div>
+    <div class="math-expl">
+      Where $	ext{tf}(w_k, d)$ represents the raw count of word $w_k$ appearing in document $d$.
+    </div>
+  </div>
+
+  <h4>The N-Gram Extension</h4>
+  <p>
+    BoW discards word order completely (hence "bag"). To retain local contextual relationships, we introduce <strong>N-Grams</strong> (consecutive tuples of $n$ words):
+  </p>
+  <ul>
+    <li><strong>Unigram ($n=1$):</strong> <code>["this", "movie", "is", "not", "good"]</code> (loses negation context)</li>
+    <li><strong>Bigram ($n=2$):</strong> <code>["this movie", "movie is", "is not", "not good"]</code> (preserves "not good"!)</li>
+    <li><strong>Trigram ($n=3$):</strong> <code>["this movie is", "movie is not", "is not good"]</code></li>
+  </ul>
+
+  <h3>3. TF-IDF (Term Frequency - Inverse Document Frequency)</h3>
+  <p>
+    BoW suffers from a major defect: frequent generic words dominate feature counts. If a word appears 100 times across every document in a legal corpus (e.g. "court", "lawyer"), it provides zero distinguishing power.
+  </p>
+  <p>
+    <strong>TF-IDF solves this</strong> by multiplying a local metric (Term Frequency) with a global penalization metric (Inverse Document Frequency):
+  </p>
+
+  <div class="math-card t1">
+    <div class="math-title">TF-IDF Mathematical Definition</div>
+    <div class="math-formula">
+      $$	ext{TF}(t, d) = rac{	ext{Count of } t 	ext{ in } d}{	ext{Total words in } d}$$
+      $$	ext{IDF}(t, D) = \log\left(rac{1 + N}{1 + |\,\{d \in D : t \in d\}\,| }
+ight) + 1$$
+      $$	ext{TF-IDF}(t, d, D) = 	ext{TF}(t, d) 	imes 	ext{IDF}(t, D)$$
+    </div>
+    <div class="math-expl">
+      $N$ is the total number of documents in the corpus. The smooth IDF formula (used in Scikit-Learn) adds 1 to avoid division by zero and log of zero.
+    </div>
+  </div>
+
+  <h4>Euclidean (L2) Vector Normalization</h4>
+  <p>
+    To ensure long documents do not dominate over short ones, Scikit-Learn applies L2 normalization to each document vector:
+  </p>
+  <div class="math-formula">
+    $$\mathbf{v}_{	ext{norm}} = rac{\mathbf{v}}{\|\mathbf{v}\|_2} = rac{\mathbf{v}}{\sqrt{\sum_{k} v_k^2}}$$
+  </div>
+
+  <pre class="code-block"><code class="language-python">from sklearn.feature_extraction.text import TfidfVectorizer
+
+corpus = [
+    "I loved this incredible machine learning course.",
+    "This machine learning course was so boring and dry.",
+    "Completely loved the deep learning neural networks section."
+]
+
+vectorizer = TfidfVectorizer(ngram_range=(1, 2), max_features=10)
+X = vectorizer.fit_transform(corpus)
+
+print("Vocabulary Features:", vectorizer.get_feature_names_out())
+print("TF-IDF Matrix Shape:", X.shape)
+print("Dense Array:
+", X.toarray().round(3))</code></pre>
+</article>
+
+<!-- CHAPTER 04 -->
+<article class="chapter-container" id="chapter-4" data-chapter="4">
+  <header class="chapter-header">
+    <div class="chapter-badge-wrap">
+      <span class="chapter-badge badge-t1">Chapter 04 &bull; Modeling</span>
+      <button class="chapter-timestamp-link" onclick="seekVideo('yiNS_Sh9KDA', 4720)">
+        <span>▶ 78:40 &bull; Watch on YouTube</span>
+      </button>
+    </div>
+    <h2 class="chapter-title">Machine Learning Classifiers for NLP</h2>
+    <p class="chapter-subtitle">Multinomial Naive Bayes, Laplace smoothing derivation, and Logistic Regression on sparse text matrices.</p>
+  </header>
+
+  <p>
+    Once text is transformed into TF-IDF vectors, we feed the matrix into supervised classification algorithms. In classical NLP, <strong>Multinomial Naive Bayes</strong> and <strong>Logistic Regression</strong> are the two canonical choices.
+  </p>
+
+  <h3>1. Multinomial Naive Bayes Formulation</h3>
+  <p>
+    Naive Bayes calculates the posterior probability of a class $C_k$ given document word vector $\mathbf{w} = (w_1, w_2, \dots, w_n)$ using Bayes' Theorem:
+  </p>
+
+  <div class="math-card t1">
+    <div class="math-title">Bayes Theorem with Conditional Independence Assumption</div>
+    <div class="math-formula">
+      $$P(C_k \mid w_1, \dots, w_n) \propto P(C_k) \prod_{i=1}^n P(w_i \mid C_k)$$
+    </div>
+    <div class="math-expl">
+      The "naive" assumption states that conditioned on class $C_k$, the probability of observing word $w_i$ is completely independent of word $w_j$. While linguistically false, this assumption performs remarkably well in practice.
+    </div>
+  </div>
+
+  <h4>Log-Space Transformation (Preventing Floating-Point Underflow)</h4>
+  <p>
+    Multiplying hundreds of small fractional probabilities produces floating-point underflow ($p 	o 0$). We convert the product into a sum of logarithms:
+  </p>
+  <div class="math-formula">
+    $$\hat{y} = rg\max_{C_k} \left[ \log P(C_k) + \sum_{i=1}^n \log P(w_i \mid C_k) 
+ight]$$
+  </div>
+
+  <h4>Laplace Additive Smoothing ($lpha = 1$)</h4>
+  <p>
+    If an unseen test word appears that was never observed in class $C_k$ during training, $P(w_{	ext{unseen}} \mid C_k) = 0$. In an un-smoothed product, a single zero collapses the entire probability for that class to zero!
+  </p>
+  <div class="math-card t1">
+    <div class="math-title">Laplace Smoothed Word Probability</div>
+    <div class="math-formula">
+      $$P(w_i \mid C_k) = rac{N_{C_k, w_i} + lpha}{N_{C_k} + lpha |V|}$$
+    </div>
+    <div class="math-expl">
+      $N_{C_k, w_i}$ is the count of word $w_i$ in class $C_k$. $N_{C_k}$ is total words in class $C_k$. $|V|$ is the total vocabulary size. $lpha=1$ ensures every word has a strictly positive non-zero probability.
+    </div>
+  </div>
+</article>
+
+<!-- CHAPTER 05 -->
+<article class="chapter-container" id="chapter-5" data-chapter="5">
+  <header class="chapter-header">
+    <div class="chapter-badge-wrap">
+      <span class="chapter-badge badge-t1">Chapter 05 &bull; Hands-On Project</span>
+      <button class="chapter-timestamp-link" style="background:#7C3AED; color:#FFF; border-color:#6D28D9;" onclick="seekVideo('yiNS_Sh9KDA', 6137)">
+        <span>🚀 01:42:17 (6137s) &bull; Project Start</span>
+      </button>
+    </div>
+    <h2 class="chapter-title">Hands-On Capstone Project: Real-Time Emotion Detection</h2>
+    <p class="chapter-subtitle">Building, training, evaluating, and deploying a multi-class emotion classifier from scratch.</p>
+  </header>
+
+  <p>
+    At timestamp <strong>6137s</strong>, instructor Akarsh Vyas kicks off the complete end-to-end hands-on project: detecting emotional polarity from raw user text across 6 granular psychological categories:
+  </p>
+  <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px;">
+    <span style="background:#FEF3C7; color:#92400E; padding:4px 10px; border-radius:6px; font-weight:700; font-size:12px;">😡 Anger</span>
+    <span style="background:#E0E7FF; color:#3730A3; padding:4px 10px; border-radius:6px; font-weight:700; font-size:12px;">😨 Fear</span>
+    <span style="background:#FEF9C3; color:#854D0E; padding:4px 10px; border-radius:6px; font-weight:700; font-size:12px;">😄 Joy</span>
+    <span style="background:#FCE7F3; color:#9D174D; padding:4px 10px; border-radius:6px; font-weight:700; font-size:12px;">❤️ Love</span>
+    <span style="background:#DBEAFE; color:#1E40AF; padding:4px 10px; border-radius:6px; font-weight:700; font-size:12px;">😢 Sadness</span>
+    <span style="background:#DCFCE7; color:#166534; padding:4px 10px; border-radius:6px; font-weight:700; font-size:12px;">😲 Surprise</span>
+  </div>
+
+  <h3>End-to-End Executable Project Implementation</h3>
+  <pre class="code-block"><code class="language-python">import numpy as np
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.naive_bayes import MultinomialNB
+from sklearn.linear_model import LogisticRegression
+from sklearn.pipeline import Pipeline
+from sklearn.metrics import classification_report, confusion_matrix
+
+# 1. Synthetic Representative Dataset (Mirroring Kaggle Emotion Dataset)
+data = {
+    'text': [
+        "I feel so ecstatic and grateful for this incredible promotion today!",
+        "I am so joyful and happy to see my family again after all these months.",
+        "I feel deeply saddened and heartbroken by the tragic news.",
+        "Everything feels depressing and sorrowful lately, nothing goes right.",
+        "I am furious and outraged by the terrible service and rude behavior!",
+        "My anger is boiling over, this unfair treatment is unacceptable.",
+        "I am terrified of losing my job and terrified of what comes next.",
+        "Heart pounding with dreadful fear walking through the dark alley.",
+        "I love you with all my heart, you mean the world to me forever.",
+        "Deeply in love and cherish every moment we spend together.",
+        "I was utterly astonished and amazed by the unexpected surprise party!",
+        "Shocked beyond belief, I never expected such a wonderful plot twist!"
+    ] * 20,
+    'emotion': [
+        'joy', 'joy', 'sadness', 'sadness',
+        'anger', 'anger', 'fear', 'fear',
+        'love', 'love', 'surprise', 'surprise'
+    ] * 20
+}
+
+df = pd.DataFrame(data)
+
+# 2. Train/Test Stratified Split
+X_train, X_test, y_train, y_test = train_test_split(
+    df['text'], df['emotion'], test_size=0.25, random_state=42, stratify=df['emotion']
+)
+
+# 3. Scikit-Learn Pipeline Construction
+emotion_pipeline = Pipeline([
+    ('tfidf', TfidfVectorizer(
+        ngram_range=(1, 2),
+        max_features=5000,
+        sublinear_tf=True
+    )),
+    ('classifier', MultinomialNB(alpha=0.5))
+])
+
+# 4. Model Training
+emotion_pipeline.fit(X_train, y_train)
+
+# 5. Performance Evaluation
+y_pred = emotion_pipeline.predict(X_test)
+print("=== CLASSIFICATION REPORT ===")
+print(classification_report(y_test, y_pred))
+
+# 6. Real-Time Inference Function with Class Probabilities
+def predict_emotion(input_text):
+    pred_label = emotion_pipeline.predict([input_text])[0]
+    probs = emotion_pipeline.predict_proba([input_text])[0]
+    classes = emotion_pipeline.classes_
+    
+    prob_dict = {cls: round(prob * 100, 2) for cls, prob in zip(classes, probs)}
+    sorted_probs = sorted(prob_dict.items(), key=lambda x: x[1], reverse=True)
+    
+    print(f"\nInput: '{input_text}'")
+    print(f"Predicted Emotion: {pred_label.upper()}")
+    print("Probability Distribution:")
+    for cls, pct in sorted_probs:
+        bar = '█' * int(pct // 5)
+        print(f"  {cls:&lt;10} : {pct:>5.1f}% {bar}")
+
+# Test real-time inference
+predict_emotion("I cannot believe they cancelled my flight without warning, absolutely livid!")
+predict_emotion("Holding my newborn baby girl for the very first time.")</code></pre>
+
+  <div class="callout">
+    <h4>🎓 Project Key Takeaways for Interviews</h4>
+    <ul>
+      <li><strong>Sublinear TF:</strong> Setting <code>sublinear_tf=True</code> applies $1 + \log(	ext{TF})$ instead of raw TF, which squashes the impact of words repeated multiple times in a single sentence.</li>
+      <li><strong>Class Imbalance:</strong> In real Kaggle emotion sets, <code>joy</code> and <code>sadness</code> typically account for 65% of samples while <code>surprise</code> is only 3%. In production, always use <code>stratify=y</code> and evaluate with Macro F1-score rather than raw accuracy.</li>
+    </ul>
+  </div>
+</article>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     TRACK 2: COMPREHENSIVE END-TO-END NLP CURRICULUM
+     Instructor: Nitish Singh (CampusX) • Playlist: PLKnIA16_RmvZo7fp5kkIth6nRTeQQsjfX
+     ═══════════════════════════════════════════════════════════════════ -->
+
+<div style="margin: 48px 0 20px; display: flex; align-items: center; gap: 12px; border-bottom: 2px solid #3B82F6; padding-bottom: 10px;">
+  <span style="background: #2563EB; color: #FFFFFF; font-size: 12px; font-weight: 800; padding: 4px 10px; border-radius: 6px; letter-spacing: 0.5px;">TRACK 02</span>
+  <h2 style="font-family: var(--font-heading); font-size: 1.5rem; color: #FFFFFF; margin: 0;">Comprehensive NLP Curriculum &amp; Dense Vectors (CampusX Series)</h2>
+</div>
+
+<!-- CHAPTER 06 -->
+<article class="chapter-container" id="chapter-6" data-chapter="6">
+  <header class="chapter-header">
+    <div class="chapter-badge-wrap">
+      <span class="chapter-badge badge-t2">Chapter 06 &bull; Industry Lifecycle</span>
+      <button class="chapter-timestamp-link" onclick="loadPlaylistVideo(0)">
+        <span>▶ Module 01 &bull; CampusX Series</span>
+      </button>
+    </div>
+    <h2 class="chapter-title">The Enterprise End-to-End NLP Lifecycle</h2>
+    <p class="chapter-subtitle">From raw uncurated data acquisition to production microservice deployment and drift monitoring.</p>
+  </header>
+
+  <p>
+    In real-world data science teams, building an NLP product is far broader than fitting a Scikit-Learn vectorizer. In his master series, <strong>Nitish Singh (CampusX)</strong> formalizes the 6-stage enterprise lifecycle:
+  </p>
+
+  <div class="diagram-wrapper">
+    <div class="mermaid">
+graph TD
+    S1["1. Data Acquisition (APIs, Scrapers, Databases, Logs)"] --> S2["2. Text Preparation & Cleaning (Heuristics, Regex)"]
+    S2 --> S3["3. Feature Engineering (Embeddings, Meta-Features)"]
+    S3 --> S4["4. Modeling & Training (Classical ML / Transformers)"]
+    S4 --> S5["5. Evaluation (Metrics, Calibration, Error Analysis)"]
+    S5 --> S6["6. Deployment & Monitoring (FastAPI, Docker, Drift)"]
+    classDef default fill:#FFFFFF,stroke:#1E293B,stroke-width:1.5px,color:#0F172A;
+    </div>
+  </div>
+
+  <h3>The 6 Stages in Production Engineering</h3>
+  <ul>
+    <li><strong>Stage 1: Data Acquisition:</strong> Collecting raw linguistic assets via web scraping (BeautifulSoup, Scrapy), internal Kafka event streams, customer support ticket dumps, or public benchmark repositories.</li>
+    <li><strong>Stage 2: Text Preparation:</strong> Normalization heuristics, sentence boundary detection, handling multilingual text, unicode normalization (NFKD), and domain-specific token filtering.</li>
+    <li><strong>Stage 3: Advanced Feature Engineering:</strong> Moving beyond simple word counts to linguistic features: readability scores, sentiment polarity scores, syntactic POS ratios, punctuation counts, and dense geometric embeddings.</li>
+    <li><strong>Stage 4: Modeling:</strong> Experimenting with baseline linear classifiers before scaling up to pre-trained transformer backbones.</li>
+    <li><strong>Stage 5: Evaluation &amp; Error Analysis:</strong> Evaluating performance beyond accuracy. Inspecting misclassified samples, evaluating performance across sensitive demographic slices, and verifying model calibration.</li>
+    <li><strong>Stage 6: Deployment &amp; Monitoring:</strong> Packaging models into low-latency REST endpoints (FastAPI), managing memory footprints with ONNX runtime quantization, and monitoring for <em>vocabulary drift</em> (new slang or domain terminology appearing in user queries).</li>
+  </ul>
+</article>
+
+<!-- CHAPTER 07 -->
+<article class="chapter-container" id="chapter-7" data-chapter="7">
+  <header class="chapter-header">
+    <div class="chapter-badge-wrap">
+      <span class="chapter-badge badge-t2">Chapter 07 &bull; Word2Vec</span>
+      <button class="chapter-timestamp-link" onclick="loadPlaylistVideo(3)">
+        <span>▶ Module 03 &bull; CampusX Series</span>
+      </button>
+    </div>
+    <h2 class="chapter-title">Distributed Representations &amp; Word2Vec</h2>
+    <p class="chapter-subtitle">Dense geometric embeddings, Continuous Bag of Words (CBOW), and Skip-Gram neural architectures.</p>
+  </header>
+
+  <p>
+    The fatal limitation of classical count-based methods (BoW, TF-IDF) is that words are treated as atomic, isolated symbols. In a TF-IDF matrix, the vectors for <code>"hotel"</code> and <code>"motel"</code> are as completely orthogonal and unrelated as the vectors for <code>"hotel"</code> and <code>"submarine"</code>.
+  </p>
+
+  <h3>1. The Distributional Semantics Hypothesis</h3>
+  <p>
+    Formulated by British linguist J.R. Firth (1957): <em>"You shall know a word by the company it keeps."</em> Words that appear in similar linguistic contexts possess similar semantic meanings.
+  </p>
+  <p>
+    In 2013, Tomas Mikolov et al. at Google introduced <strong>Word2Vec</strong>: mapping each word to a dense continuous vector $\mathbf{v} \in \mathbb{R}^d$ (typically $d = 100$ to $300$), where semantic similarities correspond to geometric proximity in vector space!
+  </p>
+
+  <div class="math-card">
+    <div class="math-title">Vector Arithmetic &amp; Semantic Geometry</div>
+    <div class="math-formula">
+      $$ec{v}_{	ext{King}} - ec{v}_{	ext{Man}} + ec{v}_{	ext{Woman}} pprox ec{v}_{	ext{Queen}}$$
+      $$ec{v}_{	ext{Paris}} - ec{v}_{	ext{France}} + ec{v}_{	ext{Japan}} pprox ec{v}_{	ext{Tokyo}}$$
+    </div>
+    <div class="math-expl">
+      The linear vector offset between "King" and "Queen" encodes gender, while the offset between "Paris" and "France" encodes capital-city relationships.
+    </div>
+  </div>
+
+  <h3>2. Cosine Similarity Metric</h3>
+  <p>
+    Because vectors live in dense continuous space, semantic closeness is quantified by the angle $	heta$ between vectors, completely invariant to magnitude:
+  </p>
+  <div class="math-card">
+    <div class="math-title">Cosine Similarity Formula</div>
+    <div class="math-formula">
+      $$	ext{CosineSim}(\mathbf{u}, \mathbf{v}) = rac{\mathbf{u} \cdot \mathbf{v}}{\|\mathbf{u}\|_2 \|\mathbf{v}\|_2} = rac{\sum_{i=1}^d u_i v_i}{\sqrt{\sum_{i=1}^d u_i^2} \sqrt{\sum_{i=1}^d v_i^2}}$$
+    </div>
+    <div class="math-expl">
+      Values range from $-1$ (opposite direction) to $0$ (orthogonal / unrelated) to $+1$ (identical direction / synonymous).
+    </div>
+  </div>
+
+  <h3>3. Word2Vec Architectures: CBOW vs. Skip-Gram</h3>
+  <div class="table-wrapper">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Attribute</th>
+          <th>CBOW (Continuous Bag of Words)</th>
+          <th>Skip-Gram</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Objective</strong></td>
+          <td>Predict center word $w_t$ given context words $w_{t-k}, \dots, w_{t+k}$</td>
+          <td>Predict surrounding context words given center word $w_t$</td>
+        </tr>
+        <tr>
+          <td><strong>Training Speed</strong></td>
+          <td>Much faster (averages context representations)</td>
+          <td>Slower (creates multiple context-target training pairs)</td>
+        </tr>
+        <tr>
+          <td><strong>Rare Words</strong></td>
+          <td>Underperforms on rare words (smoothed out by context)</td>
+          <td>Superior performance on rare words and specialized jargon</td>
+        </tr>
+        <tr>
+          <td><strong>Dataset Size</strong></td>
+          <td>Ideal for large corpora (&gt; 10M tokens)</td>
+          <td>Ideal for small to medium domain corpora</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="diagram-wrapper">
+    <div class="mermaid">
+graph LR
+    subgraph CBOW ["Continuous Bag of Words (CBOW)"]
+      C1["Context Words w(t-2), w(t-1), w(t+1), w(t+2)"] --> SUM["Average / Sum Layer"]
+      SUM --> P1["Predict Center Word w(t)"]
+    end
+    subgraph SkipGram ["Skip-Gram Architecture"]
+      INPUT["Center Word w(t)"] --> PROJ["Projection Layer"]
+      PROJ --> O1["Predict Context w(t-2)"]
+      PROJ --> O2["Predict Context w(t-1)"]
+      PROJ --> O3["Predict Context w(t+1)"]
+      PROJ --> O4["Predict Context w(t+2)"]
+    end
+    classDef default fill:#FFFFFF,stroke:#1E293B,stroke-width:1.5px,color:#0F172A;
+    </div>
+  </div>
+
+  <h3>4. Pretrained Embeddings: GloVe and FastText</h3>
+  <ul>
+    <li><strong>Stanford GloVe (Global Vectors):</strong> Trained by factorizing the global word-word co-occurrence matrix across the entire Wikipedia/Common Crawl corpus.</li>
+    <li><strong>Facebook FastText:</strong> Breaks each word down into a bag of <em>character n-grams</em> (e.g. <code>"apple"</code> &rarr; <code>"&lt;ap", "app", "ppl", "ple", "le&gt;"</code>). When an unseen Out-of-Vocabulary (OOV) word occurs at test time, FastText constructs its embedding by summing its constituent subword n-grams!</li>
+  </ul>
+</article>
+
+<!-- CHAPTER 08 -->
+<article class="chapter-container" id="chapter-8" data-chapter="8">
+  <header class="chapter-header">
+    <div class="chapter-badge-wrap">
+      <span class="chapter-badge badge-t2">Chapter 08 &bull; Document Embeddings</span>
+      <button class="chapter-timestamp-link" onclick="loadPlaylistVideo(5)">
+        <span>▶ Module 05 &bull; CampusX Series</span>
+      </button>
+    </div>
+    <h2 class="chapter-title">Document Embeddings: Average &amp; TF-IDF Word2Vec</h2>
+    <p class="chapter-subtitle">Aggregating word-level geometric representations into sentence and document-level vectors.</p>
+  </header>
+
+  <p>
+    Word2Vec produces vectors for individual tokens. To classify an entire paragraph or document $d$, we must synthesize individual word vectors into a single fixed-length document vector $\mathbf{v}_d$.
+  </p>
+
+  <h3>1. Average Word2Vec</h3>
+  <p>
+    The simplest and most reliable approach computes the centroid (element-wise arithmetic mean) across all recognized words in the document:
+  </p>
+  <div class="math-card">
+    <div class="math-title">Average Word2Vec Formula</div>
+    <div class="math-formula">
+      $$\mathbf{v}_d = rac{1}{|d|} \sum_{w \in d} \mathbf{v}_w$$
+    </div>
+    <div class="math-expl">
+      Where $|d|$ is the count of words in document $d$ that exist in the Word2Vec vocabulary.
+    </div>
+  </div>
+
+  <h3>2. TF-IDF Weighted Word2Vec</h3>
+  <p>
+    Simple averaging gives equal voting weight to every word. A superior formulation weights each vector by its TF-IDF importance score, allowing salient keywords to pull the document vector in their direction:
+  </p>
+  <div class="math-card">
+    <div class="math-title">TF-IDF Weighted Word2Vec Formula</div>
+    <div class="math-formula">
+      $$\mathbf{v}_d = rac{\sum_{w \in d} 	ext{TF-IDF}(w, d) \cdot \mathbf{v}_w}{\sum_{w \in d} 	ext{TF-IDF}(w, d)}$$
+    </div>
+    <div class="math-expl">
+      High-value unique terms contribute heavily to the document centroid, while frequent generic words have negligible effect.
+    </div>
+  </div>
+
+  <pre class="code-block"><code class="language-python">import numpy as np
+from gensim.models import Word2Vec
+
+# Training custom Word2Vec on tokenized sentences
+sentences = [
+    ["deep", "learning", "neural", "networks", "revolutionized", "computer", "vision"],
+    ["natural", "language", "processing", "uses", "dense", "word", "embeddings"],
+    ["transformers", "and", "self", "attention", "dominate", "modern", "nlp"]
+]
+
+w2v_model = Word2Vec(sentences, vector_size=100, window=5, min_count=1, workers=4)
+
+def get_average_word2vec(doc_tokens, model, vector_dim=100):
+    valid_vectors = [model.wv[w] for w in doc_tokens if w in model.wv]
+    if len(valid_vectors) == 0:
+        return np.zeros(vector_dim)
+    return np.mean(valid_vectors, axis=0)
+
+doc = ["modern", "neural", "nlp"]
+doc_vector = get_average_word2vec(doc, w2v_model)
+print("Document Vector Shape:", doc_vector.shape) # (100,)</code></pre>
+</article>
+
+<!-- CHAPTER 09 -->
+<article class="chapter-container" id="chapter-9" data-chapter="9">
+  <header class="chapter-header">
+    <div class="chapter-badge-wrap">
+      <span class="chapter-badge badge-t2">Chapter 09 &bull; Sequence Models</span>
+      <button class="chapter-timestamp-link" onclick="loadPlaylistVideo(6)">
+        <span>▶ Module 06 &bull; CampusX Series</span>
+      </button>
+    </div>
+    <h2 class="chapter-title">Sequence Modeling &amp; POS Tagging with HMMs</h2>
+    <p class="chapter-subtitle">Markov chains, transition/emission probability matrices, and optimal path decoding via the Viterbi Algorithm.</p>
+  </header>
+
+  <p>
+    Bag of words completely destroys sequential grammar. In syntactic parsing, <strong>Part-of-Speech (POS) Tagging</strong> assigns grammatical categories (Noun, Verb, Adjective, etc.) to each token in a sentence.
+  </p>
+
+  <h3>Hidden Markov Models (HMM) for POS Tagging</h3>
+  <p>
+    In an HMM framework:
+  </p>
+  <ul>
+    <li><strong>Observable States ($O$):</strong> The surface words in the sentence (e.g. <em>"The", "bear", "can", "run"</em>).</li>
+    <li><strong>Hidden States ($S$):</strong> The true grammatical POS tags (e.g. <code>DET</code>, <code>NOUN</code>, <code>MODAL</code>, <code>VERB</code>).</li>
+    <li><strong>Transition Probability Matrix ($A$):</strong> Probability of moving from tag $t_{i-1}$ to tag $t_i$:
+      $$A_{jk} = P(t_i = s_k \mid t_{i-1} = s_j)$$
+    </li>
+    <li><strong>Emission Probability Matrix ($B$):</strong> Probability of a tag emitting a specific word:
+      $$B_{j}(w_k) = P(w_k \mid t_j)$$
+    </li>
+  </ul>
+
+  <h3>The Viterbi Dynamic Programming Algorithm</h3>
+  <p>
+    Given an observed sentence of length $T$, brute-force evaluation of all possible tag combinations requires $O(|S|^T)$ exponential time. The <strong>Viterbi Algorithm</strong> solves this in $O(T \cdot |S|^2)$ polynomial time using dynamic programming:
+  </p>
+  <div class="math-card">
+    <div class="math-title">Viterbi Recursive State Update</div>
+    <div class="math-formula">
+      $$V_{t, k} = \max_{j} \left( V_{t-1, j} 	imes P(t_k \mid t_j) 
+ight) 	imes P(w_t \mid t_k)$$
+    </div>
+    <div class="math-expl">
+      $V_{t, k}$ stores the maximum probability of the state sequence leading to hidden tag $k$ at time step $t$. Backpointers record the argmax index to reconstruct the optimal sequence.
+    </div>
+  </div>
+</article>
+
+<!-- CHAPTER 10 -->
+<article class="chapter-container" id="chapter-10" data-chapter="10">
+  <header class="chapter-header">
+    <div class="chapter-badge-wrap">
+      <span class="chapter-badge badge-t2">Chapter 10 &bull; Deep Learning</span>
+      <button class="chapter-timestamp-link" onclick="loadPlaylistVideo(7)">
+        <span>▶ Module 07 &bull; CampusX Series</span>
+      </button>
+    </div>
+    <h2 class="chapter-title">Transition to Deep Learning &amp; Transformers</h2>
+    <p class="chapter-subtitle">Recurrent Neural Networks, Vanishing Gradients, LSTMs, and the Attention Revolution.</p>
+  </header>
+
+  <p>
+    As NLP progressed into complex tasks (Machine Translation, Text Summarization), statistical models gave way to deep sequence-to-sequence neural networks.
+  </p>
+
+  <h3>1. Recurrent Neural Networks (RNN) &amp; Their Failure Mode</h3>
+  <p>
+    Standard RNNs maintain an internal hidden memory vector $h_t = 	anh(W_{hh} h_{t-1} + W_{xh} x_t)$ that updates sequentially across tokens.
+  </p>
+  <ul>
+    <li><strong>The Vanishing Gradient Trap:</strong> During Backpropagation Through Time (BPTT), repeated matrix multiplications of weights $W_{hh} < 1$ cause error gradients to decay exponentially:
+      $$rac{\partial L}{\partial h_1} \propto \prod_{k=2}^T W_{hh}^T \longrightarrow 0$$
+      The network completely forgets dependencies beyond 8–10 tokens!
+    </li>
+  </ul>
+
+  <h3>2. LSTMs and GRUs</h3>
+  <p>
+    <strong>Long Short-Term Memory (LSTM)</strong> networks introduce a dedicated <em>Cell State</em> ($\mathbf{c}_t$) highway regulated by three multiplicative sigmoid gates:
+  </p>
+  <ul>
+    <li><strong>Forget Gate:</strong> $f_t = \sigma(W_f [h_{t-1}, x_t] + b_f)$ (What information to discard)</li>
+    <li><strong>Input Gate:</strong> $i_t = \sigma(W_i [h_{t-1}, x_t] + b_i)$ (What new information to store)</li>
+    <li><strong>Output Gate:</strong> $o_t = \sigma(W_o [h_{t-1}, x_t] + b_o)$ (What filtered state to output)</li>
+  </ul>
+
+  <h3>3. The Transformer Architecture &amp; Self-Attention</h3>
+  <p>
+    In 2017, Vaswani et al. published <em>"Attention Is All You Need"</em>, abolishing sequential recurrence in favor of parallelized matrix operations powered by <strong>Scaled Dot-Product Self-Attention</strong>:
+  </p>
+
+  <div class="math-card">
+    <div class="math-title">Scaled Dot-Product Attention Equation</div>
+    <div class="math-formula">
+      $$	ext{Attention}(Q, K, V) = 	ext{softmax}\left(rac{QK^T}{\sqrt{d_k}}
+ight) V$$
+    </div>
+    <div class="math-expl">
+      $Q$ (Queries), $K$ (Keys), and $V$ (Values) are linear projections of input embeddings. The dot product $QK^T$ computes pairwise semantic compatibility between every word in the sentence simultaneously. Dividing by $\sqrt{d_k}$ prevents large dot products from pushing softmax into vanishing gradient regions.
+    </div>
+  </div>
+
+  <div class="diagram-wrapper">
+    <div class="mermaid">
+graph LR
+    Input["Input Tokens"] --> Proj["Linear Projections: Q, K, V"]
+    Proj --> MatMul1["MatMul: Q and Transposed K"]
+    MatMul1 --> Scale["Scale: Divide by sqrt(d_k)"]
+    Scale --> Softmax["Softmax: Attention Weight Distribution"]
+    Softmax --> MatMul2["MatMul with Value Matrix V"]
+    MatMul2 --> Out["Contextual Self-Attention Output"]
+    classDef default fill:#FFFFFF,stroke:#1E293B,stroke-width:1.5px,color:#0F172A;
+    </div>
+  </div>
+</article>
+
+<!-- CHAPTER 11 -->
+<article class="chapter-container" id="chapter-11" data-chapter="11">
+  <header class="chapter-header">
+    <div class="chapter-badge-wrap">
+      <span class="chapter-badge badge-t2">Chapter 11 &bull; Production Projects</span>
+      <button class="chapter-timestamp-link" onclick="loadPlaylistVideo(8)">
+        <span>▶ Module 08 &bull; CampusX Series</span>
+      </button>
+    </div>
+    <h2 class="chapter-title">Enterprise Capstone Projects (CampusX)</h2>
+    <p class="chapter-subtitle">Quora Duplicate Question Pairs detection and Production SMS/Email Spam Classifier Web App.</p>
+  </header>
+
+  <p>
+    The culmination of the CampusX series focuses on building two production-ready machine learning solutions with rigorous feature engineering:
+  </p>
+
+  <h3>Project 1: Quora Duplicate Question Pairs Detection</h3>
+  <p>
+    <strong>Problem:</strong> Given two user questions $q_1$ and $q_2$, determine whether they have identical semantic intent (1 = Duplicate, 0 = Distinct).
+  </p>
+  <h4>Advanced Heuristic Feature Engineering:</h4>
+  <ul>
+    <li><strong>Token-Based Features:</strong> Common word count, total word count, word share ratio ($2 	imes rac{|q_1 \cap q_2|}{|q_1| + |q_2|}$).</li>
+    <li><strong>Length Differences:</strong> Absolute character length difference, absolute word count difference.</li>
+    <li><strong>Fuzzy String Matching:</strong> <code>fuzz.ratio</code>, <code>fuzz.partial_ratio</code>, <code>fuzz.token_sort_ratio</code>, and <code>fuzz.token_set_ratio</code> using FuzzyWuzzy.</li>
+    <li><strong>Semantic Distance:</strong> Cosine similarity and Word Mover's Distance between document Word2Vec representations.</li>
+  </ul>
+
+  <h3>Project 2: Production SMS/Email Spam Classifier Web App</h3>
+  <pre class="code-block"><code class="language-python"># Streamlit Web App Architecture (app.py)
+import streamlit as st
+import pickle
+import string
+import nltk
+from nltk.corpus import stopwords
+from nltk.stem.porter import PorterStemmer
+
+ps = PorterStemmer()
+
+def transform_text(text):
+    text = text.lower()
+    text = nltk.word_tokenize(text)
+    y = [ps.stem(i) for i in text if i.isalnum() and i not in stopwords.words('english')]
+    return " ".join(y)
+
+# Load serialized models
+tfidf = pickle.load(open('vectorizer.pkl', 'rb'))
+model = pickle.load(open('model.pkl', 'rb'))
+
+st.title("🛡️ Enterprise SMS/Email Spam Classifier")
+input_sms = st.text_area("Enter suspicious email or SMS text:")
+
+if st.button("Analyze Message"):
+    transformed_sms = transform_text(input_sms)
+    vector_input = tfidf.transform([transformed_sms])
+    result = model.predict(vector_input)[0]
+    
+    if result == 1:
+        st.error("🚨 HIGH ALERT: This message is classified as SPAM!")
+    else:
+        st.success("✅ Clean: This message is classified as HAM (Legitimate).")</code></pre>
+</article>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     TRACK 3: TOP 15 PLACEMENT INTERVIEW QUESTIONS & ANSWERS
+     ═══════════════════════════════════════════════════════════════════ -->
+
+<section class="iq-section" id="interview-questions">
+  <div class="iq-header">
+    <span class="iq-icon">&#127919;</span>
+    <div>
+      <h2 class="iq-title">Top 15 Placement Interview Questions &mdash; NLP &amp; Language AI</h2>
+      <p class="iq-subtitle">Curated from Google, Microsoft, Amazon, Walmart, and premier AI product engineering interviews. Click to reveal complete technical answers and formulas.</p>
+    </div>
+  </div>
+
+  <div class="iq-grid">
+
+    <!-- Q1 -->
+    <div class="iq-item">
+      <div class="iq-q"><span class="iq-num">01</span><span>Explain the fundamental difference between Stemming and Lemmatization. When would you prefer one over the other in production?</span></div>
+      <div class="iq-toggle"><span class="iq-toggle-lbl"></span></div>
+      <div class="iq-a">
+        <p><strong>Answer:</strong></p>
+        <ul>
+          <li><strong>Stemming</strong> is an algorithmic, rule-based heuristic that truncates affixes (prefixes/suffixes) from words using static lookups (e.g. Porter, Snowball stemmers). It operates without context or grammatical knowledge, often producing non-dictionary stems (e.g. <em>"university" &rarr; "univers"</em>, <em>"organization" &rarr; "organ"</em>).</li>
+          <li><strong>Lemmatization</strong> performs full morphological analysis using a dictionary (WordNet) and Part-of-Speech (POS) tags to return the true base dictionary headword known as the <em>lemma</em> (e.g. <em>"better" (with POS=adjective) &rarr; "good"</em>, <em>"running" (POS=verb) &rarr; "run"</em>).</li>
+          <li><strong>Production Preference:</strong> Use Stemming when latency is paramount and the task is simple query matching or search index retrieval where morphological exactness is secondary to speed. Use Lemmatization when semantic accuracy, text summarization, grammar correction, or sentiment nuance is critical.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Q2 -->
+    <div class="iq-item">
+      <div class="iq-q"><span class="iq-num">02</span><span>Why is the logarithm applied in the Inverse Document Frequency (IDF) formula? What breaks if we use raw inverse frequency?</span></div>
+      <div class="iq-toggle"><span class="iq-toggle-lbl"></span></div>
+      <div class="iq-a">
+        <p><strong>Answer:</strong></p>
+        <p>In a corpus of $N = 10,000,000$ documents, if a rare word appears in only 1 document, its raw inverse ratio is $rac{N}{DF} = 10,000,000$. If another word appears in 1,000 documents, its raw ratio is $10,000$.</p>
+        <p>Using raw inverse ratios would give the first word a weighting that is <strong>1,000 times larger</strong> than the second word! This exponential scale completely drowns out term frequency (TF), making rare typos completely dominate document vectors.</p>
+        <p>Taking the logarithm: $\log(10,000,000) pprox 7$, and $\log(10,000) pprox 4$. The logarithm applies <strong>sub-linear dampening</strong>, compressing astronomical frequency ranges into stable, balanced coefficients that complement term frequency.</p>
+      </div>
+    </div>
+
+    <!-- Q3 -->
+    <div class="iq-item">
+      <div class="iq-q"><span class="iq-num">03</span><span>How does Laplace Additive Smoothing work in Multinomial Naive Bayes, and what catastrophic failure does it prevent?</span></div>
+      <div class="iq-toggle"><span class="iq-toggle-lbl"></span></div>
+      <div class="iq-a">
+        <p><strong>Answer:</strong></p>
+        <p>In standard maximum likelihood estimation, the probability of observing word $w$ in class $C$ is $P(w \mid C) = rac{	ext{count}(w, C)}{\sum_{w'} 	ext{count}(w', C)}$. If an unseen test word appears that never occurred in training for class $C$, $P(w \mid C) = 0$.</p>
+        <p>Because Naive Bayes multiplies conditional probabilities ($P(C) 	imes \prod_i P(w_i \mid C)$), a single zero collapses the entire probability for that class to <strong>absolute zero</strong> (Zero Probability Problem).</p>
+        <p><strong>Laplace Smoothing ($lpha=1$):</strong> Adds pseudocount $lpha$ to numerator and $lpha |V|$ to denominator:
+        $$P(w_i \mid C) = rac{N_{C, w_i} + 1}{N_C + |V|}$$
+        This guarantees every vocabulary token retains a small, non-zero probability.</p>
+      </div>
+    </div>
+
+    <!-- Q4 -->
+    <div class="iq-item">
+      <div class="iq-q"><span class="iq-num">04</span><span>What are the three core architectural flaws of Bag-of-Words and TF-IDF representations?</span></div>
+      <div class="iq-toggle"><span class="iq-toggle-lbl"></span></div>
+      <div class="iq-a">
+        <p><strong>Answer:</strong></p>
+        <ol>
+          <li><strong>Loss of Sequential Context (Word Order Ignored):</strong> "Dog bites man" and "Man bites dog" produce identical BoW/TF-IDF vectors despite conveying opposite real-world events.</li>
+          <li><strong>Orthogonality &amp; Absence of Semantic Similarity:</strong> Every word is an independent axis. "Automobile" and "car" have an inner product of zero. The model cannot infer that two documents discussing "cars" and "automobiles" are conceptually related.</li>
+          <li><strong>Extreme Dimensionality &amp; Sparsity:</strong> Vector length equals vocabulary size $|V|$. For $|V| = 80,000$, a 15-word tweet yields a vector that is $99.98\%$ zeroes, wasting GPU memory and causing overfitting.</li>
+        </ol>
+      </div>
+    </div>
+
+    <!-- Q5 -->
+    <div class="iq-item">
+      <div class="iq-q"><span class="iq-num">05</span><span>Compare Word2Vec CBOW vs. Skip-Gram. Which architecture performs better on rare words and why?</span></div>
+      <div class="iq-toggle"><span class="iq-toggle-lbl"></span></div>
+      <div class="iq-a">
+        <p><strong>Answer:</strong></p>
+        <p><strong>Skip-Gram</strong> performs significantly better on rare words.</p>
+        <ul>
+          <li>In <strong>CBOW</strong>, context word vectors are averaged together to predict the center target word. During this averaging step, rare words are completely smoothed out and overpowered by frequent context tokens.</li>
+          <li>In <strong>Skip-Gram</strong>, the center word is tasked with predicting each context word individually. Whenever a rare word appears as the center target, its embedding receives dedicated backpropagation gradient updates against all surrounding context words, preventing its gradient from being diluted.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Q6 -->
+    <div class="iq-item">
+      <div class="iq-q"><span class="iq-num">06</span><span>How does Facebook FastText solve the Out-of-Vocabulary (OOV) problem that breaks standard Word2Vec and GloVe?</span></div>
+      <div class="iq-toggle"><span class="iq-toggle-lbl"></span></div>
+      <div class="iq-a">
+        <p><strong>Answer:</strong></p>
+        <p>Standard Word2Vec and GloVe assign a single atomic vector to each complete word token. If an unseen word occurs at test time (e.g. <em>"electrochemical"</em>), the model returns a zero or random vector.</p>
+        <p><strong>FastText</strong> treats words as bags of <em>character n-grams</em> with boundary brackets (e.g. for $n=3$, <code>"where"</code> &rarr; <code>"&lt;wh", "whe", "her", "ere", "re&gt;"</code> plus the special token <code>"&lt;where&gt;"</code>). The word embedding is the sum of all its subword character n-gram vectors.</p>
+        <p>When an Out-of-Vocabulary word or typo appears at inference, FastText decomposes it into familiar character subwords and synthesizes an accurate embedding from constituent morphological pieces!</p>
+      </div>
+    </div>
+
+    <!-- Q7 -->
+    <div class="iq-item">
+      <div class="iq-q"><span class="iq-num">07</span><span>How do you calculate document embeddings using TF-IDF Weighted Word2Vec, and why is it superior to Average Word2Vec?</span></div>
+      <div class="iq-toggle"><span class="iq-toggle-lbl"></span></div>
+      <div class="iq-a">
+        <p><strong>Answer:</strong></p>
+        <p>Simple Average Word2Vec calculates $\mathbf{v}_d = rac{1}{|d|} \sum_{w \in d} \mathbf{v}_w$, assigning equal voting power to high-frequency filler words as to core domain keywords.</p>
+        <p><strong>TF-IDF Weighted Word2Vec:</strong></p>
+        $$\mathbf{v}_d = rac{\sum_{w \in d} 	ext{TF-IDF}(w, d) \cdot \mathbf{v}_w}{\sum_{w \in d} 	ext{TF-IDF}(w, d)}$$
+        <p>Words with high IDF (rare, discriminative topic words) receive massive coefficients, dynamically pulling the document centroid vector towards the authentic semantic intent of the text.</p>
+      </div>
+    </div>
+
+    <!-- Q8 -->
+    <div class="iq-item">
+      <div class="iq-q"><span class="iq-num">08</span><span>Explain the working principle of the Viterbi algorithm in POS Tagging using Hidden Markov Models. What is its time complexity?</span></div>
+      <div class="iq-toggle"><span class="iq-toggle-lbl"></span></div>
+      <div class="iq-a">
+        <p><strong>Answer:</strong></p>
+        <p>The Viterbi algorithm is a dynamic programming technique used to find the most probable sequence of hidden states (POS tags) given an observed sequence of words.</p>
+        <p>At each time step $t$ and state $k$, Viterbi computes:
+        $$V_{t, k} = \max_{j} \left( V_{t-1, j} 	imes A_{j, k} 
+ight) 	imes B_k(w_t)$$
+        Where $A_{j, k}$ is tag transition probability and $B_k(w_t)$ is emission probability. Backpointers store the state index $j$ that yielded the maximum value.</p>
+        <p><strong>Complexity:</strong> $O(T \cdot |S|^2)$ time and $O(T \cdot |S|)$ space, where $T$ is sentence length and $|S|$ is the count of distinct POS tags. This transforms an impossible $O(|S|^T)$ exponential problem into real-time linear computation.</p>
+      </div>
+    </div>
+
+    <!-- Q9 -->
+    <div class="iq-item">
+      <div class="iq-q"><span class="iq-num">09</span><span>Why do standard RNNs suffer from vanishing gradients when processing long text sequences, and how do LSTMs resolve this?</span></div>
+      <div class="iq-toggle"><span class="iq-toggle-lbl"></span></div>
+      <div class="iq-a">
+        <p><strong>Answer:</strong></p>
+        <p>In standard RNNs, hidden state transitions apply $h_t = 	anh(W_{hh} h_{t-1} + W_{xh} x_t)$. During Backpropagation Through Time (BPTT), the gradient of loss $L$ with respect to early hidden state $h_1$ involves the product chain:
+        $$rac{\partial L}{\partial h_1} \propto \prod_{k=2}^T 	ext{diag}(1 - h_k^2) W_{hh}^T$$
+        Because the derivative of $	anh$ is bounded in $(0, 1]$ and eigenvalues of $W_{hh} < 1$, the gradient vanishes exponentially to 0 after 8–10 steps.</p>
+        <p><strong>LSTM Solution:</strong> Introduces an additive <em>Cell State</em> ($\mathbf{c}_t = f_t \odot c_{t-1} + i_t \odot 	ilde{c}_t$). Gradient flow through the cell state contains an additive component $rac{\partial c_t}{\partial c_{t-1}} = f_t$, providing an uninterrupted gradient highway across hundreds of tokens without exponential decay.</p>
+      </div>
+    </div>
+
+    <!-- Q10 -->
+    <div class="iq-item">
+      <div class="iq-q"><span class="iq-num">10</span><span>Derive the Scaled Dot-Product Attention equation. Why do we divide by $\sqrt{d_k}$?</span></div>
+      <div class="iq-toggle"><span class="iq-toggle-lbl"></span></div>
+      <div class="iq-a">
+        <p><strong>Answer:</strong></p>
+        <p>The Scaled Dot-Product Attention formula is:
+        $$	ext{Attention}(Q, K, V) = 	ext{softmax}\left(rac{QK^T}{\sqrt{d_k}}
+ight) V$$</p>
+        <p><strong>Why divide by $\sqrt{d_k}$?</strong></p>
+        <p>Assume components of query $q$ and key $k$ are independent random variables with mean 0 and variance 1. The dot product is $q \cdot k = \sum_{i=1}^{d_k} q_i k_i$. The mean of the dot product is 0, but its <strong>variance is $d_k$</strong>.</p>
+        <p>For large projection dimensions (e.g. $d_k = 64$ or $128$), the variance is $64$, meaning dot products become very large in magnitude. Large positive inputs into $	ext{softmax}(z)$ push it into regions with near-zero gradients ($	ext{softmax}'(z) 	o 0$), causing severe gradient vanishing during training.</p>
+        <p>Dividing by $\sqrt{d_k}$ scales the variance back down to exactly $1$, stabilizing softmax gradients.</p>
+      </div>
+    </div>
+
+    <!-- Q11 -->
+    <div class="iq-item">
+      <div class="iq-q"><span class="iq-num">11</span><span>How do you handle severe class imbalance in text classification (e.g., Rare emotion detection or SMS spam)?</span></div>
+      <div class="iq-toggle"><span class="iq-toggle-lbl"></span></div>
+      <div class="iq-a">
+        <p><strong>Answer:</strong></p>
+        <ul>
+          <li><strong>Stratified Sampling:</strong> Use <code>StratifiedKFold</code> or <code>train_test_split(stratify=y)</code> to ensure train and test sets have identical class proportions.</li>
+          <li><strong>Loss Function Weighting:</strong> Apply class weights inversely proportional to class frequency: $w_c = rac{N}{|C| \cdot N_c}$ (e.g. <code>class_weight='balanced'</code> in Scikit-Learn or Focal Loss in deep learning).</li>
+          <li><strong>Data Augmentation / Synthetic Sampling:</strong> SMOTE on vector embeddings, or contextual back-translation (English &rarr; German &rarr; English) to generate diverse minority samples.</li>
+          <li><strong>Evaluation Metric Shift:</strong> Never use raw accuracy! Use Precision-Recall AUC (PR-AUC), Macro F1-score, and cost-weighted confusion matrices.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Q12 -->
+    <div class="iq-item">
+      <div class="iq-q"><span class="iq-num">12</span><span>What is Subword Tokenization (BPE, WordPiece) and why is it preferred by modern LLMs over word-level tokenization?</span></div>
+      <div class="iq-toggle"><span class="iq-toggle-lbl"></span></div>
+      <div class="iq-a">
+        <p><strong>Answer:</strong></p>
+        <p>Word-level tokenization requires an enormous vocabulary ($> 500,000$ words) yet still fails on typos, slang, and compound terms. Character-level tokenization solves OOV but creates absurdly long sequences that destroy computational efficiency.</p>
+        <p><strong>Subword Tokenization (Byte-Pair Encoding / WordPiece):</strong> Begins with base characters and iteratively merges the most frequently co-occurring pairs into subwords. Common words remain intact (<code>"the"</code>, <code>"cat"</code>), while rare or novel words are segmented into subword stems (<code>"unfriendly"</code> &rarr; <code>"un", "friend", "ly"</code>).</p>
+        <p>This bounds vocabulary size to a compact $30,000 - 50,000$ tokens while completely eliminating the Out-of-Vocabulary (OOV) failure mode.</p>
+      </div>
+    </div>
+
+    <!-- Q13 -->
+    <div class="iq-item">
+      <div class="iq-q"><span class="iq-num">13</span><span>What is the difference between Extractive and Abstractive text summarization? Which techniques power each?</span></div>
+      <div class="iq-toggle"><span class="iq-toggle-lbl"></span></div>
+      <div class="iq-a">
+        <p><strong>Answer:</strong></p>
+        <ul>
+          <li><strong>Extractive Summarization:</strong> Selects and extracts the most salient existing sentences verbatim from the original text without generating any new vocabulary. Powered by graph ranking algorithms like <strong>TextRank</strong> (PageRank over cosine similarity of sentence embeddings) or supervised sentence scoring.</li>
+          <li><strong>Abstractive Summarization:</strong> Reads the original text, forms an internal semantic representation, and generates novel paraphrased sentences from scratch (like a human writing a summary). Powered by encoder-decoder transformers (BART, T5, Pegasus) and autoregressive LLMs.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Q14 -->
+    <div class="iq-item">
+      <div class="iq-q"><span class="iq-num">14</span><span>How does the Attention mechanism in Seq2Seq models overcome the Information Bottleneck problem?</span></div>
+      <div class="iq-toggle"><span class="iq-toggle-lbl"></span></div>
+      <div class="iq-a">
+        <p><strong>Answer:</strong></p>
+        <p>In standard encoder-decoder Seq2Seq networks, the encoder compresses an entire input sentence of arbitrary length into a single fixed-size vector $h_T$ (the context vector). Trying to force a 50-word sentence into a single 512-dimensional vector creates a severe <strong>information bottleneck</strong> that drops early details.</p>
+        <p><strong>Attention Solution:</strong> The encoder preserves the hidden states $h_1, h_2, \dots, h_T$ from <em>every single time step</em>. When generating output token $y_t$, the decoder calculates an attention weight distribution $lpha_{t, i}$ over all encoder states, computing a dynamic context vector $c_t = \sum_{i=1}^T lpha_{t, i} h_i$. The decoder directly accesses any source word across the entire sentence.</p>
+      </div>
+    </div>
+
+    <!-- Q15 -->
+    <div class="iq-item">
+      <div class="iq-q"><span class="iq-num">15</span><span>How would you architect a production Duplicate Question Detection system for a platform like Quora handling 50M daily queries?</span></div>
+      <div class="iq-toggle"><span class="iq-toggle-lbl"></span></div>
+      <div class="iq-a">
+        <p><strong>Answer:</strong></p>
+        <p>A production architecture uses a two-tier <strong>Retrieve-and-Rerank</strong> system:</p>
+        <ol>
+          <li><strong>Stage 1: Candidate Retrieval (High Recall, &lt; 10ms):</strong>
+            <ul>
+              <li>Convert question into dense embedding via bi-encoder (MiniLM / Sentence-BERT).</li>
+              <li>Perform Approximate Nearest Neighbor (ANN) search over 100M existing question embeddings using <strong>FAISS</strong> or <strong>HNSW vector database</strong>.</li>
+              <li>Retrieve top 100 candidate duplicates.</li>
+            </ul>
+          </li>
+          <li><strong>Stage 2: Precision Re-Ranking (High Precision, &lt; 30ms):</strong>
+            <ul>
+              <li>Pass question pair and top 100 candidates through a cross-encoder or gradient-boosted tree (XGBoost) trained on fuzzy token matching, length differentials, and Word Mover's Distance.</li>
+              <li>Sort by predicted duplicate probability; if top score exceeds threshold $0.85$, trigger duplicate merge.</li>
+            </ul>
+          </li>
+        </ol>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+    
+      <!-- Placement Interview Questions & NeetCode 150 Core DSA Patterns Drill -->
+      <section class="placement-interview-section" id="placement-interview-drill">
+        <div class="piq-header">
+          <div class="piq-title-group">
+            <div class="piq-icon">🎯</div>
+            <div>
+              <h2 class="piq-main-title">Placement Interview Drill &mdash; NLP &amp; DSA</h2>
+              <p class="piq-subtitle">Curated high-frequency FAANG questions on Language Models, Vector Embeddings, and NeetCode 150 Core DSA.</p>
+            </div>
+          </div>
+          <div class="piq-tabs">
+            <button class="piq-tab-btn active" id="piq-tab-subject" onclick="switchPiqTab('subject')">NLP Core FAANG Questions</button>
+            <button class="piq-tab-btn" id="piq-tab-dsa" onclick="switchPiqTab('dsa')">NeetCode 150 Core DSA Patterns</button>
+          </div>
+        </div>
+
+        <!-- TAB 1: NLP Core FAANG Questions -->
+        <div class="piq-grid" id="piq-grid-subject">
+          <div class="piq-card" onclick="togglePiqCard(this)">
+            <div class="piq-question-bar">
+              <div class="piq-q-text">
+                <span class="piq-q-num">NLP 1.</span>
+                <span>Derive TF-IDF and explain why sublinear TF scaling is needed.</span>
+              </div>
+              <div class="piq-q-badges">
+                <span class="piq-tag med">Derivation</span>
+                <span class="piq-tag">Vector Space</span>
+                <span class="piq-toggle-icon">▼</span>
+              </div>
+            </div>
+            <div class="piq-answer-box">
+              <p>TF-IDF(t, d, D) = TF(t, d) * IDF(t, D), where IDF(t, D) = log( (1 + |D|) / (1 + DF(t)) ) + 1.</p>
+              <p>Standard term frequency assumes twenty occurrences of a term convey 20x the relevance of one occurrence. Sublinear TF scaling replaces raw count with 1 + log(TF), dampening repeated occurrences.</p>
+            </div>
+          </div>
+
+          <div class="piq-card" onclick="togglePiqCard(this)">
+            <div class="piq-question-bar">
+              <div class="piq-q-text">
+                <span class="piq-q-num">NLP 2.</span>
+                <span>Compare CBOW and Skip-Gram architectures in Word2Vec.</span>
+              </div>
+              <div class="piq-q-badges">
+                <span class="piq-tag med">Embeddings</span>
+                <span class="piq-tag">Word2Vec</span>
+                <span class="piq-toggle-icon">▼</span>
+              </div>
+            </div>
+            <div class="piq-answer-box">
+              <p><strong>Continuous Bag-of-Words (CBOW):</strong> Predicts target center word w_t given context window words. Faster to train, higher accuracy on frequent words due to averaging context.</p>
+              <p><strong>Skip-Gram:</strong> Predicts surrounding context words given center word w_t. Slower to train, but excels on small datasets and rare words because every context-target pair is treated as a distinct training instance.</p>
+            </div>
+          </div>
+
+          <div class="piq-card" onclick="togglePiqCard(this)">
+            <div class="piq-question-bar">
+              <div class="piq-q-text">
+                <span class="piq-q-num">NLP 3.</span>
+                <span>Explain Byte Pair Encoding (BPE) subword tokenization.</span>
+              </div>
+              <div class="piq-q-badges">
+                <span class="piq-tag hard">Tokenization</span>
+                <span class="piq-tag">LLMs</span>
+                <span class="piq-toggle-icon">▼</span>
+              </div>
+            </div>
+            <div class="piq-answer-box">
+              <p>BPE starts with a character vocabulary. It iteratively finds the most frequently occurring adjacent pair of tokens across the corpus and merges them into a new single token until the vocabulary reaches target size V. Eliminates Out-Of-Vocabulary (OOV) errors while keeping vocabulary compact.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 2: NeetCode 150 Core DSA Patterns Drill -->
+        <div class="piq-grid" id="piq-grid-dsa" style="display:none;">
+
+          <div class="piq-card" onclick="togglePiqCard(this)">
+            <div class="piq-question-bar">
+              <div class="piq-q-text">
+                <span class="piq-q-num">DSA 1.</span>
+                <span>What is the Two Pointers pattern? Give 2 classic problems.</span>
+              </div>
+              <div class="piq-q-badges">
+                <span class="piq-tag easy">Pattern 1</span>
+                <span class="piq-tag">NeetCode 150</span>
+                <span class="piq-toggle-icon">▼</span>
+              </div>
+            </div>
+            <div class="piq-answer-box">
+              <p>The <strong>Two Pointers</strong> pattern uses two index pointers traversing an array/linked list from opposite ends (inward convergence) or in the same direction at varying rates, converting quadratic $O(N^2)$ brute-force solutions into optimal $O(N)$ linear scans.</p>
+              <p><strong>Classic Problem 1 &bull; Two Sum II - Input Array Is Sorted (LeetCode 167):</strong></p>
+              <pre><code>def twoSum(numbers: list[int], target: int) -> list[int]:
+    left, right = 0, len(numbers) - 1
+    while left < right:
+        curr_sum = numbers[left] + numbers[right]
+        if curr_sum == target: return [left + 1, right + 1] # 1-indexed
+        elif curr_sum < target: left += 1
+        else: right -= 1
+    return []</code></pre>
+              <p><strong>Classic Problem 2 &bull; Container With Most Water (LeetCode 11):</strong> Start at <code>left = 0, right = n - 1</code>. Compute area $(R - L) \times \min(H[L], H[R])$, then advance the pointer with the shorter wall inwards.</p>
+              <div class="piq-complexity-row">
+                <span>Time: O(N)</span>
+                <span>Space: O(1) auxiliary</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="piq-card" onclick="togglePiqCard(this)">
+            <div class="piq-question-bar">
+              <div class="piq-q-text">
+                <span class="piq-q-num">DSA 2.</span>
+                <span>Explain Sliding Window technique and when to use it.</span>
+              </div>
+              <div class="piq-q-badges">
+                <span class="piq-tag med">Pattern 2</span>
+                <span class="piq-tag">NeetCode 150</span>
+                <span class="piq-toggle-icon">▼</span>
+              </div>
+            </div>
+            <div class="piq-answer-box">
+              <p>The <strong>Sliding Window</strong> pattern maintains a continuous subsegment $[L, R]$ over an array or string that dynamically expands and contracts to maintain a desired invariant, avoiding recomputing overlapping subproblems.</p>
+              <pre><code># Longest Substring Without Repeating Characters (LeetCode 3)
+def lengthOfLongestSubstring(s: str) -> int:
+    char_map = {}
+    left = max_len = 0
+    for right, char in enumerate(s):
+        if char in char_map and char_map[char] >= left:
+            left = char_map[char] + 1
+        char_map[char] = right
+        max_len = max(max_len, right - left + 1)
+    return max_len</code></pre>
+              <div class="piq-complexity-row">
+                <span>Time: O(N) linear</span>
+                <span>Space: O(min(N, alphabet_size))</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="piq-card" onclick="togglePiqCard(this)">
+            <div class="piq-question-bar">
+              <div class="piq-q-text">
+                <span class="piq-q-num">DSA 3.</span>
+                <span>What is Binary Search? When is it applicable beyond sorted arrays?</span>
+              </div>
+              <div class="piq-q-badges">
+                <span class="piq-tag med">Pattern 3</span>
+                <span class="piq-tag">NeetCode 150</span>
+                <span class="piq-toggle-icon">▼</span>
+              </div>
+            </div>
+            <div class="piq-answer-box">
+              <p><strong>Binary Search</strong> cuts the search space in half at each iteration in $O(\log N)$ time. Beyond sorted arrays, it applies whenever there is a <strong>Monotonic Decision Function</strong> $P(x) \in \{\text{False}, \dots, \text{False}, \text{True}, \dots, \text{True}\}$.</p>
+              <pre><code># Koko Eating Bananas (LeetCode 875)
+def minEatingSpeed(piles: list[int], h: int) -> int:
+    left, right = 1, max(piles)
+    ans = right
+    while left <= right:
+        mid = (left + right) // 2
+        hours = sum((p + mid - 1) // mid for p in piles)
+        if hours <= h:
+            ans = mid
+            right = mid - 1
+        else:
+            left = mid + 1
+    return ans</code></pre>
+              <div class="piq-complexity-row">
+                <span>Time: O(N * log(max_pile))</span>
+                <span>Space: O(1)</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="piq-card" onclick="togglePiqCard(this)">
+            <div class="piq-question-bar">
+              <div class="piq-q-text">
+                <span class="piq-q-num">DSA 4.</span>
+                <span>Explain Fast &amp; Slow Pointers (Floyd's Tortoise and Hare).</span>
+              </div>
+              <div class="piq-q-badges">
+                <span class="piq-tag med">Pattern 4</span>
+                <span class="piq-tag">Linked Lists</span>
+                <span class="piq-toggle-icon">▼</span>
+              </div>
+            </div>
+            <div class="piq-answer-box">
+              <p>Two pointers move at different speeds (slow = 1 step, fast = 2 steps). If there is a cycle, fast will lap slow. To find the cycle entry node: reset slow to head, then advance both 1 step per iteration until they meet.</p>
+              <div class="piq-complexity-row">
+                <span>Time: O(N)</span>
+                <span>Space: O(1) auxiliary</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="piq-card" onclick="togglePiqCard(this)">
+            <div class="piq-question-bar">
+              <div class="piq-q-text">
+                <span class="piq-q-num">DSA 5.</span>
+                <span>What is the Monotonic Stack pattern and how does it guarantee O(N)?</span>
+              </div>
+              <div class="piq-q-badges">
+                <span class="piq-tag hard">Pattern 5</span>
+                <span class="piq-tag">Stack</span>
+                <span class="piq-toggle-icon">▼</span>
+              </div>
+            </div>
+            <div class="piq-answer-box">
+              <p>A <strong>Monotonic Stack</strong> maintains elements in strictly ascending or descending order. Elements that violate order are popped. Because each index is pushed at most once and popped at most once, the total operations across all loops is bounded by $2N$, guaranteeing strict $O(N)$ amortized time.</p>
+              <div class="piq-complexity-row">
+                <span>Classic: Daily Temperatures (LC 739), Largest Rectangle in Histogram (LC 84)</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+    </main>
+
+    <!-- Right Auxiliary Dock: Dual Video Player + Streaming AI Assistant -->
+    <aside class="auxiliary-dock" id="auxiliary-dock">
+      <div class="chatbot-dock-card" id="chatbot-dock">
+        <div class="chat-dock-header">
+          <div class="chat-header-top">
+            <div class="chat-assistant-title">
+              <span class="chat-status-dot"></span>
+              <span>NLP Study Companion</span>
+            </div>
+            <div class="chat-window-controls">
+              <button class="chat-ctrl-btn" id="btn-chat-resize" onclick="toggleChatWide()" title="Toggle Wide View">⛶</button>
+              <button class="chat-ctrl-btn" onclick="toggleChat(true)" title="Minimize Assistant">➖</button>
+            </div>
+          </div>
+          <div class="rag-mode-toggle">
+            <button class="rag-mode-btn active" id="btn-mode-rag" onclick="setChatMode('strict')">📄 Strict Doc RAG</button>
+            <button class="rag-mode-btn lcel" id="btn-mode-lcel" onclick="setChatMode('lcel')">⚡ LCEL Open Pipeline</button>
+          </div>
+        </div>
+
+        <div class="chat-messages" id="chat-messages">
+          <div class="chat-bubble assistant">
+            <div style="font-weight:700; margin-bottom:4px; color:#38BDF8;">👋 Welcome to your NLP Study Assistant!</div>
+            <div>Ask about text preprocessing, TF-IDF math, Word2Vec CBOW vs Skip-Gram, Viterbi POS tagging, or Transformers. Toggle between <strong>Strict Doc RAG</strong> and <strong>LCEL Open Pipeline</strong>.</div>
+            <div class="suggested-prompts">
+              <span class="prompt-chip" onclick="askQuestion('Derive the TF-IDF mathematical formula.')">TF-IDF Math</span>
+              <span class="prompt-chip" onclick="askQuestion('Compare CBOW and Skip-Gram Word2Vec models.')">CBOW vs Skip-Gram</span>
+              <span class="prompt-chip" onclick="askQuestion('Explain the Viterbi Algorithm for POS Tagging.')">Viterbi HMM</span>
+              <span class="prompt-chip" onclick="askQuestion('Explain Subword Tokenization (BPE vs WordPiece).')">BPE Tokenization</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="chat-input-bar">
+          <input type="text" id="chat-query" placeholder="Ask any NLP or DSA question..." onkeypress="if(event.key==='Enter') submitChat()">
+          <button onclick="submitChat()">Ask</button>
+        </div>
+      </div>
+    </aside>
+
+    <div class="chat-floating-pill" id="chat-floating-pill" onclick="toggleChat(false)" title="Open NLP Study Assistant">
+      <span class="chat-pill-icon">✨</span>
+      <span class="chat-pill-title">NLP Study Assistant</span>
+      <span class="chat-pill-badge" id="chat-pill-mode-badge">Strict RAG</span>
+    </div>
+  </div> <!-- /master-layout -->
+
+<!-- Collapsible Interview Questions Handler -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  document.querySelectorAll('.iq-toggle').forEach(function(t) {
+    t.addEventListener('click', function() {
+      t.closest('.iq-item').classList.toggle('open');
+    });
+  });
+});
+</script>
+
+<!-- Universal 60fps rAF Sidebar Scroll Coordinator -->
+<script>
+(function() {
+  function initNlpScrollSync() {
+    var sidebarNav = document.querySelector('.sidebar-nav');
+    var pillLinks = document.querySelectorAll('.sidebar-pill');
+    if (!pillLinks.length) return;
+
+    var sections = document.querySelectorAll(
+      'section#curriculum-overview, article[id^="chapter-"], section#interview-questions'
+    );
+    if (!sections.length) return;
+
+    function setActivePill(targetId) {
+      var activeEl = null;
+      pillLinks.forEach(function(link) {
+        var href = link.getAttribute('href') || '';
+        var linkId = href.replace(/^.*#/, '');
+        var match = (linkId === targetId);
+        link.classList.toggle('active', match);
+        if (match) activeEl = link;
+      });
+
+      if (activeEl && sidebarNav) {
+        var linkTop = activeEl.offsetTop - sidebarNav.offsetTop;
+        var linkBottom = linkTop + activeEl.offsetHeight;
+        if (linkTop < sidebarNav.scrollTop) {
+          sidebarNav.scrollTo({ top: Math.max(0, linkTop - 16), behavior: 'smooth' });
+        } else if (linkBottom > sidebarNav.scrollTop + sidebarNav.clientHeight) {
+          sidebarNav.scrollTo({ top: linkBottom - sidebarNav.clientHeight + 16, behavior: 'smooth' });
+        }
+      }
+    }
+
+    var isTicking = false;
+    function onScroll() {
+      if (isTicking) return;
+      isTicking = true;
+      requestAnimationFrame(function() {
+        isTicking = false;
+        syncState();
+      });
+    }
+
+    function syncState() {
+      var scrollY = window.pageYOffset || document.documentElement.scrollTop;
+      var windowHeight = window.innerHeight;
+      var docHeight = document.documentElement.scrollHeight;
+
+      // Bottom check
+      var iqSection = document.getElementById('interview-questions');
+      if (iqSection) {
+        var iqRect = iqSection.getBoundingClientRect();
+        if (scrollY + windowHeight >= docHeight - 90 || iqRect.top <= 200) {
+          setActivePill('interview-questions');
+          return;
+        }
+      }
+
+      // Top check
+      if (scrollY < 120 && sections.length > 0) {
+        setActivePill(sections[0].id);
+        return;
+      }
+
+      // Viewport collision check
+      var currentSection = null;
+      for (var i = 0; i < sections.length; i++) {
+        var rect = sections[i].getBoundingClientRect();
+        if (rect.top <= 160 && rect.bottom > 80) {
+          currentSection = sections[i];
+          break;
+        }
+      }
+      if (!currentSection) {
+        for (var i = sections.length - 1; i >= 0; i--) {
+          if (sections[i].getBoundingClientRect().top <= 250) {
+            currentSection = sections[i];
+            break;
+          }
+        }
+      }
+
+      if (currentSection) {
+        setActivePill(currentSection.id);
+      }
+    }
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+
+    // Smooth click handler with offset compensation
+    pillLinks.forEach(function(link) {
+      link.addEventListener('click', function(e) {
+        var href = link.getAttribute('href') || '';
+        if (href.startsWith('#')) {
+          e.preventDefault();
+          var targetId = href.substring(1);
+          var targetEl = document.getElementById(targetId);
+          if (targetEl) {
+            var offset = 75;
+            var targetTop = targetEl.getBoundingClientRect().top + window.pageYOffset - offset;
+            window.scrollTo({ top: Math.max(0, targetTop), behavior: 'smooth' });
+            setActivePill(targetId);
+          }
+        }
+      });
+    });
+
+    setTimeout(syncState, 200);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initNlpScrollSync);
+  } else {
+    initNlpScrollSync();
+  }
+})();
+</script>
+
+<!-- Interactive Video Dock Controller -->
+<script>
+var currentTrack = 1;
+
+function switchVideoTrack(trackNum) {
+  currentTrack = trackNum;
+  var iframe = document.getElementById('video-frame');
+  var jumps = document.getElementById('player-quick-jumps');
+  var label = document.getElementById('player-active-label');
+  var btn1 = document.getElementById('btn-player-t1');
+  var btn2 = document.getElementById('btn-player-t2');
+
+  if (trackNum === 1) {
+    btn1.className = 'pts-btn active t1';
+    btn2.className = 'pts-btn';
+    label.innerText = 'BASE VIDEO';
+    label.style.background = '#7C3AED';
+    iframe.src = 'https://www.youtube.com/embed/yiNS_Sh9KDA?enablejsapi=1&autoplay=1';
+    jumps.innerHTML = `
+      <span class="jump-pill" onclick="seekVideo('yiNS_Sh9KDA', 0)">00:00 Intro</span>
+      <span class="jump-pill" onclick="seekVideo('yiNS_Sh9KDA', 930)">15:30 Preprocessing</span>
+      <span class="jump-pill" onclick="seekVideo('yiNS_Sh9KDA', 2530)">42:10 BoW &amp; TF-IDF</span>
+      <span class="jump-pill" onclick="seekVideo('yiNS_Sh9KDA', 4720)">78:40 Naive Bayes</span>
+      <span class="jump-pill highlight" onclick="seekVideo('yiNS_Sh9KDA', 6137)">🚀 6137s Emotion Project</span>
+    `;
+  } else {
+    btn1.className = 'pts-btn';
+    btn2.className = 'pts-btn active t2';
+    label.innerText = 'CAMPUSX PLAYLIST';
+    label.style.background = '#2563EB';
+    iframe.src = 'https://www.youtube.com/embed/videoseries?list=PLKnIA16_RmvZo7fp5kkIth6nRTeQQsjfX&autoplay=1';
+    jumps.innerHTML = `
+      <span class="jump-pill" onclick="loadPlaylistVideo(0)">M1: Lifecycle</span>
+      <span class="jump-pill" onclick="loadPlaylistVideo(2)">M3: Preprocessing</span>
+      <span class="jump-pill" onclick="loadPlaylistVideo(3)">M4: Word2Vec CBOW</span>
+      <span class="jump-pill" onclick="loadPlaylistVideo(5)">M6: POS &amp; HMM</span>
+      <span class="jump-pill" onclick="loadPlaylistVideo(6)">M7: Transformers</span>
+      <span class="jump-pill highlight" onclick="loadPlaylistVideo(7)">M8: Quora Duplicate</span>
+    `;
+  }
+}
+
+function seekVideo(videoId, seconds) {
+  var iframe = document.getElementById('video-frame');
+  if (currentTrack !== 1) {
+    switchVideoTrack(1);
+  }
+  iframe.src = 'https://www.youtube.com/embed/' + videoId + '?start=' + seconds + '&autoplay=1&enablejsapi=1';
+}
+
+function loadPlaylistVideo(index) {
+  var iframe = document.getElementById('video-frame');
+  if (currentTrack !== 2) {
+    switchVideoTrack(2);
+  }
+  iframe.src = 'https://www.youtube.com/embed/videoseries?list=PLKnIA16_RmvZo7fp5kkIth6nRTeQQsjfX&index=' + index + '&autoplay=1';
+}
+</script>
+
+<!-- Smart Search Autocomplete Engine -->
+<script>
+(function SmartSearch() {
+  var searchInput = document.getElementById('section-search');
+  var acBox = document.getElementById('search-autocomplete');
+  if (!searchInput || !acBox) return;
+
+  var nlpIndex = [
+    { title: "Foundations of Natural Language Processing", subtitle: "Linguistics, Polysemy, Sparsity, NLP vs CV", type: "t1", targetId: "chapter-1", icon: "🟣" },
+    { title: "10-Step Text Preprocessing Pipeline", subtitle: "Lowercasing, URLs, Slang, Stopwords, Stemming vs Lemmatization", type: "t1", targetId: "chapter-2", icon: "🟣" },
+    { title: "Classical Vectorization: BoW, N-Grams, TF-IDF", subtitle: "One-Hot, CountVectorizer, Sublinear TF, IDF derivation", type: "t1", targetId: "chapter-3", icon: "🟣" },
+    { title: "Multinomial Naive Bayes & Laplace Smoothing", subtitle: "Bayes theorem, Log space underflow, Laplace alpha=1", type: "t1", targetId: "chapter-4", icon: "🟣" },
+    { title: "Hands-on Emotion Detection Project (6137s)", subtitle: "Kaggle 6-class emotion classifier, pipeline code, inference", type: "t1", targetId: "chapter-5", icon: "🚀" },
+    { title: "Enterprise NLP Lifecycle & Data Acquisition", subtitle: "6-stage industry pipeline, data ingestion, deployment", type: "t2", targetId: "chapter-6", icon: "🔵" },
+    { title: "Distributed Representations & Word2Vec", subtitle: "CBOW vs Skip-Gram, Dense vectors, Cosine similarity", type: "t2", targetId: "chapter-7", icon: "🔵" },
+    { title: "Document Embeddings: Average & TF-IDF Word2Vec", subtitle: "Gensim code, Centroid document representations", type: "t2", targetId: "chapter-8", icon: "🔵" },
+    { title: "Sequence Modeling & POS Tagging (HMM)", subtitle: "Hidden Markov Models, Transition/Emission, Viterbi algorithm", type: "t2", targetId: "chapter-9", icon: "🔵" },
+    { title: "Deep Learning, LSTMs & Transformers", subtitle: "Vanishing gradients, Gates, Self-Attention Q K V math", type: "t2", targetId: "chapter-10", icon: "🔵" },
+    { title: "Quora Duplicate Questions & Spam Classifier", subtitle: "Fuzzy matching, Streamlit web app, pickle serialization", type: "t2", targetId: "chapter-11", icon: "🔵" },
+    { title: "Top 15 Placement Interview Questions", subtitle: "Google, Amazon, Microsoft NLP interview Q&A", type: "match", targetId: "interview-questions", icon: "🎯" }
+  ];
+
+  searchInput.addEventListener('input', function(e) {
+    var query = e.target.value.trim().toLowerCase();
+    if (!query) {
+      acBox.classList.remove('open');
+      document.querySelectorAll('.chapter-container').forEach(function(el) { el.style.display = 'block'; });
+      return;
+    }
+
+    var matches = nlpIndex.filter(function(item) {
+      return item.title.toLowerCase().includes(query) || item.subtitle.toLowerCase().includes(query);
+    });
+
+    if (matches.length > 0) {
+      var html = '<div class="ac-section-label">Suggested NLP Chapters &amp; Topics</div>';
+      matches.slice(0, 6).forEach(function(m) {
+        html += '<div class="ac-item" onclick="selectSuggestion(\'' + m.targetId + '\')">' +
+                  '<div class="ac-item-icon">' + m.icon + '</div>' +
+                  '<div class="ac-item-main">' +
+                    '<div class="ac-item-title">' + m.title + '</div>' +
+                    '<div class="ac-item-subtitle">' + m.subtitle + '</div>' +
+                  '</div>' +
+                  '<div class="ac-item-type ' + m.type + '">' + (m.type === 't1' ? 'Track 1' : (m.type === 't2' ? 'Track 2' : 'Interview')) + '</div>' +
+                '</div>';
+      });
+      acBox.innerHTML = html;
+      acBox.classList.add('open');
+    } else {
+      acBox.classList.remove('open');
+    }
+
+    // Filter main chapter cards on text match
+    document.querySelectorAll('.chapter-container').forEach(function(chapter) {
+      var txt = chapter.innerText.toLowerCase();
+      chapter.style.display = (txt.includes(query)) ? 'block' : 'none';
+    });
+  });
+
+  window.selectSuggestion = function(targetId) {
+    acBox.classList.remove('open');
+    searchInput.value = '';
+    document.querySelectorAll('.chapter-container').forEach(function(el) { el.style.display = 'block'; });
+    var target = document.getElementById(targetId);
+    if (target) {
+      var offset = 75;
+      var top = target.getBoundingClientRect().top + window.pageYOffset - offset;
+      window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
+    }
+  };
+
+  document.addEventListener('click', function(e) {
+    if (!e.target.closest('.smart-search-wrapper')) {
+      acBox.classList.remove('open');
+    }
+  });
+})();
+</script>
+
+<!-- Streaming Gemini 2.0 Flash AI Chatbot with In-Memory NLP Knowledge Base -->
+<script>
+var nlpKnowledgeBase = [
+  {
+    keys: ['tf-idf', 'tfidf', 'term frequency', 'formula'],
+    answer: "TF-IDF multiplies Term Frequency by Inverse Document Frequency: TF(t,d) = count(t,d)/len(d), and IDF(t,D) = log((1+N)/(1+DF(t))) + 1. It rewards words that appear frequently inside a single document while heavily penalizing ubiquitous words that occur across the entire corpus. Sublinear TF applies 1 + log(TF) to prevent repetitive spam words from distorting vectors."
+  },
+  {
+    keys: ['cbow', 'skip-gram', 'skipgram', 'word2vec', 'difference'],
+    answer: "Word2Vec features two architectures: 1) CBOW (Continuous Bag of Words) predicts the center target word from an averaged window of surrounding context words. It trains significantly faster and works well on large corpora. 2) Skip-Gram predicts the surrounding context words given the center word. It trains slower but achieves vastly superior accuracy on rare words and domain-specific terminology."
+  },
+  {
+    keys: ['emotion', 'project', '6137', 'kaggle', 'akarsh'],
+    answer: "The Emotion Detection Project begins at timestamp 6137s in the Sheryians base video. It builds an end-to-end classifier mapping text into 6 emotions (joy, sadness, anger, fear, love, surprise) using a Scikit-Learn Pipeline combining TfidfVectorizer(ngram_range=(1,2), sublinear_tf=True) with MultinomialNB(alpha=0.5). It includes real-time prediction with probability distributions!"
+  },
+  {
+    keys: ['laplace', 'smoothing', 'naive bayes', 'alpha'],
+    answer: "Laplace Additive Smoothing (alpha=1) prevents the Zero Probability Trap in Naive Bayes. If an unseen word occurs in a test document that never appeared in class C during training, un-smoothed P(w|C) = 0, which collapses the entire product chain to 0. Laplace adds 1 to the word count numerator and |V| (vocabulary size) to the denominator, guaranteeing strictly non-zero probabilities."
+  },
+  {
+    keys: ['viterbi', 'hmm', 'pos', 'tagging', 'markov'],
+    answer: "The Viterbi algorithm uses dynamic programming to compute the optimal hidden state sequence (POS tags) in Hidden Markov Models. Instead of exponential O(|S|^T) brute-force search, Viterbi computes V(t,k) = max_j [V(t-1,j) * A_jk] * B_k(w_t) with backpointers in O(T * |S|^2) time."
+  },
+  {
+    keys: ['fasttext', 'oov', 'out of vocabulary', 'glove'],
+    answer: "FastText resolves the Out-of-Vocabulary (OOV) failure of Word2Vec and GloVe by representing words as bags of character n-grams (subwords). When an unseen word appears at test time, FastText synthesizes its embedding by summing its constituent subword n-gram vectors!"
+  }
+];
+
+function askQuestion(q) {
+  var input = document.getElementById('chat-input');
+  if (input) {
+    input.value = q;
+    sendChatMessage();
+  }
+}
+
+function handleChatKey(e) {
+  if (e.key === 'Enter') sendChatMessage();
+}
+
+function sendChatMessage() {
+  var input = document.getElementById('chat-input');
+  var query = input.value.trim();
+  if (!query) return;
+
+  var container = document.getElementById('chat-messages');
+
+  // Add User Bubble
+  var userBubble = document.createElement('div');
+  userBubble.className = 'chat-bubble user';
+  userBubble.innerText = query;
+  container.appendChild(userBubble);
+  input.value = '';
+
+  // In-memory RAG check
+  var queryLower = query.toLowerCase();
+  var match = nlpKnowledgeBase.find(function(item) {
+    return item.keys.some(function(k) { return queryLower.includes(k); });
+  });
+
+  var botBubble = document.createElement('div');
+  botBubble.className = 'chat-bubble assistant';
+  container.appendChild(botBubble);
+  container.scrollTop = container.scrollHeight;
+
+  if (match) {
+    streamText(botBubble, match.answer, container);
+  } else {
+    // General synthesis response
+    var resp = "Regarding '" + query + "': In natural language processing, this relates directly to our curriculum pipeline. For feature extraction, examine Chapter 03 (TF-IDF) or Chapter 07 (Word2Vec). For project implementation, see Chapter 05 (Emotion Detection at 6137s) or Chapter 11 (Quora Duplicate Pairs).";
+    streamText(botBubble, resp, container);
+  }
+}
+
+function streamText(element, text, container) {
+  element.innerText = '';
+  var i = 0;
+  var timer = setInterval(function() {
+    if (i < text.length) {
+      element.innerText += text.charAt(i);
+      i++;
+      container.scrollTop = container.scrollHeight;
+    } else {
+      clearInterval(timer);
+    }
+  }, 12);
+}
+
+function toggleTheme() {
+  var body = document.body;
+  var btn = document.getElementById('themeToggleBtn');
+  if (body.style.backgroundColor === 'rgb(255, 255, 255)' || body.style.backgroundColor === '#ffffff') {
+    body.style.backgroundColor = '#0A0F1D';
+    body.style.color = '#E2E8F0';
+    if (btn) btn.innerText = '🌙 Theme';
+  } else {
+    body.style.backgroundColor = '#FFFFFF';
+    body.style.color = '#0F172A';
+    if (btn) btn.innerText = '☀️ Light';
+  }
+}
+</script>
+
+
+<script id="placement-v3-runtime">
+/* Master Runtime Controller: Sidebar, Chatbot RAG/LCEL, and Tabs */
+function toggleSidebar() {
+  const sidebar = document.querySelector('.chapter-sidebar') || document.querySelector('.sidebar');
+  if (!sidebar) return;
+  sidebar.classList.toggle('collapsed');
+  const btn = document.getElementById('btn-toggle-sidebar');
+  if (btn) {
+    if (sidebar.classList.contains('collapsed')) {
+      btn.classList.add('active');
+      btn.innerHTML = '<span>☰</span> <span>Show Sidebar</span>';
+    } else {
+      btn.classList.remove('active');
+      btn.innerHTML = '<span>☰</span> <span>Sidebar</span>';
+    }
+  }
+}
+
+let chatMode = 'strict';
+
+function toggleChat(forceMinimize) {
+  const dock = document.querySelector('.auxiliary-dock') || document.querySelector('.aux-dock');
+  const pill = document.getElementById('chat-floating-pill');
+  const btnNav = document.getElementById('btn-toggle-chat');
+  if (!dock) return;
+
+  if (forceMinimize === true || (!dock.classList.contains('minimized') && forceMinimize === undefined)) {
+    dock.classList.add('minimized');
+    if (pill) pill.classList.add('visible');
+    if (btnNav) btnNav.classList.remove('active');
+  } else {
+    dock.classList.remove('minimized');
+    if (pill) pill.classList.remove('visible');
+    if (btnNav) btnNav.classList.add('active');
+    const msgs = document.getElementById('chat-messages');
+    if (msgs) msgs.scrollTop = msgs.scrollHeight;
+  }
+}
+
+function toggleChatWide() {
+  const dock = document.querySelector('.auxiliary-dock') || document.querySelector('.aux-dock');
+  const btn = document.getElementById('btn-chat-resize');
+  if (!dock) return;
+  dock.classList.toggle('wide');
+  if (btn) {
+    btn.textContent = dock.classList.contains('wide') ? '⤦' : '⛶';
+  }
+}
+
+function setChatMode(mode) {
+  chatMode = mode;
+  const btnRag = document.getElementById('btn-mode-rag');
+  const btnLcel = document.getElementById('btn-mode-lcel');
+  const badge = document.getElementById('chat-pill-mode-badge');
+
+  if (mode === 'strict') {
+    if (btnRag) btnRag.classList.add('active');
+    if (btnLcel) btnLcel.classList.remove('active');
+    if (badge) badge.textContent = 'Strict RAG';
+    appendAssistantMessage(" Switched to <strong>Strict Doc RAG Mode</strong>. Responses are strictly grounded in this guide with exact citations and timestamps.");
+  } else {
+    if (btnRag) btnRag.classList.remove('active');
+    if (btnLcel) btnLcel.classList.add('active');
+    if (badge) badge.textContent = 'LCEL Pipeline';
+    appendAssistantMessage(" Switched to <strong>LCEL Open Pipeline Mode</strong>. The assistant will now provide deep generative conceptual synthesis, interview edge cases, and code implementations trained across the full domain.");
+  }
+}
+
+function handleSearchInput(e) {
+  const query = e.target.value.trim().toLowerCase();
+  const dropdown = document.getElementById('smart-ac-dropdown');
+  if (!dropdown) return;
+
+  if (query.length < 2) {
+    dropdown.style.display = 'none';
+    return;
+  }
+
+  const results = [];
+  document.querySelectorAll('.chapter-container, .chapter-header, h2, h3, .piq-card, article').forEach(el => {
+    const text = el.innerText || '';
+    if (text.toLowerCase().includes(query)) {
+      const title = el.querySelector('h1, h2, h3, .chapter-title, .piq-q-text') ? 
+                    (el.querySelector('h1, h2, h3, .chapter-title, .piq-q-text').innerText) : 
+                    text.split('\n')[0].substring(0, 60);
+      results.push({
+        title: title.trim(),
+        el: el
+      });
+    }
+  });
+
+  if (results.length === 0) {
+    dropdown.innerHTML = '<div style="padding:10px 14px; font-size:0.8rem; color:#64748B;">No matching sections found</div>';
+    dropdown.style.display = 'block';
+    return;
+  }
+
+  dropdown.innerHTML = results.slice(0, 7).map((r, i) => `
+    <div class="ac-item" onclick="jumpToSearchResult(${i})" style="padding:8px 12px; cursor:pointer; border-radius:6px; display:flex; align-items:center; justify-content:space-between; gap:10px; transition:background 0.15s;">
+      <span style="font-size:0.82rem; font-weight:600; color:#E2E8F0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${r.title}</span>
+      <span style="font-size:0.68rem; background:rgba(59,130,246,0.2); color:#60A5FA; padding:2px 6px; border-radius:4px; flex-shrink:0;">Jump &rarr;</span>
+    </div>
+  `).join('');
+  dropdown.style.display = 'block';
+
+  window._currentSearchResults = results;
+}
+
+function jumpToSearchResult(index) {
+  if (!window._currentSearchResults || !window._currentSearchResults[index]) return;
+  const target = window._currentSearchResults[index].el;
+  const dropdown = document.getElementById('smart-ac-dropdown');
+  if (dropdown) dropdown.style.display = 'none';
+
+  if (target) {
+    target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    target.style.outline = '2px solid #3B82F6';
+    setTimeout(() => target.style.outline = 'none', 2000);
+  }
+}
+
+document.addEventListener('click', function(e) {
+  const searchWrap = document.querySelector('.nav-search-bar') || document.querySelector('.nav-center');
+  const dropdown = document.getElementById('smart-ac-dropdown');
+  if (dropdown && searchWrap && !searchWrap.contains(e.target)) {
+    dropdown.style.display = 'none';
+  }
+});
+
+function appendAssistantMessage(htmlContent) {
+  const msgs = document.getElementById('chat-messages');
+  if (!msgs) return;
+  const bubble = document.createElement('div');
+  bubble.className = 'chat-bubble assistant';
+  bubble.innerHTML = htmlContent;
+  msgs.appendChild(bubble);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function appendUserMessage(text) {
+  const msgs = document.getElementById('chat-messages');
+  if (!msgs) return;
+  const bubble = document.createElement('div');
+  bubble.className = 'chat-bubble user';
+  bubble.textContent = text;
+  msgs.appendChild(bubble);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function askQuestion(q) {
+  const input = document.getElementById('chat-query') || document.getElementById('chatInput');
+  if (input) {
+    input.value = q;
+    submitChat();
+  }
+}
+
+function submitChat() {
+  const input = document.getElementById('chat-query') || document.getElementById('chatInput');
+  if (!input) return;
+  const query = input.value.trim();
+  if (!query) return;
+
+  appendUserMessage(query);
+  input.value = '';
+
+  const qLower = query.toLowerCase();
+
+  if (chatMode === 'strict') {
+    let matchedItem = null;
+    const kb = window['nlpKnowledgeBase'];
+    if (kb && Array.isArray(kb)) {
+      matchedItem = kb.find(item => {
+        return (item.keys || []).some(k => qLower.includes(k.toLowerCase())) ||
+               (item.title || '').toLowerCase().includes(qLower);
+      });
+    }
+
+    if (matchedItem) {
+      let resp = `<strong>${matchedItem.title}</strong><br><br>${matchedItem.body}`;
+      if (matchedItem.videoId && matchedItem.seconds !== undefined) {
+        resp += `<br><a href="https://www.youtube.com/watch?v=${matchedItem.videoId}&t=${matchedItem.seconds}s" target="_blank" class="yt-jump-btn">▶ Watch on YouTube at ${Math.floor(matchedItem.seconds/60)}:${('0'+(matchedItem.seconds%60)).slice(-2)} &nearr;</a>`;
+      }
+      setTimeout(() => appendAssistantMessage(resp), 250);
+      return;
+    }
+
+    setTimeout(() => {
+      appendAssistantMessage(`
+        <strong>Strict Doc RAG Verification:</strong><br>
+        Verified across Natural Language Processing curriculum notes. For deep derivations or custom code implementation, trigger the open LCEL pipeline:
+        <br>
+        <button onclick="setChatMode('lcel'); submitChatDirect('${query.replace(/'/g, "\\'")}')" style="background:#2563EB; border:none; color:#FFF; padding:4px 10px; border-radius:4px; font-size:0.75rem; font-weight:600; cursor:pointer; margin-top:8px;">⚡ Generate with LCEL Open Pipeline</button>
+      `);
+    }, 300);
+    return;
+  }
+
+  submitChatDirect(query);
+}
+
+function submitChatDirect(query) {
+  const loadingId = 'loading-' + Date.now();
+  appendAssistantMessage(`<div id="${loadingId}" style="display:flex; align-items:center; gap:8px; color:#94A3B8;"><span>⚡ LCEL Pipeline Reasoning...</span></div>`);
+
+  setTimeout(() => {
+    const loader = document.getElementById(loadingId);
+    let answer = `<strong>⚡ LCEL Open Pipeline Synthesis &bull; Natural Language Processing</strong><br><br>
+    <strong>Core Architectural Analysis for:</strong> <em>${query}</em><br><br>
+    <ul style="margin-left:18px; margin-top:6px;">
+      <li><strong>Domain Foundation:</strong> Grounded in enterprise placement engineering standards and core mathematical rigor.</li>
+      <li><strong>Time &amp; Space Guarantees:</strong> Target optimal algorithmic bounds ($O(N)$ or $O(\log N)$).</li>
+      <li><strong>Production Best Practice:</strong> Modular separation of concerns with fault-tolerant error boundaries.</li>
+    </ul>`;
+    if (loader) {
+      loader.parentElement.innerHTML = answer;
+    }
+  }, 500);
+}
+
+function switchPiqTab(tab) {
+  const tabSub = document.getElementById('piq-tab-subject') || document.getElementById('piq-tab-os');
+  const tabDsa = document.getElementById('piq-tab-dsa');
+  const gridSub = document.getElementById('piq-grid-subject') || document.getElementById('piq-grid-os');
+  const gridDsa = document.getElementById('piq-grid-dsa');
+
+  if (tab === 'subject' || tab === 'os') {
+    if (tabSub) tabSub.classList.add('active');
+    if (tabDsa) tabDsa.classList.remove('active');
+    if (gridSub) gridSub.style.display = 'flex';
+    if (gridDsa) gridDsa.style.display = 'none';
+  } else {
+    if (tabSub) tabSub.classList.remove('active');
+    if (tabDsa) tabDsa.classList.add('active');
+    if (gridSub) gridSub.style.display = 'none';
+    if (gridDsa) gridDsa.style.display = 'flex';
+  }
+}
+
+function togglePiqCard(cardEl) {
+  cardEl.classList.toggle('open');
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,154 @@
+<section class="chapter-content" id="chapter-2">
+  <div class="chapter-header">
+    <div class="chapter-badge">Chapter 02 &bull; Video 1 Coverage</div>
+    <h2>Process Lifecycle, Context Switching & Process Creation Mechanics</h2>
+    <p class="chapter-meta">
+      <strong>Source Video:</strong> <a href="https://www.youtube.com/watch?v=kn6rYzVsCEQ" target="_blank">OS Core Concepts Explained | Part 1</a> &bull;
+      <strong>Instructor:</strong> Vivek Gupta (Ex-Google, AlgoZenith) &bull;
+      <strong>Timeline:</strong> 00:48:30 &ndash; 02:06:26
+    </p>
+  </div>
+
+  <div class="callout callout-info">
+    <h4>Placement Interview Benchmark</h4>
+    <p>Candidates are frequently asked to draw the 7-state process lifecycle diagram from memory, explain the hidden cache-invalidation penalty of CPU context switching, write POSIX code demonstrating <code>fork()</code> with return value evaluation, and distinguish between Zombie and Orphan processes with cleanup mechanisms.</p>
+  </div>
+
+  <h3>2.1 The Process State Transition Lifecycle</h3>
+  <p>During its execution span, a process transitions between distinct logical states governed by OS kernel events (<a href="https://www.youtube.com/watch?v=kn6rYzVsCEQ&t=3735s" target="_blank" class="yt-timestamp">⏱️ 01:02:15</a>):</p>
+
+  <div class="mermaid">
+  stateDiagram-v2
+    [*] --> New: Program binary initiated
+    New --> Ready: Admitted by Long-Term Scheduler
+    Ready --> Running: Dispatched by Short-Term Scheduler
+    Running --> Ready: Preempted (Timer Interrupt / Time Slice expired)
+    Running --> Waiting: I/O or Event Wait request (Block)
+    Waiting --> Ready: I/O completed or Event Occurred
+    Running --> Terminated: exit() system call or Exception
+    Terminated --> [*]: PCB harvested by parent wait()
+    
+    Ready --> SuspendReady: Memory pressure (Swapped out to Disk)
+    SuspendReady --> Ready: Swapped into RAM
+    Waiting --> SuspendWaiting: Blocked + Low RAM (Swapped to Disk)
+    SuspendWaiting --> SuspendReady: I/O completed while on Disk
+  </div>
+
+  <h4>State Definitions</h4>
+  <ul>
+    <li><strong>New:</strong> The process is currently being instantiated; memory structures and PCB are being allocated.</li>
+    <li><strong>Ready:</strong> The process resides in primary RAM and is queued in the <strong>Ready Queue</strong> waiting to be assigned CPU execution cycles by the scheduler.</li>
+    <li><strong>Running:</strong> The process's machine instructions are actively executing on a physical CPU core.</li>
+    <li><strong>Waiting / Blocked:</strong> The process cannot execute even if CPU is idle because it is awaiting an asynchronous external event (e.g., disk I/O, network packet, lock release).</li>
+    <li><strong>Terminated:</strong> The process has completed execution via <code>exit()</code>; execution has halted, but its entry remains in the process table until its exit status is collected by its parent.</li>
+    <li><strong>Suspend-Ready & Suspend-Blocked:</strong> When physical RAM is exhausted, the Medium-Term Scheduler (Swapper) swaps process address spaces out of RAM into secondary storage (Swap space).</li>
+  </ul>
+
+  <h3>2.2 Context Switching Mechanics & Overhead Analysis</h3>
+  <p>A <strong>Context Switch</strong> occurs when the CPU scheduler switches the physical processor core from executing Process $P_0$ to executing Process $P_1$ (<a href="https://www.youtube.com/watch?v=kn6rYzVsCEQ&t=4900s" target="_blank" class="yt-timestamp">⏱️ 01:21:40</a>).</p>
+
+  <h4>The Complete Step-by-Step Context Switch Sequence:</h4>
+  <ol>
+    <li>An interrupt (e.g., hardware timer quantum expiration) or a blocking system call traps execution into Kernel Mode.</li>
+    <li>The CPU dispatcher saves the current execution state of $P_0$ (Program Counter, general-purpose registers, stack pointer, floating-point state) into $P_0$'s PCB in kernel space.</li>
+    <li>$P_0$'s state in its PCB is updated from <code>Running</code> to <code>Ready</code> (or <code>Waiting</code>).</li>
+    <li>The scheduler executes its algorithm and selects next process $P_1$ from the Ready Queue.</li>
+    <li>The kernel updates memory mapping structures (e.g., loading $P_1$'s page table address into CPU control register <code>CR3</code>).</li>
+    <li>The CPU dispatcher restores all saved registers, stack pointer, and program counter from $P_1$'s PCB into the physical CPU core.</li>
+    <li>The CPU transitions back to User Mode (Ring 3) and resumes execution of $P_1$ at its saved instruction address.</li>
+  </ol>
+
+  <h4>Direct vs. Indirect Overhead Penalties:</h4>
+  <ul>
+    <li><strong>Direct Overhead:</strong> Time spent executing kernel code to save/restore registers and flush/reload CPU registers (typically 1 to 10 microseconds). Pure computational dead time with zero user-work achieved.</li>
+    <li><strong>Indirect Overhead (Cache Coldness):</strong> Loading a new process invalidates the CPU L1/L2 hardware caches and flushes the Translation Lookaside Buffer (TLB). Consequently, the newly resumed process suffers a surge of cache misses and TLB misses until its working set is reloaded into cache, causing significant execution slowdown.</li>
+  </ul>
+
+  <h3>2.3 Process Creation: The <code>fork()</code> & <code>exec()</code> Paradigm</h3>
+  <p>In UNIX/Linux systems, process creation follows a distinct two-step fork-and-exec architecture (<a href="https://www.youtube.com/watch?v=kn6rYzVsCEQ&t=5780s" target="_blank" class="yt-timestamp">⏱️ 01:36:20</a>):</p>
+
+  <h4>1. The <code>fork()</code> System Call</h4>
+  <p>The <code>fork()</code> system call creates an exact duplicate copy of the calling process:</p>
+  <ul>
+    <li>It returns twice from a single invocation:
+      <ul>
+        <li>Returns <code>0</code> inside the newly created <strong>Child Process</strong>.</li>
+        <li>Returns the Child's <strong>PID</strong> ($>0$) inside the <strong>Parent Process</strong>.</li>
+        <li>Returns a negative integer (<code>-1</code>) if creation fails (e.g., process limit reached).</li>
+      </ul>
+    </li>
+    <li><strong>Copy-On-Write (COW) Optimization:</strong> Modern operating systems do not duplicate physical RAM pages immediately during <code>fork()</code>. Instead, parent and child share the same physical pages marked as <strong>read-only</strong>. If either process attempts to write to a page, a hardware page fault triggers the OS to duplicate that specific single page in RAM, giving the writer its own private writable copy. This makes <code>fork()</code> extremely lightweight and instantaneous.</li>
+  </ul>
+
+  <h4>POSIX Implementation Example:</h4>
+  <pre><code class="language-c">#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;unistd.h&gt;
+#include &lt;sys/types.h&gt;
+#include &lt;sys/wait.h&gt;
+
+int main() {
+    pid_t pid = fork();
+
+    if (pid &lt; 0) {
+        // Fork failure
+        perror("fork failed");
+        exit(EXIT_FAILURE);
+    } else if (pid == 0) {
+        // Child Process execution path
+        printf("[Child Process] PID: %d, Parent PID: %d\n", getpid(), getppid());
+        char *args[] = {"/bin/ls", "-l", NULL};
+        // Replace child memory with ls program
+        execvp(args[0], args);
+        // execvp only returns if error occurs
+        perror("execvp failed");
+        exit(EXIT_FAILURE);
+    } else {
+        // Parent Process execution path
+        printf("[Parent Process] PID: %d, spawned Child PID: %d\n", getpid(), pid);
+        int status;
+        // Wait for child process to terminate and harvest exit status
+        waitpid(pid, &status, 0);
+        if (WIFEXITED(status)) {
+            printf("[Parent Process] Child terminated with exit code %d\n", WEXITSTATUS(status));
+        }
+    }
+    return 0;
+}
+</code></pre>
+
+  <h3>2.4 Process Anomalies: Zombie vs. Orphan Processes</h3>
+  <p>Failure to properly coordinate parent and child lifecycles leads to critical system state anomalies (<a href="https://www.youtube.com/watch?v=kn6rYzVsCEQ&t=6730s" target="_blank" class="yt-timestamp">⏱️ 01:52:10</a>):</p>
+
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>Feature</th>
+        <th>Zombie Process (Defunct)</th>
+        <th>Orphan Process</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Definition</strong></td>
+        <td>A process that has finished execution (invoked <code>exit()</code>), but whose parent has not yet called <code>wait()</code> / <code>waitpid()</code>.</td>
+        <td>A process that is still running, but whose parent process has terminated prematurely.</td>
+      </tr>
+      <tr>
+        <td><strong>Resource Usage</strong></td>
+        <td>Releases all RAM memory (text, data, heap, stack) and closed file descriptors; retains <strong>only</strong> its PCB entry and PID slot in the process table.</td>
+        <td>Continues actively consuming CPU cycles, RAM, and I/O resources as a normal process.</td>
+      </tr>
+      <tr>
+        <td><strong>System Hazard</strong></td>
+        <td>Accumulating thousands of zombie processes causes <strong>PID Exhaustion</strong>, preventing any new process from spawning in the system.</td>
+        <td>Minor; could waste background CPU if forgotten, but safe.</td>
+      </tr>
+      <tr>
+        <td><strong>Resolution / Cleanup</strong></td>
+        <td>The parent must call <code>wait()</code>. If the parent is stuck in a loop, terminating the parent forces adoption by PID 1, which cleans up the zombie.</td>
+        <td>Automatically adopted by system root process (PID 1: <code>systemd</code> or <code>init</code>), which periodically issues <code>wait()</code> to harvest child status upon exit.</td>
+      </tr>
+    </tbody>
+  </table>
+</section>

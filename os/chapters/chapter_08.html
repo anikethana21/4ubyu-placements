@@ -1,0 +1,210 @@
+<section class="chapter-content" id="chapter-8">
+  <div class="chapter-header">
+    <div class="chapter-badge">Chapter 08 &bull; Video 5 Coverage</div>
+    <h2>Process Synchronization, Concurrency & Classic IPC Problems</h2>
+    <p class="chapter-meta">
+      <strong>Source Video:</strong> <a href="https://www.youtube.com/watch?v=34spZiZ7CnA" target="_blank">Synchronization in OS Explained | Part 5</a> &bull;
+      <strong>Instructor:</strong> Vivek Gupta (Ex-Google, AlgoZenith) &bull;
+      <strong>Timeline:</strong> 00:00:00 &ndash; 00:38:09
+    </p>
+  </div>
+
+  <div class="callout callout-info">
+    <h4>Top Placement Coding & Systems Round Focus</h4>
+    <p>Concurrency is the hallmark of modern software engineering. Interviewers routinely evaluate Peterson's solution proofs, differences between binary and counting semaphores, mutex locks vs spinlocks, handling busy-waiting via sleep queues, and bug-free C/C++ multithreaded implementations of Producer-Consumer, Readers-Writers, and Dining Philosophers.</p>
+  </div>
+
+  <h3>8.1 Race Conditions & The Critical Section Problem</h3>
+  <p>When multiple cooperating processes or threads concurrently read and write shared memory or global variables, the final output depends unpredictably on the exact sequence and timing of instruction execution. This non-deterministic timing bug is called a <strong>Race Condition</strong> (<a href="https://www.youtube.com/watch?v=34spZiZ7CnA&t=0s" target="_blank" class="yt-timestamp">⏱️ 00:00</a>).</p>
+
+  <h4>The 4 Code Sections of Cooperating Processes:</h4>
+  <ol>
+    <li><strong>Entry Section:</strong> Requests permission to access the shared resource.</li>
+    <li><strong>Critical Section:</strong> The code region where shared memory, files, or tables are actively manipulated.</li>
+    <li><strong>Exit Section:</strong> Signals completion and releases access permissions.</li>
+    <li><strong>Remainder Section:</strong> Non-shared, private computational execution.</li>
+  </ol>
+
+  <h4>The 3 Mandatory Criteria for Any Valid Critical Section Solution:</h4>
+  <ol>
+    <li><strong>Mutual Exclusion:</strong> If process $P_i$ is executing in its critical section, no other process can be executing in their critical sections simultaneously.</li>
+    <li><strong>Progress:</strong> If no process is in its critical section and some processes wish to enter, only those processes not executing in their remainder sections can participate in deciding who enters next, and this selection cannot be postponed indefinitely (no deadlock).</li>
+    <li><strong>Bounded Waiting:</strong> There must exist a bound (limit) on the number of times other processes are allowed to enter their critical sections after a process has made a request to enter and before that request is granted (no starvation).</li>
+  </ol>
+
+  <h3>8.2 Software Solutions: Peterson's Algorithm</h3>
+  <p>Gary Peterson proposed an elegant pure software solution for 2 processes ($P_0$ and $P_1$) in 1981 (<a href="https://www.youtube.com/watch?v=34spZiZ7CnA&t=208s" target="_blank" class="yt-timestamp">⏱️ 03:28</a>):</p>
+
+  <h4>Shared State Variables:</h4>
+  <pre><code class="language-c">int turn;          // Indicates whose turn it is to enter
+bool flag[2];      // flag[i] == true indicates Pi is ready to enter
+</code></pre>
+
+  <h4>Process $P_i$ Implementation (where $j = 1 - i$):</h4>
+  <pre><code class="language-c">while (true) {
+    flag[i] = true;      // Declare intention to enter
+    turn = j;            // Be polite: grant priority to competitor
+    
+    // Busy wait while competitor is interested AND it is their turn
+    while (flag[j] && turn == j);
+    
+    // CRITICAL SECTION
+    // Access shared memory variables safely
+    
+    flag[i] = false;     // EXIT SECTION: revoke intention
+    
+    // REMAINDER SECTION
+}
+</code></pre>
+
+  <h4>Proof of Correctness:</h4>
+  <ul>
+    <li><strong>Mutual Exclusion:</strong> For both $P_0$ and $P_1$ to enter the critical section simultaneously, both <code>flag[0] == true</code> and <code>flag[1] == true</code>. However, the value of variable <code>turn</code> can only be either $0$ or $1$ at any given moment, never both. If <code>turn == 0</code>, $P_1$ is trapped in its <code>while</code> loop. Thus, Mutual Exclusion is guaranteed.</li>
+    <li><strong>Progress:</strong> A process cannot enter unless the other process sets <code>flag[j] = true</code> and <code>turn = i</code>. If $P_j$ is in remainder section, <code>flag[j] == false</code>, allowing $P_i$ to enter instantly without delay.</li>
+    <li><strong>Bounded Waiting:</strong> Once $P_j$ exits, it sets <code>flag[j] = false</code>. If it immediately loops and tries to re-enter, it sets <code>turn = i</code>, forcing itself to wait and granting $P_i$ access. $P_i$ waits at most 1 turn.</li>
+  </ul>
+  <p><em>Limitation on Modern CPUs:</em> Out-of-order execution, instruction pipelines, and compiler memory reordering can swap the statements <code>flag[i] = true</code> and <code>turn = j</code> on modern multicore hardware, breaking software-only synchronization unless explicit <strong>Memory Barriers</strong> are inserted.</p>
+
+  <h3>8.3 Hardware-Assisted Atomic Instructions</h3>
+  <p>Modern architectures provide hardware-enforced atomic instructions that execute in a single uninterruptible memory bus cycle (<a href="https://www.youtube.com/watch?v=34spZiZ7CnA&t=817s" target="_blank" class="yt-timestamp">⏱️ 13:37</a>):</p>
+  <ul>
+    <li><strong>Test-and-Set (TSL):</strong> Reads a memory location and writes <code>true</code> atomically.
+      <pre><code class="language-c">bool test_and_set(bool *target) {
+    bool rv = *target;
+    *target = true;
+    return rv;
+}
+// Entry code: while (test_and_set(&lock));
+// Exit code:  lock = false;
+</code></pre>
+    </li>
+    <li><strong>Compare-and-Swap (CAS):</strong> Compares memory contents with expected value, updating to new value only if match occurs. Foundational to lock-free lockless algorithms in Java/C++.</li>
+  </ul>
+
+  <h3>8.4 Mutex Locks vs. Spinlocks</h3>
+  <ul>
+    <li><strong>Mutex Lock (Mutual Exclusion):</strong> A boolean lock variable provided by the kernel (e.g., <code>pthread_mutex_t</code>). If the lock is held, the calling thread is put to sleep by the kernel and yields CPU to other processes.</li>
+    <li><strong>Spinlock:</strong> A mutex lock where waiting threads loop continuously (busy-wait) on the CPU checking the lock condition (<a href="https://www.youtube.com/watch?v=34spZiZ7CnA&t=1001s" target="_blank" class="yt-timestamp">⏱️ 16:41</a>).
+      <br><em>Engineering Trade-off:</em> Spinlocks waste CPU cycles on single-core systems. On multi-core systems, however, if the critical section is extremely brief (shorter than the context switch latency of 5 &mu;s), a spinlock is substantially faster than putting a thread to sleep and waking it back up!</li>
+  </ul>
+
+  <h3>8.5 Semaphores: Binary vs. Counting</h3>
+  <p>Invented by Edsger Dijkstra, a <strong>Semaphore</strong> $S$ is an integer variable accessed exclusively through two standard atomic operations: <code>wait()</code> (or $P$ from Dutch <em>proberen</em> to test) and <code>signal()</code> (or $V$ from <em>verhogen</em> to increment) (<a href="https://www.youtube.com/watch?v=34spZiZ7CnA&t=1187s" target="_blank" class="yt-timestamp">⏱️ 19:47</a>):</p>
+  <ul>
+    <li><strong>Binary Semaphore:</strong> Integer value restricted between $0$ and $1$. Functions identically to a Mutex lock.</li>
+    <li><strong>Counting Semaphore:</strong> Value initialized to integer $N$, controlling access to a finite pool of $N$ identical resource instances.</li>
+  </ul>
+
+  <h4>Eliminating Busy-Waiting via Blocking Queue Semaphores:</h4>
+  <p>To eliminate CPU wasting during <code>wait()</code>, the semaphore maintains a linked list of blocked processes (<a href="https://www.youtube.com/watch?v=34spZiZ7CnA&t=1471s" target="_blank" class="yt-timestamp">⏱️ 24:31</a>):</p>
+  <pre><code class="language-c">typedef struct {
+    int value;
+    struct task_struct *wait_queue;
+} semaphore_t;
+
+void wait(semaphore_t *s) {
+    s->value--;
+    if (s->value &lt; 0) {
+        // Add current calling process to s->wait_queue
+        // Transition process state to WAITING / SLEEP
+        // Invoke CPU scheduler to yield CPU (block();)
+    }
+}
+
+void signal(semaphore_t *s) {
+    s->value++;
+    if (s->value &lt;= 0) {
+        // Remove process P from s->wait_queue
+        // Transition P to READY state (wakeup(P);)
+    }
+}
+</code></pre>
+
+  <h3>8.6 Classic Concurrency Problems with C POSIX Implementations</h3>
+
+  <h4>1. The Bounded-Buffer (Producer-Consumer) Problem (<a href="https://www.youtube.com/watch?v=34spZiZ7CnA&t=1656s" target="_blank" class="yt-timestamp">⏱️ 27:36</a>)</h4>
+  <p>Producers insert items into a fixed-capacity buffer of size $N$; Consumers remove items. Semaphores required:</p>
+  <ul>
+    <li><code>sem_t mutex;</code> initialized to <code>1</code> (mutual exclusion on buffer access).</li>
+    <li><code>sem_t empty;</code> initialized to <code>N</code> (tracks available empty slots).</li>
+    <li><code>sem_t full;</code> initialized to <code>0</code> (tracks available filled items).</li>
+  </ul>
+  <pre><code class="language-c">// Producer Thread
+void *producer(void *arg) {
+    while (1) {
+        item_t item = produce_item();
+        sem_wait(&empty);    // Decrement empty slots (blocks if buffer full)
+        sem_wait(&mutex);    // Acquire buffer lock
+        
+        insert_into_buffer(item);
+        
+        sem_post(&mutex);    // Release buffer lock
+        sem_post(&full);     // Increment full slots (wakes consumer)
+    }
+}
+
+// Consumer Thread
+void *consumer(void *arg) {
+    while (1) {
+        sem_wait(&full);     // Decrement full slots (blocks if buffer empty)
+        sem_wait(&mutex);    // Acquire buffer lock
+        
+        item_t item = remove_from_buffer();
+        
+        sem_post(&mutex);    // Release buffer lock
+        sem_post(&empty);    // Increment empty slots (wakes producer)
+        consume_item(item);
+    }
+}
+</code></pre>
+  <div class="callout callout-warning">
+    <h4>Deadlock Trap in Placement Interviews</h4>
+    <p>If the producer executes <code>sem_wait(&mutex)</code> <em>before</em> <code>sem_wait(&empty)</code> when the buffer is completely full, it locks the buffer and blocks waiting for empty space. The consumer tries to run, but blocks on <code>mutex</code>, producing an immediate, permanent <strong>Deadlock</strong>!</p>
+  </div>
+
+  <h4>2. The Readers-Writers Problem (<a href="https://www.youtube.com/watch?v=34spZiZ7CnA&t=1961s" target="_blank" class="yt-timestamp">⏱️ 32:41</a>)</h4>
+  <p>Multiple concurrent readers can read simultaneously, but writers must have exclusive access.</p>
+  <ul>
+    <li><code>sem_t rw_mutex;</code> initialized to <code>1</code> (locks the shared database).</li>
+    <li><code>sem_t mutex;</code> initialized to <code>1</code> (protects reader counter).</li>
+    <li><code>int read_count = 0;</code></li>
+  </ul>
+  <pre><code class="language-c">// Reader Routine
+void *reader(void *arg) {
+    sem_wait(&mutex);
+    read_count++;
+    if (read_count == 1) {
+        sem_wait(&rw_mutex); // First reader locks out all writers
+    }
+    sem_post(&mutex);
+
+    // Reading dataset concurrently
+
+    sem_wait(&mutex);
+    read_count--;
+    if (read_count == 0) {
+        sem_post(&rw_mutex); // Last reader releases lock for writers
+    }
+    sem_post(&mutex);
+}
+
+// Writer Routine
+void *writer(void *arg) {
+    sem_wait(&rw_mutex);     // Exclusive access
+    // Writing/modifying dataset
+    sem_post(&rw_mutex);
+}
+</code></pre>
+
+  <h4>3. The Dining Philosophers Problem (<a href="https://www.youtube.com/watch?v=34spZiZ7CnA&t=2144s" target="_blank" class="yt-timestamp">⏱️ 35:44</a>)</h4>
+  <p>5 philosophers sit around a table with 5 bowls of rice and 5 chopsticks. A philosopher needs both adjacent chopsticks to eat.</p>
+  <ul>
+    <li><strong>Deadlock Hazard:</strong> If all 5 philosophers simultaneously pick up their left chopstick, all right chopsticks are occupied, creating a circular wait cycle.</li>
+    <li><strong>Standard Solutions:</strong>
+      <ol>
+        <li>Allow at most 4 philosophers to sit at the table simultaneously.</li>
+        <li><strong>Asymmetric Solution:</strong> Odd-numbered philosophers pick up left chopstick first, then right; even-numbered philosophers pick up right chopstick first, then left. Breaks Circular Wait condition!</li>
+      </ol>
+    </li>
+  </ul>
+</section>

@@ -1,0 +1,149 @@
+<section class="chapter-content" id="chapter-1">
+  <div class="chapter-header">
+    <div class="chapter-badge">Chapter 01 &bull; Video 1 Coverage</div>
+    <h2>Operating System Foundations, Architecture & Process Memory Layout</h2>
+    <p class="chapter-meta">
+      <strong>Source Video:</strong> <a href="https://www.youtube.com/watch?v=kn6rYzVsCEQ" target="_blank">OS Core Concepts Explained | Part 1</a> &bull;
+      <strong>Instructor:</strong> Vivek Gupta (Ex-Google, AlgoZenith) &bull;
+      <strong>Timeline:</strong> 00:00:00 &ndash; 00:48:30
+    </p>
+  </div>
+
+  <div class="callout callout-info">
+    <h4>Core Takeaway for Technical Interviews</h4>
+    <p>An Operating System is not just a resource allocator; it is a hardware virtualizer and isolation engine. Interviewers at Google, Microsoft, and Amazon routinely evaluate candidate clarity on the precise boundary between User Space and Kernel Space, the hardware mechanics of System Calls, and the exact virtual memory segmentation of an executing binary.</p>
+  </div>
+
+  <h3>1.1 The Operating System as a Hardware Mediator</h3>
+  <p>At bare metal, a computer system consists of raw electronic hardware: the Central Processing Unit (CPU), Physical Memory (DRAM), and Peripheral I/O Devices (NVMe SSDs, NICs, keyboards). Without an operating system, every user program would need to interface directly with hardware registers, issue raw memory bus commands, and manage physical cylinder sectors on storage media.</p>
+  
+  <p>The Operating System solves this by functioning as:</p>
+  <ul>
+    <li><strong>Resource Allocator:</strong> Mediates conflicting hardware requests from multiple concurrently running tasks, ensuring fair access, high utilization, and deadlock prevention.</li>
+    <li><strong>Extended Machine / Abstraction Layer:</strong> Hides device-specific low-level complexity (e.g., AHCI/NVMe protocol registers) behind clean, uniform APIs such as standard POSIX file operations (<code>open</code>, <code>read</code>, <code>write</code>, <code>close</code>).</li>
+    <li><strong>Protection and Security Arbiter:</strong> Enforces memory boundaries, preventing Rogue Process A from reading or modifying the address space of Process B or corrupting the OS kernel itself.</li>
+  </ul>
+
+  <div class="mermaid">
+  graph TD
+    UserApps["User Applications (Chrome, IDE, Python)"] -->|POSIX System Calls: read, write, fork| OSKernel["Operating System Kernel (Scheduler, VFS, Memory Mgr)"]
+    OSKernel -->|Privileged CPU Instructions| CPU["CPU (Registers, ALU, MMU)"]
+    OSKernel -->|Memory Controller Bus| DRAM["Main Memory (Physical RAM)"]
+    OSKernel -->|Device Drivers and PCIe| Peripherals["Storage, Network (NIC), Display"]
+  </div>
+
+  <h3>1.2 Dual-Mode Operation & Hardware Protection</h3>
+  <p>To prevent malicious or buggy applications from halting the CPU or overwriting critical memory structures, modern x86-64 and ARM processors implement hardware-enforced execution privilege levels (Hierarchical Protection Domains, often known as <strong>Rings</strong>):</p>
+  <ul>
+    <li><strong>User Mode (Ring 3):</strong> Mode bit set to <code>1</code>. The CPU restricts access to privileged machine instructions. User applications cannot directly disable interrupts, alter page tables, or perform raw I/O port writes. Attempting to execute a privileged instruction in User Mode immediately triggers a hardware general-protection fault trap.</li>
+    <li><strong>Kernel / Supervisor Mode (Ring 0):</strong> Mode bit set to <code>0</code>. The CPU allows unrestricted execution of all machine instructions, direct hardware port access, and full control over system control registers (such as <code>CR0</code>, <code>CR3</code> for page table roots on x86).</li>
+  </ul>
+
+  <h4>The System Call Execution Pipeline</h4>
+  <p>When a user-space application requires hardware access (e.g., printing to terminal or reading a disk block), it cannot execute it directly. It must execute a <strong>System Call</strong> via a software interrupt or specialized machine instruction (<a href="https://www.youtube.com/watch?v=kn6rYzVsCEQ&t=2910s" target="_blank" class="yt-timestamp">⏱️ 48:30</a>):</p>
+  <ol>
+    <li>The user process places system call arguments in designated CPU registers (e.g., on Linux x86-64: <code>RAX</code> holds the system call number, while <code>RDI</code>, <code>RSI</code>, <code>RDX</code> hold parameters).</li>
+    <li>The process executes the <code>syscall</code> (or legacy <code>int 0x80</code>) instruction.</li>
+    <li>The CPU hardware saves user program counter (<code>RIP</code>) and stack pointer (<code>RSP</code>), flips the hardware Mode Bit from <code>1</code> (User) to <code>0</code> (Kernel), and vectors control to the predefined <strong>System Call Table</strong> in kernel memory.</li>
+    <li>The kernel inspects <code>RAX</code>, dispatches the corresponding handler function (e.g., <code>sys_read()</code>), verifies user buffer pointers for memory safety, and performs the operation.</li>
+    <li>Upon completion, the kernel writes the return code into <code>RAX</code> and executes <code>sysret</code>, switching the mode bit back to User Mode (<code>1</code>) and restoring user execution context.</li>
+  </ol>
+
+  <h3>1.3 Program vs. Process: Architectural Distinctions</h3>
+  <p>In placement interviews, candidates often confuse programs with processes (<a href="https://www.youtube.com/watch?v=kn6rYzVsCEQ&t=781s" target="_blank" class="yt-timestamp">⏱️ 13:01</a>):</p>
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>Attribute</th>
+        <th>Program</th>
+        <th>Process</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Nature</strong></td>
+        <td>Passive entity stored on disk (e.g., compiled ELF binary <code>/usr/bin/ls</code>).</td>
+        <td>Active runtime entity loaded into main memory with allocated CPU cycles.</td>
+      </tr>
+      <tr>
+        <td><strong>Lifespan</strong></td>
+        <td>Permanent until deleted from secondary storage.</td>
+        <td>Dynamic; created upon launch, exists through state transitions, destroyed upon termination.</td>
+      </tr>
+      <tr>
+        <td><strong>Resource Footprint</strong></td>
+        <td>Consumes only disk storage space.</td>
+        <td>Allocates RAM, CPU registers, stack/heap, file descriptors, and kernel PCB structures.</td>
+      </tr>
+      <tr>
+        <td><strong>Relationship</strong></td>
+        <td>One program can spawn multiple distinct processes (e.g., opening 4 separate terminal windows).</td>
+        <td>Each process has its own isolated virtual address space and PID.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>1.4 Process Control Block (PCB): The Process Metadata Core</h3>
+  <p>The Operating System represents each process internally using a kernel data structure known as the <strong>Process Control Block (PCB)</strong> (in the Linux kernel, represented by <code>struct task_struct</code>) (<a href="https://www.youtube.com/watch?v=kn6rYzVsCEQ&t=1468s" target="_blank" class="yt-timestamp">⏱️ 24:28</a>). The PCB contains:</p>
+  <ul>
+    <li><strong>Process Identifier (PID):</strong> Unique integer identifier assigned by the kernel (e.g., PID 1 is <code>systemd</code>/<code>init</code>).</li>
+    <li><strong>Process State:</strong> Current status flag (New, Ready, Running, Waiting, Terminated).</li>
+    <li><strong>Program Counter (PC):</strong> Pointer storing the physical/virtual address of the next machine instruction to be executed by the CPU.</li>
+    <li><strong>CPU Registers:</strong> Snapshot of all hardware registers (Accumulator, Index, Stack Pointer <code>RSP</code>, Base Pointer <code>RBP</code>, Flags register) saved whenever the process is preempted.</li>
+    <li><strong>Memory Management Information:</strong> Base and limit register values, or pointers to the top-level Page Table (e.g., <code>CR3</code> register value in x86).</li>
+    <li><strong>Accounting & Scheduling Attributes:</strong> CPU priority, time slice remaining, CPU time consumed, waiting time accumulated.</li>
+    <li><strong>I/O Status & Open Files:</strong> File Descriptor Table (FDT) mapping index integers (<code>0: stdin</code>, <code>1: stdout</code>, <code>2: stderr</code>) to kernel file pointers.</li>
+  </ul>
+
+  <h3>1.5 Process Memory Layout (Virtual Address Space Anatomy)</h3>
+  <p>When the OS loads a program into memory, it assigns it a contiguous-looking private virtual address space divided into 4 primary functional segments (<a href="https://www.youtube.com/watch?v=kn6rYzVsCEQ&t=2029s" target="_blank" class="yt-timestamp">⏱️ 33:49</a>):</p>
+
+  <div class="mermaid">
+  graph TD
+    HighAddr["High Address: 0x7FFFFFFFFFFF"]
+    Stack["Stack Segment (Downwards growth: Local vars, frame pointers)"]
+    Gap["Unallocated Free Address Space"]
+    Heap["Heap Segment (Upwards growth: malloc, dynamic objects)"]
+    BSS["BSS Segment (Uninitialized globals/statics zeroed)"]
+    Data["Data Segment (Initialized globals/statics)"]
+    Text["Text / Code Segment (Machine instructions: Read-Only)"]
+    LowAddr["Low Address: 0x000000000000"]
+    
+    HighAddr --- Stack
+    Stack --> Gap
+    Gap --- Heap
+    Heap --- BSS
+    BSS --- Data
+    Data --- Text
+    Text --- LowAddr
+  </div>
+
+  <ol>
+    <li><strong>Text (Code) Segment:</strong>
+      <ul>
+        <li>Contains the raw compiled executable machine code instructions.</li>
+        <li><strong>Read-Only Protection:</strong> Hardware-enforced read-only permission flag to prevent self-modifying code or buffer overflow exploits from altering program logic.</li>
+        <li><strong>Sharable:</strong> Multiple concurrent processes executing the same binary (e.g., 10 instances of <code>bash</code>) can safely share the single physical copy of the text segment in RAM.</li>
+      </ul>
+    </li>
+    <li><strong>Data Segment (Initialized Data & BSS):</strong>
+      <ul>
+        <li><code>.data</code>: Stores global and static variables explicitly initialized with non-zero values (e.g., <code>int max_users = 500;</code>).</li>
+        <li><code>.bss</code> (Block Started by Symbol): Stores uninitialized or zero-initialized global and static variables (e.g., <code>static int buffer[1024];</code>). Does not consume binary file space on disk; kernel automatically zero-fills this space upon process instantiation.</li>
+      </ul>
+    </li>
+    <li><strong>Heap Segment:</strong>
+      <ul>
+        <li>Allocated dynamically at runtime via library calls such as <code>malloc()</code>, <code>calloc()</code>, <code>realloc()</code> in C, or <code>new</code> in C++.</li>
+        <li>Grows upwards toward higher memory addresses. Managed by runtime allocators (e.g., <code>ptmalloc</code>, <code>jemalloc</code>) which invoke kernel system calls <code>brk()</code> or <code>mmap()</code> when expanding.</li>
+      </ul>
+    </li>
+    <li><strong>Stack Segment:</strong>
+      <ul>
+        <li>Stores activation records (stack frames) for active function calls.</li>
+        <li>Contains function parameters, local automatic variables, caller return addresses, and saved register frames.</li>
+        <li>Grows downwards toward lower memory addresses. Managed automatically by CPU hardware via Stack Pointer (<code>RSP</code>) and Base Pointer (<code>RBP</code>). If stack and heap collide without sufficient address space, a <strong>Stack Overflow</strong> occurs.</li>
+      </ul>
+    </li>
+  </ol>
+</section>

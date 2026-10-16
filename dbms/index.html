@@ -2239,10 +2239,7 @@
         <span class="pill-label">CAP Theorem & Clustering</span>
       </a>
       <div style="height:1px; background:rgba(255,255,255,0.08); margin:8px 12px;"></div>
-      <a href="#dsa-drill" class="sidebar-pill">
-        <span class="pill-badge" style="background:rgba(59,130,246,0.2); color:#60A5FA;">DSA</span>
-        <span class="pill-label">NeetCode 150 Patterns</span>
-      </a>
+
       <a href="#expanded-normalization" class="sidebar-pill">
         <span class="pill-badge" style="background:rgba(245,158,11,0.2); color:#FBBF24;">12</span>
         <span class="pill-label">Normalization (1NF-BCNF)</span>
@@ -3645,13 +3642,12 @@ SELECT c.name, t.email FROM courses c, contact t WHERE c.id = t.id;</code></pre>
           <div class="piq-title-group">
             <div class="piq-icon">🎯</div>
             <div>
-              <h2 class="piq-main-title">Placement Interview Drill &mdash; DBMS &amp; DSA</h2>
-              <p class="piq-subtitle">Curated high-frequency FAANG questions on Transactions, Indexing, Normalization, and NeetCode 150 Core DSA.</p>
+              <h2 class="piq-main-title">Placement Interview Drill &mdash; DBMS Core Questions</h2>
+              <p class="piq-subtitle">Curated high-frequency FAANG questions on Transactions, Indexing, Normalization, Concurrency, and SQL.</p>
             </div>
           </div>
           <div class="piq-tabs">
-            <button class="piq-tab-btn active" id="piq-tab-subject" onclick="switchPiqTab('subject')">DBMS Core FAANG Questions</button>
-            <button class="piq-tab-btn" id="piq-tab-dsa" onclick="switchPiqTab('dsa')">NeetCode 150 Core DSA Patterns</button>
+            <button class="piq-tab-btn active" id="piq-tab-subject" style="pointer-events:none;">DBMS Core FAANG Questions</button>
           </div>
         </div>
 
@@ -3713,146 +3709,7 @@ SELECT c.name, t.email FROM courses c, contact t WHERE c.id = t.id;</code></pre>
         </div>
 
         <!-- TAB 2: NeetCode 150 Core DSA Patterns Drill -->
-        <div class="piq-grid" id="piq-grid-dsa" style="display:none;">
-
-          <div class="piq-card" onclick="togglePiqCard(this)">
-            <div class="piq-question-bar">
-              <div class="piq-q-text">
-                <span class="piq-q-num">DSA 1.</span>
-                <span>What is the Two Pointers pattern? Give 2 classic problems.</span>
-              </div>
-              <div class="piq-q-badges">
-                <span class="piq-tag easy">Pattern 1</span>
-                <span class="piq-tag">NeetCode 150</span>
-                <span class="piq-toggle-icon">▼</span>
-              </div>
-            </div>
-            <div class="piq-answer-box">
-              <p>The <strong>Two Pointers</strong> pattern uses two index pointers traversing an array/linked list from opposite ends (inward convergence) or in the same direction at varying rates, converting quadratic $O(N^2)$ brute-force solutions into optimal $O(N)$ linear scans.</p>
-              <p><strong>Classic Problem 1 &bull; Two Sum II - Input Array Is Sorted (LeetCode 167):</strong></p>
-              <pre><code>def twoSum(numbers: list[int], target: int) -> list[int]:
-    left, right = 0, len(numbers) - 1
-    while left < right:
-        curr_sum = numbers[left] + numbers[right]
-        if curr_sum == target: return [left + 1, right + 1] # 1-indexed
-        elif curr_sum < target: left += 1
-        else: right -= 1
-    return []</code></pre>
-              <p><strong>Classic Problem 2 &bull; Container With Most Water (LeetCode 11):</strong> Start at <code>left = 0, right = n - 1</code>. Compute area $(R - L) \times \min(H[L], H[R])$, then advance the pointer with the shorter wall inwards.</p>
-              <div class="piq-complexity-row">
-                <span>Time: O(N)</span>
-                <span>Space: O(1) auxiliary</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="piq-card" onclick="togglePiqCard(this)">
-            <div class="piq-question-bar">
-              <div class="piq-q-text">
-                <span class="piq-q-num">DSA 2.</span>
-                <span>Explain Sliding Window technique and when to use it.</span>
-              </div>
-              <div class="piq-q-badges">
-                <span class="piq-tag med">Pattern 2</span>
-                <span class="piq-tag">NeetCode 150</span>
-                <span class="piq-toggle-icon">▼</span>
-              </div>
-            </div>
-            <div class="piq-answer-box">
-              <p>The <strong>Sliding Window</strong> pattern maintains a continuous subsegment $[L, R]$ over an array or string that dynamically expands and contracts to maintain a desired invariant, avoiding recomputing overlapping subproblems.</p>
-              <pre><code># Longest Substring Without Repeating Characters (LeetCode 3)
-def lengthOfLongestSubstring(s: str) -> int:
-    char_map = {}
-    left = max_len = 0
-    for right, char in enumerate(s):
-        if char in char_map and char_map[char] >= left:
-            left = char_map[char] + 1
-        char_map[char] = right
-        max_len = max(max_len, right - left + 1)
-    return max_len</code></pre>
-              <div class="piq-complexity-row">
-                <span>Time: O(N) linear</span>
-                <span>Space: O(min(N, alphabet_size))</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="piq-card" onclick="togglePiqCard(this)">
-            <div class="piq-question-bar">
-              <div class="piq-q-text">
-                <span class="piq-q-num">DSA 3.</span>
-                <span>What is Binary Search? When is it applicable beyond sorted arrays?</span>
-              </div>
-              <div class="piq-q-badges">
-                <span class="piq-tag med">Pattern 3</span>
-                <span class="piq-tag">NeetCode 150</span>
-                <span class="piq-toggle-icon">▼</span>
-              </div>
-            </div>
-            <div class="piq-answer-box">
-              <p><strong>Binary Search</strong> cuts the search space in half at each iteration in $O(\log N)$ time. Beyond sorted arrays, it applies whenever there is a <strong>Monotonic Decision Function</strong> $P(x) \in \{\text{False}, \dots, \text{False}, \text{True}, \dots, \text{True}\}$.</p>
-              <pre><code># Koko Eating Bananas (LeetCode 875)
-def minEatingSpeed(piles: list[int], h: int) -> int:
-    left, right = 1, max(piles)
-    ans = right
-    while left <= right:
-        mid = (left + right) // 2
-        hours = sum((p + mid - 1) // mid for p in piles)
-        if hours <= h:
-            ans = mid
-            right = mid - 1
-        else:
-            left = mid + 1
-    return ans</code></pre>
-              <div class="piq-complexity-row">
-                <span>Time: O(N * log(max_pile))</span>
-                <span>Space: O(1)</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="piq-card" onclick="togglePiqCard(this)">
-            <div class="piq-question-bar">
-              <div class="piq-q-text">
-                <span class="piq-q-num">DSA 4.</span>
-                <span>Explain Fast &amp; Slow Pointers (Floyd's Tortoise and Hare).</span>
-              </div>
-              <div class="piq-q-badges">
-                <span class="piq-tag med">Pattern 4</span>
-                <span class="piq-tag">Linked Lists</span>
-                <span class="piq-toggle-icon">▼</span>
-              </div>
-            </div>
-            <div class="piq-answer-box">
-              <p>Two pointers move at different speeds (slow = 1 step, fast = 2 steps). If there is a cycle, fast will lap slow. To find the cycle entry node: reset slow to head, then advance both 1 step per iteration until they meet.</p>
-              <div class="piq-complexity-row">
-                <span>Time: O(N)</span>
-                <span>Space: O(1) auxiliary</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="piq-card" onclick="togglePiqCard(this)">
-            <div class="piq-question-bar">
-              <div class="piq-q-text">
-                <span class="piq-q-num">DSA 5.</span>
-                <span>What is the Monotonic Stack pattern and how does it guarantee O(N)?</span>
-              </div>
-              <div class="piq-q-badges">
-                <span class="piq-tag hard">Pattern 5</span>
-                <span class="piq-tag">Stack</span>
-                <span class="piq-toggle-icon">▼</span>
-              </div>
-            </div>
-            <div class="piq-answer-box">
-              <p>A <strong>Monotonic Stack</strong> maintains elements in strictly ascending or descending order. Elements that violate order are popped. Because each index is pushed at most once and popped at most once, the total operations across all loops is bounded by $2N$, guaranteeing strict $O(N)$ amortized time.</p>
-              <div class="piq-complexity-row">
-                <span>Classic: Daily Temperatures (LC 739), Largest Rectangle in Histogram (LC 84)</span>
-              </div>
-            </div>
-          </div>
-
-        </div>
+        
       </section>
 
 
@@ -5018,7 +4875,7 @@ document.addEventListener('DOMContentLoaded', function() {
         </div>
 
         <div class="chat-input-bar">
-          <input type="text" id="chat-query" placeholder="Ask any DBMS or DSA question..." onkeypress="if(event.key==='Enter') submitChat()">
+          <input type="text" id="chat-query" placeholder="Ask any DBMS question (SQL, Indexing, Transactions, ACID)..." onkeypress="if(event.key==='Enter') submitChat()">
           <button onclick="submitChat()">Ask</button>
         </div>
       </div>
@@ -5948,7 +5805,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function getSections() {
       if (guideType === "dbms") {
-        return document.querySelectorAll('article[id^="page-"], section#interview-questions');
+        return document.querySelectorAll('article[id^="page-"], section#placement-interview-drill, section[id^="expanded-"], section#interview-questions');
       } else if (guideType === "os" || guideType === "ml") {
         return document.querySelectorAll('section#curriculum-overview, article[id^="chapter-"], section#interview-questions');
       } else if (guideType === "cn") {

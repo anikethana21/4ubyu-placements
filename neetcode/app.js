@@ -70,13 +70,20 @@ function initEventListeners() {
     window.print();
   });
 
-  // Theme toggle
-  document.getElementById('themeToggle').addEventListener('click', () => {
-    const currentTheme = document.body.getAttribute('data-theme');
-    const newTheme = currentTheme === 'light' ? 'dark' : 'light';
-    document.body.setAttribute('data-theme', newTheme);
-    document.getElementById('themeToggle').innerText = newTheme === 'light' ? '🌙 Dark' : '☀️ Light';
-  });
+  // Theme toggle - defaults to dark mode ("old one better")
+  const tBtn = document.getElementById('themeToggle');
+  const savedTheme = localStorage.getItem('nc_theme') || 'dark';
+  document.body.setAttribute('data-theme', savedTheme);
+  if (tBtn) {
+    tBtn.innerText = savedTheme === 'light' ? '☀️ Light' : '🌙 Dark';
+    tBtn.addEventListener('click', () => {
+      const cur = document.body.getAttribute('data-theme') || 'dark';
+      const nxt = cur === 'light' ? 'dark' : 'light';
+      document.body.setAttribute('data-theme', nxt);
+      localStorage.setItem('nc_theme', nxt);
+      tBtn.innerText = nxt === 'light' ? '☀️ Light' : '🌙 Dark';
+    });
+  }
 }
 
 function renderContent() {

@@ -1,8 +1,8 @@
 /* Modern Design System for NeetCode 150 Master Guide */
 :root {
-  --bg-primary: #0b0f19;
-  --bg-secondary: #111827;
-  --bg-card: rgba(17, 24, 39, 0.85);
+  --bg-primary: #070A12;
+  --bg-secondary: #0E1424;
+  --bg-card: #111827;
   --bg-card-border: rgba(255, 255, 255, 0.08);
   --text-primary: #f3f4f6;
   --text-secondary: #9ca3af;

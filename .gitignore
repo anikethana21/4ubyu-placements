@@ -1,13 +1,18 @@
-# System files
+﻿# OS generated files
 .DS_Store
 Thumbs.db
+desktop.ini
 
-# Logs and environment
+# Editor directories and files
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Temporary / Scratch files
+*.tmp
 *.log
-.env
-.venv/
-__pycache__/
 
-# Keep all HTML, CSS, JS, JSON, and media assets
-
-*_git_backup/
+# Dependencies & Build
+node_modules/
+.vercel/

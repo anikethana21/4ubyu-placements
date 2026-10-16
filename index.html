@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>4 U By U &bull; Placement Engineering Masterclasses</title>
-  <meta name="description" content="Central Hub for 4 U By U placement preparation study blueprints: DBMS, Operating Systems, and Machine Learning.">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
+  <title>Placements Notes &bull; Placement Engineering Masterclasses</title>
+  <meta name="description" content="Central Hub for Placements Notes placement preparation study blueprints: DBMS, Operating Systems, and Machine Learning.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
@@ -225,12 +225,340 @@
     a[href*="deeplearning/"] .card-features li::before { color: #F9A8D4; }
 
   </style>
+
+<style id="placement-mobile-and-foldable-engine">
+  /* ══════════════════════════════════════════════════════════════════════════
+     ADVANCED RESPONSIVE & FOLDABLE ENGINE (Mobile, Tablet, Desktop, Vercel)
+     ══════════════════════════════════════════════════════════════════════════ */
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    overflow-x: hidden !important;
+    width: 100% !important;
+    max-width: 100vw !important;
+    position: relative !important;
+  }
+
+  /* ── Smooth Responsive Layout Container ── */
+  .master-layout, .app-layout, .app-container {
+    display: flex !important;
+    width: 100% !important;
+    max-width: 1800px !important;
+    margin: 16px auto !important;
+    padding: 0 20px !important;
+    gap: 20px !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    position: relative !important;
+  }
+
+  /* ── Backdrop for Mobile Drawers ── */
+  .mobile-drawer-backdrop {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    background: rgba(0, 0, 0, 0.75) !important;
+    backdrop-filter: blur(4px) !important;
+    z-index: 1900 !important;
+    display: none !important;
+    opacity: 0 !important;
+    transition: opacity 0.3s ease !important;
+  }
+  .mobile-drawer-backdrop.active {
+    display: block !important;
+    opacity: 1 !important;
+  }
+
+  /* ── Desktop Sidebar Collapsible ── */
+  @media (min-width: 993px) {
+    .chapter-sidebar, .sidebar {
+      flex: 0 0 260px !important;
+      width: 260px !important;
+      position: sticky !important;
+      top: 76px !important;
+      height: calc(100vh - 96px) !important;
+      overflow-y: auto !important;
+      background: #0E1424 !important;
+      border: 1px solid #1E293B !important;
+      border-radius: 12px !important;
+      padding: 14px !important;
+      display: flex !important;
+      flex-direction: column !important;
+      gap: 6px !important;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3) !important;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    }
+    .chapter-sidebar.collapsed, .sidebar.collapsed {
+      flex: 0 0 0px !important;
+      width: 0px !important;
+      min-width: 0px !important;
+      max-width: 0px !important;
+      padding: 0 !important;
+      margin: 0 !important;
+      border: none !important;
+      overflow: hidden !important;
+      opacity: 0 !important;
+      pointer-events: none !important;
+    }
+  }
+
+  /* ── Mobile Sidebar (Off-Canvas Slide-Out Drawer) ── */
+  @media (max-width: 992px) {
+    .chapter-sidebar, .sidebar {
+      position: fixed !important;
+      top: 0 !important;
+      left: 0 !important;
+      bottom: 0 !important;
+      width: 290px !important;
+      max-width: 85vw !important;
+      height: 100vh !important;
+      z-index: 2000 !important;
+      background: #0B0F19 !important;
+      border-right: 1px solid #1E293B !important;
+      border-radius: 0 16px 16px 0 !important;
+      box-shadow: 8px 0 32px rgba(0, 0, 0, 0.8) !important;
+      padding: 20px 16px !important;
+      overflow-y: auto !important;
+      transform: translateX(-105%) !important;
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+      display: flex !important;
+      flex-direction: column !important;
+    }
+    .chapter-sidebar.mobile-open, .sidebar.mobile-open {
+      transform: translateX(0%) !important;
+    }
+    .sidebar-close-mobile-btn {
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      background: #1E293B !important;
+      border: 1px solid #334155 !important;
+      color: #FFFFFF !important;
+      width: 32px !important;
+      height: 32px !important;
+      border-radius: 8px !important;
+      cursor: pointer !important;
+      font-size: 14px !important;
+      font-weight: 700 !important;
+    }
+  }
+
+  /* ── Chatbot: Desktop Dock vs Mobile Bottom Sheet ── */
+  @media (min-width: 993px) {
+    .auxiliary-dock, .aux-dock {
+      flex: 0 0 350px !important;
+      width: 350px !important;
+      position: sticky !important;
+      top: 76px !important;
+      height: calc(100vh - 96px) !important;
+      display: flex !important;
+      flex-direction: column !important;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+      z-index: 50 !important;
+    }
+    .auxiliary-dock.wide, .aux-dock.wide {
+      flex: 0 0 490px !important;
+      width: 490px !important;
+    }
+    .auxiliary-dock.minimized, .aux-dock.minimized {
+      display: none !important;
+    }
+  }
+
+  @media (max-width: 992px) {
+    /* On mobile, dock is NEVER squishing the screen. It is an off-canvas Bottom Sheet! */
+    .auxiliary-dock, .aux-dock {
+      position: fixed !important;
+      left: 0 !important;
+      right: 0 !important;
+      bottom: 0 !important;
+      width: 100vw !important;
+      height: 80vh !important;
+      max-height: 640px !important;
+      z-index: 2100 !important;
+      background: #0E1424 !important;
+      border-top: 1px solid #3B82F6 !important;
+      border-radius: 20px 20px 0 0 !important;
+      box-shadow: 0 -12px 40px rgba(0, 0, 0, 0.85) !important;
+      transform: translateY(110%) !important;
+      transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1) !important;
+      display: flex !important;
+      flex-direction: column !important;
+    }
+    .auxiliary-dock.mobile-open, .aux-dock.mobile-open {
+      transform: translateY(0%) !important;
+    }
+    .auxiliary-dock.minimized, .aux-dock.minimized {
+      transform: translateY(110%) !important;
+    }
+    .chatbot-dock-card, .dock-card.chat-card {
+      height: 100% !important;
+      border: none !important;
+      border-radius: 20px 20px 0 0 !important;
+    }
+  }
+
+  /* ── Floating Chat Pill (Tap to Open Assistant on Mobile & Desktop) ── */
+  .chat-floating-pill {
+    position: fixed !important;
+    bottom: 20px !important;
+    right: 20px !important;
+    z-index: 1500 !important;
+    background: linear-gradient(135deg, #1E293B 0%, #0F172A 100%) !important;
+    border: 1px solid #3B82F6 !important;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6), 0 0 16px rgba(59, 130, 246, 0.3) !important;
+    border-radius: 9999px !important;
+    padding: 10px 18px !important;
+    display: none !important;
+    align-items: center !important;
+    gap: 10px !important;
+    cursor: pointer !important;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    touch-action: manipulation !important;
+  }
+  .chat-floating-pill.visible {
+    display: flex !important;
+  }
+  .chat-floating-pill:hover {
+    transform: translateY(-2px) scale(1.03) !important;
+    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.7), 0 0 24px rgba(59, 130, 246, 0.5) !important;
+  }
+
+  /* On mobile, floating pill is ALWAYS visible when chat is closed */
+  @media (max-width: 992px) {
+    .chat-floating-pill {
+      bottom: 16px !important;
+      right: 16px !important;
+      padding: 9px 15px !important;
+    }
+  }
+
+  /* ── Mobile Top Navbar Adjustments ── */
+  @media (max-width: 768px) {
+    .top-navbar, .top-nav, .master-header {
+      padding: 0 12px !important;
+      height: 56px !important;
+      gap: 8px !important;
+    }
+    .brand-group {
+      gap: 6px !important;
+    }
+    .hub-link {
+      padding: 4px 8px !important;
+      font-size: 0.78rem !important;
+    }
+    .brand-pill {
+      display: none !important; /* Hide secondary badge on small screens */
+    }
+    .nav-title {
+      font-size: 0.88rem !important;
+      max-width: 140px !important;
+      overflow: hidden !important;
+      text-overflow: ellipsis !important;
+    }
+    .nav-search-bar {
+      max-width: none !important;
+    }
+    input#section-search, input#searchInput, input.search-box {
+      font-size: 0.8rem !important;
+      padding: 6px 10px 6px 32px !important;
+    }
+    .nav-controls, .nav-right {
+      gap: 5px !important;
+    }
+    .btn-nav {
+      padding: 5px 8px !important;
+      font-size: 0.75rem !important;
+    }
+    .btn-nav span:not(:first-child) {
+      display: none !important; /* Keep icons only on compact mobile header */
+    }
+    .master-layout, .app-layout, .app-container {
+      padding: 0 10px !important;
+      margin: 8px auto !important;
+      gap: 12px !important;
+    }
+  }
+
+  /* ── Content Readability & Mobile Table Wrappers ── */
+  .main-content, .notes-column, .pdf-guide-column {
+    width: 100% !important;
+    max-width: 100% !important;
+    flex: 1 1 100% !important;
+  }
+
+  /* Tables never break screen width */
+  table {
+    display: block !important;
+    width: 100% !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    border-collapse: collapse !important;
+    margin: 16px 0 !important;
+  }
+
+  /* Code blocks responsive scrolling */
+  pre {
+    max-width: 100% !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    word-break: normal !important;
+  }
+
+  /* Video Resources Banner on Mobile */
+  @media (max-width: 600px) {
+    .video-resources-banner {
+      padding: 12px 14px !important;
+    }
+    .vrb-grid {
+      grid-template-columns: 1fr !important;
+    }
+    .vrb-card {
+      padding: 8px 12px !important;
+    }
+  }
+
+  /* Placement Interview Drill on Mobile */
+  @media (max-width: 768px) {
+    .placement-interview-section {
+      padding: 16px 14px !important;
+      margin-top: 24px !important;
+    }
+    .piq-header {
+      flex-direction: column !important;
+      gap: 10px !important;
+    }
+    .piq-tabs {
+      width: 100% !important;
+      flex-direction: column !important;
+    }
+    .piq-tab-btn {
+      width: 100% !important;
+      text-align: center !important;
+    }
+    .piq-question-bar {
+      padding: 12px 14px !important;
+      flex-direction: column !important;
+      align-items: flex-start !important;
+      gap: 8px !important;
+    }
+    .piq-q-badges {
+      align-self: flex-start !important;
+    }
+  }
+</style>
+
 </head>
 <body>
 
   <header class="header">
-    <div class="badge">4 U By U Placement Suite</div>
-    <h1>Engineering Masterclasses <span>&bull; 4 U By U</span></h1>
+    <div class="badge">Placements Notes Placement Suite</div>
+    <h1>Engineering Masterclasses <span>&bull; Placements Notes</span></h1>
     <p class="subtitle">Curated, comprehensive technical study guides with deep video timestamps, mathematical rigor, architectural diagrams, scrollable PDF viewers, and in-memory RAG study assistants.</p>
   </header>
 
@@ -367,8 +695,181 @@
   </main>
 
   <footer class="footer">
-    4 U By U &bull; Placement Engineering Suite &bull; Built with high fidelity & zero data loss
+    Placements Notes &bull; Placement Engineering Suite &bull; Built with high fidelity & zero data loss
   </footer>
+
+
+<script id="placement-mobile-runtime">
+/* ══════════════════════════════════════════════════════════════════════════
+   MOBILE & FOLDABLE RUNTIME ENGINE: Off-Canvas Sidebar + Bottom Sheet Chat
+   ══════════════════════════════════════════════════════════════════════════ */
+
+(function initMobileResponsiveEngine() {
+  // 1. Create or get backdrop element
+  let backdrop = document.getElementById('mobile-drawer-backdrop');
+  if (!backdrop) {
+    backdrop = document.createElement('div');
+    backdrop.id = 'mobile-drawer-backdrop';
+    backdrop.className = 'mobile-drawer-backdrop';
+    document.body.appendChild(backdrop);
+  }
+
+  // 2. Add mobile close button to sidebar header if not present
+  const sidebar = document.querySelector('.chapter-sidebar') || document.querySelector('.sidebar');
+  if (sidebar) {
+    let headerRow = sidebar.querySelector('.sidebar-header-row') || sidebar.querySelector('.sidebar-header');
+    if (headerRow && !sidebar.querySelector('.sidebar-close-mobile-btn')) {
+      const closeBtn = document.createElement('button');
+      closeBtn.className = 'sidebar-close-mobile-btn';
+      closeBtn.innerHTML = '&times;';
+      closeBtn.title = 'Close Outline';
+      closeBtn.onclick = function(e) {
+        e.stopPropagation();
+        closeMobileSidebar();
+      };
+      headerRow.appendChild(closeBtn);
+    }
+
+    // Auto-close sidebar on mobile when any link inside is tapped
+    sidebar.querySelectorAll('a, .sidebar-link, .sidebar-pill, [onclick*="jump"]').forEach(link => {
+      link.addEventListener('click', function() {
+        if (window.innerWidth <= 992) {
+          closeMobileSidebar();
+        }
+      });
+    });
+  }
+
+  // 3. Setup Backdrop click listener
+  backdrop.addEventListener('click', function() {
+    closeMobileSidebar();
+    closeMobileChat();
+  });
+
+  // 4. Overwrite / Enhance toggleSidebar for both desktop and mobile
+  window.toggleSidebar = function() {
+    const sb = document.querySelector('.chapter-sidebar') || document.querySelector('.sidebar');
+    const bd = document.getElementById('mobile-drawer-backdrop');
+    if (!sb) return;
+
+    if (window.innerWidth <= 992) {
+      // Mobile off-canvas toggle
+      const isOpen = sb.classList.contains('mobile-open');
+      if (isOpen) {
+        closeMobileSidebar();
+      } else {
+        sb.classList.add('mobile-open');
+        if (bd) bd.classList.add('active');
+        closeMobileChat(); // ensure chat is closed when opening sidebar
+      }
+    } else {
+      // Desktop collapse / expand
+      sb.classList.toggle('collapsed');
+      const btn = document.getElementById('btn-toggle-sidebar');
+      if (btn) {
+        if (sb.classList.contains('collapsed')) {
+          btn.classList.add('active');
+          btn.innerHTML = '<span>☰</span> <span>Show Sidebar</span>';
+        } else {
+          btn.classList.remove('active');
+          btn.innerHTML = '<span>☰</span> <span>Sidebar</span>';
+        }
+      }
+    }
+  };
+
+  window.closeMobileSidebar = function() {
+    const sb = document.querySelector('.chapter-sidebar') || document.querySelector('.sidebar');
+    const bd = document.getElementById('mobile-drawer-backdrop');
+    if (sb) sb.classList.remove('mobile-open');
+    if (bd && !document.querySelector('.auxiliary-dock.mobile-open, .aux-dock.mobile-open')) {
+      bd.classList.remove('active');
+    }
+  };
+
+  // 5. Overwrite / Enhance toggleChat for both desktop and mobile
+  window.toggleChat = function(forceMinimize) {
+    const dock = document.querySelector('.auxiliary-dock') || document.querySelector('.aux-dock');
+    const pill = document.getElementById('chat-floating-pill');
+    const bd = document.getElementById('mobile-drawer-backdrop');
+    const btnNav = document.getElementById('btn-toggle-chat');
+    if (!dock) return;
+
+    if (window.innerWidth <= 992) {
+      // Mobile bottom sheet toggle
+      const isOpen = dock.classList.contains('mobile-open');
+      if (forceMinimize === true || (isOpen && forceMinimize === undefined)) {
+        closeMobileChat();
+      } else {
+        dock.classList.add('mobile-open');
+        dock.classList.remove('minimized');
+        if (bd) bd.classList.add('active');
+        if (pill) pill.classList.remove('visible');
+        if (btnNav) btnNav.classList.add('active');
+        closeMobileSidebar();
+        // scroll chat messages to bottom
+        const msgs = document.getElementById('chat-messages');
+        if (msgs) msgs.scrollTop = msgs.scrollHeight;
+      }
+    } else {
+      // Desktop minimize / restore
+      if (forceMinimize === true || (!dock.classList.contains('minimized') && forceMinimize === undefined)) {
+        dock.classList.add('minimized');
+        if (pill) pill.classList.add('visible');
+        if (btnNav) btnNav.classList.remove('active');
+      } else {
+        dock.classList.remove('minimized');
+        if (pill) pill.classList.remove('visible');
+        if (btnNav) btnNav.classList.add('active');
+        const msgs = document.getElementById('chat-messages');
+        if (msgs) msgs.scrollTop = msgs.scrollHeight;
+      }
+    }
+  };
+
+  window.closeMobileChat = function() {
+    const dock = document.querySelector('.auxiliary-dock') || document.querySelector('.aux-dock');
+    const pill = document.getElementById('chat-floating-pill');
+    const bd = document.getElementById('mobile-drawer-backdrop');
+    const btnNav = document.getElementById('btn-toggle-chat');
+    if (dock) {
+      dock.classList.remove('mobile-open');
+      dock.classList.add('minimized');
+    }
+    if (pill) pill.classList.add('visible');
+    if (btnNav) btnNav.classList.remove('active');
+    if (bd && !document.querySelector('.chapter-sidebar.mobile-open, .sidebar.mobile-open')) {
+      bd.classList.remove('active');
+    }
+  };
+
+  // 6. On initial load on mobile devices, ensure chat starts minimized and floating pill is ready
+  function checkInitialViewport() {
+    const pill = document.getElementById('chat-floating-pill');
+    const dock = document.querySelector('.auxiliary-dock') || document.querySelector('.aux-dock');
+    if (window.innerWidth <= 992) {
+      if (dock) dock.classList.add('minimized');
+      if (pill) pill.classList.add('visible');
+    }
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', checkInitialViewport);
+  } else {
+    checkInitialViewport();
+  }
+
+  window.addEventListener('resize', function() {
+    const pill = document.getElementById('chat-floating-pill');
+    const dock = document.querySelector('.auxiliary-dock') || document.querySelector('.aux-dock');
+    if (window.innerWidth > 992) {
+      closeMobileSidebar();
+      const bd = document.getElementById('mobile-drawer-backdrop');
+      if (bd) bd.classList.remove('active');
+    }
+  });
+})();
+</script>
 
 </body>
 </html>

@@ -2,7 +2,7 @@
 
 > **Note:** This document contains every single instruction and prompt submitted by the user from the very beginning of the session, in exact chronological order, without losing or altering a single word.
 
-**Total Prompts / Instructions Recorded:** 81
+**Total Prompts / Instructions Recorded:** 89
 
 ---
 
@@ -1198,3 +1198,83 @@ https://youtu.be/ytsHs-KZHVI
 ```
 
 ---
+
+---
+
+## Instruction #82
+- **Timestamp:** 2026-10-15T09:40:00+05:30
+
+### Verbatim User Instruction:
+```text
+for the os include this also as extra like how u did for nlp seperate two tuters videos but for the os create two first is already good second similer to dbms
+```
+
+---
+
+## Instruction #83
+- **Timestamp:** 2026-10-15T10:10:00+05:30
+
+### Verbatim User Instruction:
+```text
+https://www.youtube.com/watch?v=3obEP8eLsCw&t=8183s this is the video link for the os notes
+```
+
+---
+
+## Instruction #84
+- **Timestamp:** 2026-10-15T10:35:00+05:30
+
+### Verbatim User Instruction:
+```text
+these not workingfix search bar and add redirecting to the home page the sidebar should ne able to minimize and maximize and toggle for rag that strictly searchs existing document or create a new pipeline lcel in which it is going to generate open answers but u know still trained on the data searchbar text bad wait i will add more then map em with images and fix once for all
+```
+
+---
+
+## Instruction #85
+- **Timestamp:** 2026-10-15T11:05:00+05:30
+
+### Verbatim User Instruction:
+```text
+from predecer request of mine add this one also and fix everything move this to content in bottom section not here this ois from naatcode creatively make the chatbot seem simple and remove video player accross all and the chatbot should be allowed to minimize and resize intelligently the whole docs across all the notes but remmeber the links sjoulhd be provided somewhere in the documentthird image is the best u have generated so learn from this first
+```
+
+---
+
+## Instruction #86
+- **Timestamp:** 2026-10-15T11:30:00+05:30
+
+### Verbatim User Instruction:
+```text
+do this shitt please
+```
+
+---
+
+## Instruction #87
+- **Timestamp:** 2026-10-15T11:45:00+05:30
+
+### Verbatim User Instruction:
+```text
+continue
+```
+
+---
+
+## Instruction #88
+- **Timestamp:** 2026-10-16T11:00:00+05:30
+
+### Verbatim User Instruction:
+```text
+I want this screen to be reassemble so that I can upload it to Versal and you know when I want to study even in my mobile I should be able to do it so make it So foldable or you know minimizable to Mobile phone also And also one more thing while minimising the sidebar should be completely optionally minimised And And And you know I answer the chat but should also be optionally minimised Cause there is no direct Use of it And I mean there is use but it should be completely you know optional there the main content should be the highlighted visibly Yes do it now
+```
+
+---
+
+## Instruction #89
+- **Timestamp:** 2026-10-16T11:18:42+05:30
+
+### Verbatim User Instruction:
+```text
+the below notes alos should be alligned to middle index shd also be there now for all the html rename 4ubyu to placements notesonly fix the third image for neetcode the previous theme looked better imean for the bg theme instead of white old one better so fix these
+```

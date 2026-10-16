@@ -4657,153 +4657,7 @@ flag[i] = false;</code></pre>
           </div>
         </div>
 
-        <!-- TAB 2: NeetCode 150 Core DSA Patterns Drill (From User Request Image 1) -->
-        <div class="piq-grid" id="piq-grid-dsa" style="display:none;">
-          <div class="piq-card" onclick="togglePiqCard(this)">
-            <div class="piq-question-bar">
-              <div class="piq-q-text">
-                <span class="piq-q-num">Q1.</span>
-                <span>What is the Two Pointers pattern? Give 2 classic problems.</span>
-              </div>
-              <div class="piq-q-badges">
-                <span class="piq-tag easy">Pattern 1</span>
-                <span class="piq-tag">NeetCode 150</span>
-                <span class="piq-toggle-icon">▼</span>
-              </div>
-            </div>
-            <div class="piq-answer-box">
-              <p>The <strong>Two Pointers</strong> pattern uses two index pointers to traverse a linear sequence (array or linked list) from opposite ends (inward convergence) or in the same direction at varying rates, converting quadratic $O(N^2)$ brute-force solutions into optimal $O(N)$ linear scans.</p>
-              <p><strong>Classic Problem 1 &bull; Two Sum II - Input Array Is Sorted (LeetCode 167):</strong></p>
-              <pre><code>def twoSum(numbers: list[int], target: int) -> list[int]:
-    left, right = 0, len(numbers) - 1
-    while left < right:
-        curr_sum = numbers[left] + numbers[right]
-        if curr_sum == target:
-            return [left + 1, right + 1] # 1-indexed
-        elif curr_sum < target:
-            left += 1
-        else:
-            right -= 1
-    return []</code></pre>
-              <p><strong>Classic Problem 2 &bull; Container With Most Water (LeetCode 11):</strong> Place pointers at boundaries <code>left = 0, right = n-1</code>. The area is $(right - left) \times \min(height[left], height[right])$. Always move the pointer pointing to the shorter wall inward.</p>
-              <div class="piq-complexity-row">
-                <span>Time Complexity: O(N)</span>
-                <span>Space Complexity: O(1) auxiliary</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="piq-card" onclick="togglePiqCard(this)">
-            <div class="piq-question-bar">
-              <div class="piq-q-text">
-                <span class="piq-q-num">Q2.</span>
-                <span>Explain Sliding Window technique and when to use it.</span>
-              </div>
-              <div class="piq-q-badges">
-                <span class="piq-tag med">Pattern 2</span>
-                <span class="piq-tag">NeetCode 150</span>
-                <span class="piq-toggle-icon">▼</span>
-              </div>
-            </div>
-            <div class="piq-answer-box">
-              <p>The <strong>Sliding Window</strong> technique maintains a continuous subsegment $[L, R]$ over an array or string that dynamically expands and contracts to maintain a desired invariant, avoiding recomputing overlapping subproblems.</p>
-              <p><strong>When to use:</strong> Subarray / Substring problems asking for longest, shortest, or target count satisfying a condition.</p>
-              <pre><code># Template: Variable-size Sliding Window (e.g. Longest Substring Without Repeating Characters)
-def lengthOfLongestSubstring(s: str) -> int:
-    char_map = {}
-    left = 0
-    max_len = 0
-    for right, char in enumerate(s):
-        if char in char_map and char_map[char] >= left:
-            left = char_map[char] + 1
-        char_map[char] = right
-        max_len = max(max_len, right - left + 1)
-    return max_len</code></pre>
-              <div class="piq-complexity-row">
-                <span>Time Complexity: O(N) amortized</span>
-                <span>Space Complexity: O(min(N, alphabet_size))</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="piq-card" onclick="togglePiqCard(this)">
-            <div class="piq-question-bar">
-              <div class="piq-q-text">
-                <span class="piq-q-num">Q3.</span>
-                <span>What is Binary Search? When is it applicable beyond sorted arrays?</span>
-              </div>
-              <div class="piq-q-badges">
-                <span class="piq-tag med">Pattern 3</span>
-                <span class="piq-tag">NeetCode 150</span>
-                <span class="piq-toggle-icon">▼</span>
-              </div>
-            </div>
-            <div class="piq-answer-box">
-              <p><strong>Binary Search</strong> is a divide-and-conquer strategy that cuts the search space in half at each step, operating in $O(\log N)$ time.</p>
-              <p><strong>Beyond Sorted Arrays &bull; Binary Search on Monotonic Decision Space:</strong> Applicable whenever there exists a monotonic boolean predicate function $P(x)$ such that for all $x < \text{threshold}$, $P(x) = \text{False}$ and for all $x \ge \text{threshold}$, $P(x) = \text{True}$.</p>
-              <pre><code># Example: Koko Eating Bananas (LeetCode 875)
-def minEatingSpeed(piles: list[int], h: int) -> int:
-    left, right = 1, max(piles)
-    ans = right
-    while left <= right:
-        mid = (left + right) // 2
-        hours_needed = sum((pile + mid - 1) // mid for pile in piles)
-        if hours_needed <= h:
-            ans = mid
-            right = mid - 1 # Try to find smaller valid speed
-        else:
-            left = mid + 1
-    return ans</code></pre>
-              <div class="piq-complexity-row">
-                <span>Time Complexity: O(N * log(max_pile))</span>
-                <span>Space Complexity: O(1)</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="piq-card" onclick="togglePiqCard(this)">
-            <div class="piq-question-bar">
-              <div class="piq-q-text">
-                <span class="piq-q-num">Q4.</span>
-                <span>Explain Fast &amp; Slow Pointers (Floyd's Tortoise and Hare) for Cycle Detection.</span>
-              </div>
-              <div class="piq-q-badges">
-                <span class="piq-tag med">Pattern 4</span>
-                <span class="piq-tag">Linked Lists</span>
-                <span class="piq-toggle-icon">▼</span>
-              </div>
-            </div>
-            <div class="piq-answer-box">
-              <p>Floyd's Tortoise and Hare advances two pointers: <code>slow</code> moves 1 node per step, and <code>fast</code> moves 2 nodes. If a cycle exists, <code>fast</code> will lap <code>slow</code> inside the loop. To find the cycle entry node: after collision, reset <code>slow</code> to head; advance both 1 step at a time until they meet at the cycle entrance.</p>
-              <div class="piq-complexity-row">
-                <span>Time Complexity: O(N)</span>
-                <span>Space Complexity: O(1) (No hash table needed)</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="piq-card" onclick="togglePiqCard(this)">
-            <div class="piq-question-bar">
-              <div class="piq-q-text">
-                <span class="piq-q-num">Q5.</span>
-                <span>What is the Monotonic Stack pattern and how does it guarantee O(N) complexity?</span>
-              </div>
-              <div class="piq-q-badges">
-                <span class="piq-tag hard">Pattern 5</span>
-                <span class="piq-tag">Stack &amp; Queue</span>
-                <span class="piq-toggle-icon">▼</span>
-              </div>
-            </div>
-            <div class="piq-answer-box">
-              <p>A <strong>Monotonic Stack</strong> maintains elements in strictly ascending or descending order. When an incoming element violates the monotonicity, elements are popped until order is restored.</p>
-              <p><strong>Complexity Proof:</strong> Although there is a nested while loop, each index is pushed onto the stack exactly once and popped at most once across the entire algorithm execution. Total operations $\le 2N$, guaranteeing strict $O(N)$ linear amortized runtime.</p>
-              <div class="piq-complexity-row">
-                <span>Classic Problems: Daily Temperatures (LeetCode 739), Largest Rectangle in Histogram (LeetCode 84)</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+        </section>
 
 </main>
     <!-- Middle Column: Track 2 - CodeHelp 41-Page Scrollable PDF Guide -->
@@ -8079,13 +7933,9 @@ document.addEventListener('DOMContentLoaded', function() {
           
           // Auto switch track if clicking across tracks
           if (targetId.startsWith('page-')) {
-            if (typeof currentViewMode !== 'undefined' && currentViewMode === 't1') {
-              switchViewMode('t2');
-            }
+            switchViewMode('t2');
           } else if (targetId.startsWith('chapter-') || targetId.indexOf('curriculum') !== -1 || targetId.indexOf('interview') !== -1 || targetId.startsWith('expanded-')) {
-            if (typeof currentViewMode !== 'undefined' && currentViewMode === 't2') {
-              switchViewMode('t1');
-            }
+            switchViewMode('t1');
           }
           
           setTimeout(function() {
@@ -8119,6 +7969,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function switchViewMode(mode) {
       currentViewMode = (mode === 't2') ? 't2' : 't1';
+      window.currentViewMode = currentViewMode;
       const t1 = document.getElementById('track1-container');
       const t2 = document.getElementById('track2-container');
       const b1 = document.getElementById('vms-t1');
@@ -8127,30 +7978,39 @@ document.addEventListener('DOMContentLoaded', function() {
       if (currentViewMode === 't1') {
         if (t1) {
           t1.classList.remove('hidden');
-          t1.style.display = 'flex';
+          t1.style.setProperty('display', 'flex', 'important');
         }
         if (t2) {
           t2.classList.add('hidden');
-          t2.style.display = 'none';
+          t2.style.setProperty('display', 'none', 'important');
         }
-        if (b1) b1.className = 'vms-btn active t1';
-        if (b2) b2.className = 'vms-btn t2';
+        if (b1) {
+          b1.className = 'vms-btn active t1';
+        }
+        if (b2) {
+          b2.className = 'vms-btn t2';
+        }
       } else {
         if (t1) {
           t1.classList.add('hidden');
-          t1.style.display = 'none';
+          t1.style.setProperty('display', 'none', 'important');
         }
         if (t2) {
           t2.classList.remove('hidden');
-          t2.style.display = 'flex';
+          t2.style.setProperty('display', 'flex', 'important');
         }
-        if (b1) b1.className = 'vms-btn t1';
-        if (b2) b2.className = 'vms-btn active t2';
+        if (b1) {
+          b1.className = 'vms-btn t1';
+        }
+        if (b2) {
+          b2.className = 'vms-btn active t2';
+        }
       }
       if (typeof sections !== 'undefined' && typeof getSections === 'function') {
         try { sections = getSections(); } catch(e){}
       }
     }
+    window.switchViewMode = switchViewMode;
 
     function switchVideoTrack(trackNum) {
       currentVideoTrack = trackNum;
@@ -8229,7 +8089,7 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     }
 
-    function seekVideo    function seekVideo(videoId, seconds) {
+    function seekVideo(videoId, seconds) {
       const iframe = document.getElementById('video-frame');
       iframe.src = 'https://www.youtube.com/embed/' + videoId + '?start=' + seconds + '&autoplay=1';
     }
@@ -8255,13 +8115,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Page and Lecture Navigation
     function jumpToPage(pageNum) {
-      if (typeof currentViewMode !== 'undefined' && currentViewMode === 't1') {
-        switchViewMode('t2');
-      }
+      switchViewMode('t2');
       setTimeout(() => {
         const target = document.getElementById('page-' + pageNum);
         if (target) {
-          const offset = 80;
+          const offset = 85;
           const top = target.getBoundingClientRect().top + window.pageYOffset - offset;
           window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
           const ind = document.getElementById('page-indicator');
@@ -8269,8 +8127,9 @@ document.addEventListener('DOMContentLoaded', function() {
           const sel = document.getElementById('lecture-jump');
           if (sel) sel.value = String(pageNum);
         }
-      }, 60);
+      }, 70);
     }
+    window.jumpToPage = jumpToPage;
 
     function jumpToSelectedLecture() {
       const select = document.getElementById('lecture-jump');

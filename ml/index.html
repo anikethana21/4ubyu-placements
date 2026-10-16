@@ -1942,6 +1942,138 @@
   }
 </style>
 
+
+<style id="placements-navbar-v4-patch">
+  /* Brand Title Wrap (Notes Title Bigger, Following in smaller text: Placements Notes) */
+  .brand-group, .nav-left, .brand-section {
+    display: flex !important;
+    align-items: center !important;
+    gap: 12px !important;
+    flex-shrink: 0 !important;
+  }
+  .brand-title-wrap {
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    gap: 1px !important;
+    line-height: 1.15 !important;
+  }
+  .nav-title, .sidebar-title {
+    margin: 0 !important;
+    font-size: 1.25rem !important;
+    font-weight: 800 !important;
+    color: #FFFFFF !important;
+    letter-spacing: -0.02em !important;
+    line-height: 1.15 !important;
+    white-space: nowrap !important;
+  }
+  .nav-subtitle {
+    margin: 0 !important;
+    font-size: 0.72rem !important;
+    font-weight: 600 !important;
+    color: #60A5FA !important;
+    letter-spacing: 0.05em !important;
+    text-transform: uppercase !important;
+    line-height: 1 !important;
+  }
+  .btn-sidebar-toggle {
+    background: #111827 !important;
+    border: 1px solid #334155 !important;
+    color: #E2E8F0 !important;
+    padding: 6px 10px !important;
+    border-radius: 8px !important;
+    font-size: 0.95rem !important;
+    font-weight: 700 !important;
+    cursor: pointer !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    transition: all 0.2s ease !important;
+    line-height: 1 !important;
+  }
+  .btn-sidebar-toggle:hover {
+    background: #1E293B !important;
+    border-color: #3B82F6 !important;
+    color: #FFFFFF !important;
+    transform: scale(1.05);
+  }
+  .btn-sidebar-toggle.active {
+    background: rgba(59, 130, 246, 0.2) !important;
+    border-color: #3B82F6 !important;
+    color: #60A5FA !important;
+  }
+  .sidebar-collapse-btn {
+    background: rgba(255, 255, 255, 0.06) !important;
+    border: 1px solid rgba(255, 255, 255, 0.12) !important;
+    color: #94A3B8 !important;
+    border-radius: 6px !important;
+    padding: 4px 8px !important;
+    cursor: pointer !important;
+    font-size: 0.8rem !important;
+    line-height: 1 !important;
+    transition: all 0.2s ease !important;
+  }
+  .sidebar-collapse-btn:hover {
+    background: rgba(59, 130, 246, 0.2) !important;
+    color: #FFFFFF !important;
+    border-color: #3B82F6 !important;
+  }
+
+  /* Sidebar layout with sticky bottom footer */
+  .chapter-sidebar, .sidebar {
+    display: flex !important;
+    flex-direction: column !important;
+    height: calc(100vh - 62px) !important;
+    position: sticky !important;
+    top: 62px !important;
+    overflow: hidden !important;
+    box-sizing: border-box !important;
+  }
+  .sidebar-nav, .sidebar-scroll-area {
+    flex: 1 1 auto !important;
+    overflow-y: auto !important;
+  }
+  .sidebar-footer {
+    padding: 12px 14px !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.08) !important;
+    background: rgba(11, 15, 25, 0.98) !important;
+    margin-top: auto !important;
+    flex-shrink: 0 !important;
+    box-sizing: border-box !important;
+  }
+  .sidebar-theme-btn {
+    width: 100% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 8px !important;
+    background: rgba(255, 255, 255, 0.05) !important;
+    border: 1px solid rgba(255, 255, 255, 0.12) !important;
+    border-radius: 8px !important;
+    padding: 8px 12px !important;
+    color: #E2E8F0 !important;
+    font-size: 0.82rem !important;
+    font-weight: 600 !important;
+    cursor: pointer !important;
+    transition: all 0.2s ease !important;
+    box-sizing: border-box !important;
+  }
+  .sidebar-theme-btn:hover {
+    background: rgba(59, 130, 246, 0.15) !important;
+    border-color: #3B82F6 !important;
+    color: #FFFFFF !important;
+  }
+
+  @media (max-width: 900px) {
+    .nav-title {
+      font-size: 1.05rem !important;
+    }
+    .nav-subtitle {
+      font-size: 0.68rem !important;
+    }
+  }
+</style>
+
 </head>
 <body>
 
@@ -1953,8 +2085,13 @@
         <span class="hub-arrow" style="font-size:1.15rem; line-height:1; font-weight:700;">&larr;</span>
         <span class="hub-text">Home</span>
       </a>
-      <span class="brand-pill">Placements Notes</span>
-      <h1 class="nav-title" style="margin:0; font-size:1.05rem;">Machine Learning</h1>
+      <button class="btn-nav btn-sidebar-toggle" id="btn-toggle-sidebar" onclick="toggleSidebar()" title="Toggle Sidebar">
+        <span>☰</span>
+      </button>
+      <div class="brand-title-wrap">
+        <h1 class="nav-title">Machine Learning</h1>
+        <span class="nav-subtitle">Placements Notes</span>
+      </div>
     </div>
 
     <div class="nav-search-bar">
@@ -1963,18 +2100,12 @@
     </div>
 
     <div class="nav-controls">
-      <button class="btn-nav" id="btn-toggle-sidebar" onclick="toggleSidebar()" title="Toggle Chapter Sidebar">
-        <span>☰</span> <span class="btn-text">Sidebar</span>
-      </button>
+      
       <button class="btn-nav" id="btn-toggle-chat" onclick="toggleChat()" title="Toggle Study Assistant">
         <span>💬</span> <span class="btn-text">Assistant</span>
       </button>
-      <button class="btn-nav" id="themeToggleBtn" onclick="toggleTheme()" title="Toggle Dark/Light Mode">
-        <span>🌓</span> <span class="btn-text">Theme</span>
-      </button>
-      <a href="../index.html" class="btn-nav home-btn" title="Back to Central Placement Hub">
-        <span>🏠</span> <span class="btn-text">Hub</span>
-      </a>
+      
+      
     </div>
   </header>
 
@@ -1982,6 +2113,7 @@
     <!-- Left Column: Chapter Navigation Sidebar -->
     <aside class="chapter-sidebar" id="chapter-sidebar">
       <div class="sidebar-header">
+        <button class="sidebar-collapse-btn" onclick="toggleSidebar()" title="Collapse Sidebar" style="margin-left:auto;"><span>◀</span></button>
         <span>📚 CHAPTER OUTLINE</span>
       </div>
       <nav class="sidebar-nav">
@@ -2023,7 +2155,14 @@
         </a>
         <a href="#interview-questions" class="sidebar-pill"><span class="pill-badge">🎯</span><span class="pill-label">Interview Questions</span></a>
       </nav>
-    </aside>
+
+      <div class="sidebar-footer">
+        <button class="sidebar-theme-btn" id="sidebarThemeBtn" onclick="toggleTheme()" title="Toggle Dark/Light Mode">
+          <span class="theme-icon">🌓</span>
+          <span class="theme-text">Toggle Theme</span>
+        </button>
+      </div>
+</aside>
     <!-- Primary Study Notes Column -->
     <main class="notes-column">
       

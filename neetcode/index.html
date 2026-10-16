@@ -1158,19 +1158,157 @@
   }
 </style>
 
+
+<style id="placements-navbar-v4-patch">
+  /* Brand Title Wrap (Notes Title Bigger, Following in smaller text: Placements Notes) */
+  .brand-group, .nav-left, .brand-section {
+    display: flex !important;
+    align-items: center !important;
+    gap: 12px !important;
+    flex-shrink: 0 !important;
+  }
+  .brand-title-wrap {
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    gap: 1px !important;
+    line-height: 1.15 !important;
+  }
+  .nav-title, .sidebar-title {
+    margin: 0 !important;
+    font-size: 1.25rem !important;
+    font-weight: 800 !important;
+    color: #FFFFFF !important;
+    letter-spacing: -0.02em !important;
+    line-height: 1.15 !important;
+    white-space: nowrap !important;
+  }
+  .nav-subtitle {
+    margin: 0 !important;
+    font-size: 0.72rem !important;
+    font-weight: 600 !important;
+    color: #60A5FA !important;
+    letter-spacing: 0.05em !important;
+    text-transform: uppercase !important;
+    line-height: 1 !important;
+  }
+  .btn-sidebar-toggle {
+    background: #111827 !important;
+    border: 1px solid #334155 !important;
+    color: #E2E8F0 !important;
+    padding: 6px 10px !important;
+    border-radius: 8px !important;
+    font-size: 0.95rem !important;
+    font-weight: 700 !important;
+    cursor: pointer !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    transition: all 0.2s ease !important;
+    line-height: 1 !important;
+  }
+  .btn-sidebar-toggle:hover {
+    background: #1E293B !important;
+    border-color: #3B82F6 !important;
+    color: #FFFFFF !important;
+    transform: scale(1.05);
+  }
+  .btn-sidebar-toggle.active {
+    background: rgba(59, 130, 246, 0.2) !important;
+    border-color: #3B82F6 !important;
+    color: #60A5FA !important;
+  }
+  .sidebar-collapse-btn {
+    background: rgba(255, 255, 255, 0.06) !important;
+    border: 1px solid rgba(255, 255, 255, 0.12) !important;
+    color: #94A3B8 !important;
+    border-radius: 6px !important;
+    padding: 4px 8px !important;
+    cursor: pointer !important;
+    font-size: 0.8rem !important;
+    line-height: 1 !important;
+    transition: all 0.2s ease !important;
+  }
+  .sidebar-collapse-btn:hover {
+    background: rgba(59, 130, 246, 0.2) !important;
+    color: #FFFFFF !important;
+    border-color: #3B82F6 !important;
+  }
+
+  /* Sidebar layout with sticky bottom footer */
+  .chapter-sidebar, .sidebar {
+    display: flex !important;
+    flex-direction: column !important;
+    height: calc(100vh - 62px) !important;
+    position: sticky !important;
+    top: 62px !important;
+    overflow: hidden !important;
+    box-sizing: border-box !important;
+  }
+  .sidebar-nav, .sidebar-scroll-area {
+    flex: 1 1 auto !important;
+    overflow-y: auto !important;
+  }
+  .sidebar-footer {
+    padding: 12px 14px !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.08) !important;
+    background: rgba(11, 15, 25, 0.98) !important;
+    margin-top: auto !important;
+    flex-shrink: 0 !important;
+    box-sizing: border-box !important;
+  }
+  .sidebar-theme-btn {
+    width: 100% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 8px !important;
+    background: rgba(255, 255, 255, 0.05) !important;
+    border: 1px solid rgba(255, 255, 255, 0.12) !important;
+    border-radius: 8px !important;
+    padding: 8px 12px !important;
+    color: #E2E8F0 !important;
+    font-size: 0.82rem !important;
+    font-weight: 600 !important;
+    cursor: pointer !important;
+    transition: all 0.2s ease !important;
+    box-sizing: border-box !important;
+  }
+  .sidebar-theme-btn:hover {
+    background: rgba(59, 130, 246, 0.15) !important;
+    border-color: #3B82F6 !important;
+    color: #FFFFFF !important;
+  }
+
+  @media (max-width: 900px) {
+    .nav-title {
+      font-size: 1.05rem !important;
+    }
+    .nav-subtitle {
+      font-size: 0.68rem !important;
+    }
+  }
+</style>
+
 </head>
 <body>
   <div class="app-layout">
     <!-- Left Column: Topic Navigation Sidebar -->
     <aside class="sidebar">
       <div class="sidebar-header">
-        <a href="../index.html" class="hub-back-link">
-          <span>&larr; Placement Hub</span>
-          <span class="hub-badge">Placements Notes</span>
-        </a>
-        <div class="logo-badge">⚡ Master Curriculum</div>
-        <h1 class="sidebar-title">NeetCode 150</h1>
-        <p class="sidebar-subtitle">18 Topics &bull; 150 Curated Problems</p>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+          <a href="../index.html" class="hub-back-link" style="margin:0;">
+            <span style="font-weight:700;">&larr;</span> <span>Home</span>
+          </a>
+          <button class="sidebar-collapse-btn" onclick="toggleSidebar()" title="Toggle Sidebar">
+            <span>◀</span>
+          </button>
+        </div>
+        <div class="brand-title-wrap" style="margin-top:4px;">
+          <h1 class="sidebar-title" style="font-size:1.35rem; font-weight:800; color:#FFFFFF; margin:0 0 2px 0;">NeetCode 150</h1>
+          <span class="nav-subtitle" style="font-size:0.75rem; font-weight:600; color:#60A5FA; text-transform:uppercase; letter-spacing:0.05em;">Placements Notes</span>
+        </div>
+        <p class="sidebar-subtitle" style="margin-top:6px; font-size:0.8rem; color:#94A3B8;">18 Topics &bull; 150 Curated Problems</p>
       </div>
       <nav class="topic-nav" id="topicNav">
         <!-- Injected via app.js -->
@@ -1185,7 +1323,6 @@
           <input type="text" id="searchInput" class="search-input" placeholder="Search by problem name, pattern (e.g. DFS, Two Pointers)...">
         </div>
         <div class="controls-group">
-          <button class="btn" id="themeToggle" title="Theme (Dark / Contrast)">🌙 Dark</button>
           <button class="btn" id="expandAllBtn" title="Expand all hints and solutions">📖 Expand All</button>
           <button class="btn" id="collapseAllBtn" title="Collapse all hints">📁 Collapse</button>
           <button class="btn btn-primary" id="printBtn" title="Print-ready 2-questions-per-page view">🖨️ Print / PDF</button>

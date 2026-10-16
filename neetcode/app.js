@@ -397,35 +397,123 @@ function searchNeetCodeData(query) {
 // 4. Main Chat Submission Handler
 async function handleChatSubmit(event) {
   if (event) event.preventDefault();
-  const input = document.getElementById('chatInput');
+  const input = document.getElementById('chat-query') || document.getElementById('chatInput');
+  if (!input) return;
   const query = input.value.trim();
   if (!query) return;
 
   addUserMessage(query);
   input.value = '';
 
+  const isLcel = (typeof chatMode !== 'undefined' && chatMode === 'lcel') || (window.chatMode === 'lcel');
+
   // Case A: Live Gemini API Mode
-  if (currentModelMode !== 'rag' && geminiApiKey) {
+  if (typeof currentModelMode !== 'undefined' && currentModelMode !== 'rag' && window.geminiApiKey) {
     await handleGeminiApiCall(query);
     return;
   }
 
-  // Case B: Offline In-Memory RAG Mode
+  // Case B: LCEL Open Pipeline Mode
+  if (isLcel) {
+    handleLcelSynthesisCall(query);
+    return;
+  }
+
+  // Case C: Offline In-Memory RAG Mode
   handleOfflineRagCall(query);
+}
+
+function handleLcelSynthesisCall(query) {
+  const loadingId = 'loading-' + Date.now();
+  addAssistantMessage(`<div id="${loadingId}" style="display:flex; align-items:center; gap:8px; color:#94A3B8;"><span>⚡ LCEL Open Pipeline Synthesizing...</span></div>`);
+
+  setTimeout(() => {
+    const loader = document.getElementById(loadingId);
+    const matches = searchNeetCodeData(query);
+
+    if (matches.length > 0) {
+      const top = matches[0].question;
+      const ans = `
+        <div style="font-weight:700; color:#38BDF8; margin-bottom:6px;">⚡ LCEL Algorithmic Synthesis &bull; #${top.id} ${escapeHtml(top.title)}</div>
+        <div style="display:flex; gap:6px; margin-bottom:8px;">
+          <span class="badge ${top.difficulty.toLowerCase() === 'easy' ? 'badge-easy' : (top.difficulty.toLowerCase() === 'medium' ? 'badge-medium' : 'badge-hard')}">${top.difficulty}</span>
+          <span class="badge badge-pattern">${escapeHtml(top.pattern)}</span>
+        </div>
+        <div style="font-size:0.83rem; color:#E2E8F0; margin-bottom:8px;">
+          <strong>Algorithmic Invariant &amp; Approach:</strong><br>${escapeHtml(top.approach).replace(/\n/g, '<br>')}<br><br>
+          <strong>Complexity Guarantees:</strong> Time: <code>${escapeHtml(top.time_complexity)}</code> &bull; Space: <code>${escapeHtml(top.space_complexity)}</code>
+        </div>
+        <details style="background:rgba(0,0,0,0.35); border:1px solid #334155; border-radius:6px; padding:8px; margin-top:8px;">
+          <summary style="cursor:pointer; font-weight:600; color:#60A5FA; font-size:0.8rem;">🐍 Python Reference Solution</summary>
+          <pre style="margin-top:6px; font-size:0.75rem; color:#A7F3D0; overflow-x:auto; background:transparent; padding:0;"><code>${escapeHtml(top.solution)}</code></pre>
+        </details>
+        <div class="chat-action-row" style="margin-top:10px; display:flex; gap:8px;">
+          <button class="btn-jump" onclick="jumpToQuestion(${top.id})">🔍 Jump to Problem in Notes</button>
+          <a href="${top.url}" target="_blank" class="btn-leetcode">LeetCode ↗</a>
+        </div>
+      `;
+      if (loader) loader.parentElement.innerHTML = ans;
+    } else {
+      const ans = `
+        <div style="font-weight:700; color:#38BDF8; margin-bottom:6px;">⚡ LCEL Open Pipeline Reasoning</div>
+        <div style="font-size:0.85rem; color:#E2E8F0; margin-bottom:6px;">
+          <strong>Synthesized Query Analysis:</strong> <em>"${escapeHtml(query)}"</em>
+        </div>
+        <ul style="margin:6px 0 8px 18px; font-size:0.82rem; color:#CBD5E1;">
+          <li><strong>Domain Invariant:</strong> Verify array boundary conditions, pointer bounds, and cycle termination rules.</li>
+          <li><strong>Optimal Bounds:</strong> Strive for $O(N)$ linear time using Hash Maps or Monotonic Stack, or $O(\\log N)$ via Binary Search.</li>
+          <li><strong>Memory Footprint:</strong> In-place pointer manipulation achieves $O(1)$ auxiliary space.</li>
+        </ul>
+        <div style="font-size:0.78rem; color:#94A3B8;">💡 Tip: You can query any specific NeetCode 150 problem name (e.g., <code>Two Sum</code>, <code>LRU Cache</code>) to get the direct algorithm and solution.</div>
+      `;
+      if (loader) loader.parentElement.innerHTML = ans;
+    }
+  }, 350);
 }
 
 function handleOfflineRagCall(query) {
   const matches = searchNeetCodeData(query);
 
   if (matches.length === 0) {
+    const qClean = query.toLowerCase().trim();
+    let matchedCategory = null;
+    for (const slug of Object.keys(NEETCODE_DATA)) {
+      const chapter = NEETCODE_DATA[slug];
+      if (chapter.title.toLowerCase().includes(qClean) || slug.replace('-', ' ').includes(qClean)) {
+        matchedCategory = { slug, chapter };
+        break;
+      }
+    }
+
+    if (matchedCategory) {
+      const { slug, chapter } = matchedCategory;
+      let qListHtml = chapter.questions.map(q => `
+        <div style="display:flex; justify-content:space-between; align-items:center; background:rgba(255,255,255,0.05); padding:6px 10px; border-radius:6px; margin-top:6px;">
+          <span style="font-size:0.82rem; color:#E2E8F0;">#${q.id} ${escapeHtml(q.title)} (${q.difficulty})</span>
+          <button class="btn-jump" style="padding:2px 8px; font-size:0.75rem;" onclick="jumpToQuestion(${q.id})">Jump</button>
+        </div>
+      `).join('');
+
+      addAssistantMessage(`
+        <div style="font-size:0.95rem; font-weight:700; color:#38BDF8; margin-bottom:4px;">
+          📚 Topic: ${escapeHtml(chapter.title)}
+        </div>
+        <div style="font-size:0.82rem; color:#CBD5E1; margin-bottom:8px;">
+          Contains <strong>${chapter.questions.length} curated problems</strong>. Here are the core patterns:
+        </div>
+        ${qListHtml}
+      `);
+      return;
+    }
+
     addAssistantMessage(`
       I searched all 150 NeetCode problems, but couldn't find an exact match for <em>"${escapeHtml(query)}"</em>.
       <br><br>
       💡 <strong>Try searching for:</strong>
       <ul style="margin: 8px 0 0 18px;">
-        <li>Problem name (e.g. <code>Trapping Rain Water</code>, <code>Two Sum</code>, <code>LRU Cache</code>)</li>
-        <li>Pattern name (e.g. <code>Monotonic Stack</code>, <code>Sliding Window</code>, <code>Trie</code>, <code>Backtracking</code>)</li>
-        <li>Difficulty + topic (e.g. <code>Hard DP</code>, <code>Binary Search</code>, <code>Two Pointers</code>)</li>
+        <li>Problem name (e.g. <code>Contains Duplicate</code>, <code>Two Sum</code>, <code>LRU Cache</code>, <code>Trapping Rain Water</code>)</li>
+        <li>Pattern name (e.g. <code>Monotonic Stack</code>, <code>Sliding Window</code>, <code>Binary Search</code>, <code>Trees</code>)</li>
+        <li>Topic category (e.g. <code>Arrays & Hashing</code>, <code>Two Pointers</code>, <code>Dynamic Programming</code>)</li>
       </ul>
     `);
     return;
@@ -433,7 +521,6 @@ function handleOfflineRagCall(query) {
 
   const top = matches[0].question;
 
-  // Single exact problem or best match
   let responseHtml = `
     <div style="font-size: 0.95rem; font-weight: 700; color: #FFFFFF; margin-bottom: 4px;">
       #${top.id}: ${escapeHtml(top.title)}
@@ -445,25 +532,24 @@ function handleOfflineRagCall(query) {
     <div style="font-size: 0.82rem; color: #CBD5E1; margin-bottom: 8px;">
       <strong>Intuitive Analogy:</strong> ${escapeHtml(top.analogy || top.approach)}
     </div>
-    <div style="font-size: 0.78rem; font-family: var(--font-mono); color: #60A5FA; margin-bottom: 10px;">
+    <div style="font-size: 0.78rem; font-family: var(--font-mono, monospace); color: #60A5FA; margin-bottom: 10px;">
       Time: ${escapeHtml(top.time_complexity || 'O(N)')} &bull; Space: ${escapeHtml(top.space_complexity || 'O(1)')}
     </div>
-    <div class="chat-action-row">
-      <button class="btn-jump" onclick="jumpToQuestion(${top.id})">📍 Jump to Problem in Notes</button>
+    <div class="chat-action-row" style="display:flex; gap:8px;">
+      <button class="btn-jump" onclick="jumpToQuestion(${top.id})">🔍 Jump to Problem in Notes</button>
       <a href="${top.url}" target="_blank" class="btn-leetcode">LeetCode ↗</a>
     </div>
   `;
 
-  // If query matched multiple related problems (e.g. pattern search)
   if (matches.length > 1) {
     responseHtml += `
-      <div style="margin-top: 14px; padding-top: 10px; border-top: 1px solid var(--bg-card-border);">
+      <div style="margin-top: 14px; padding-top: 10px; border-top: 1px solid var(--bg-card-border, #1E293B);">
         <strong style="color: #60A5FA; font-size: 0.8rem;">Other matching problems:</strong>
         <div style="display: flex; flex-direction: column; gap: 6px; margin-top: 6px;">
     `;
     matches.slice(1, 5).forEach(m => {
       responseHtml += `
-        <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.2); padding: 4px 8px; border-radius: 6px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.25); padding: 4px 8px; border-radius: 6px;">
           <span style="font-size: 0.8rem; color: #E2E8F0;">#${m.question.id} ${escapeHtml(m.question.title)} (${m.question.difficulty})</span>
           <button class="btn-jump" style="padding: 2px 6px; font-size: 0.7rem;" onclick="jumpToQuestion(${m.question.id})">Jump</button>
         </div>
@@ -520,7 +606,7 @@ ${groundings}`;
     if (matches.length > 0) {
       formattedAnswer += `
         <div class="chat-action-row" style="margin-top: 12px;">
-          <button class="btn-jump" onclick="jumpToQuestion(${matches[0].question.id})">📍 Jump to #${matches[0].question.id} ${escapeHtml(matches[0].question.title)}</button>
+          <button class="btn-jump" onclick="jumpToQuestion(${matches[0].question.id})">🔍 Jump to #${matches[0].question.id} ${escapeHtml(matches[0].question.title)}</button>
         </div>
       `;
     }
@@ -536,7 +622,8 @@ ${groundings}`;
 }
 
 function addUserMessage(text) {
-  const container = document.getElementById('chatMessages');
+  const container = document.getElementById('chat-messages') || document.getElementById('chatMessages');
+  if (!container) return;
   const bubble = document.createElement('div');
   bubble.className = 'chat-bubble user';
   bubble.innerText = text;
@@ -545,10 +632,22 @@ function addUserMessage(text) {
 }
 
 function addAssistantMessage(htmlContent) {
-  const container = document.getElementById('chatMessages');
+  const container = document.getElementById('chat-messages') || document.getElementById('chatMessages');
+  if (!container) return;
   const bubble = document.createElement('div');
   bubble.className = 'chat-bubble assistant';
   bubble.innerHTML = htmlContent;
   container.appendChild(bubble);
   container.scrollTop = container.scrollHeight;
 }
+
+// Global Exports
+window.searchNeetCodeData = searchNeetCodeData;
+window.handleChatSubmit = handleChatSubmit;
+window.handleOfflineRagCall = handleOfflineRagCall;
+window.handleLcelSynthesisCall = handleLcelSynthesisCall;
+window.addUserMessage = addUserMessage;
+window.addAssistantMessage = addAssistantMessage;
+window.jumpToQuestion = jumpToQuestion;
+window.appendUserMessage = addUserMessage;
+window.appendAssistantMessage = addAssistantMessage;

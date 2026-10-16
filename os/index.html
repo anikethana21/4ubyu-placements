@@ -1383,14 +1383,26 @@
   }
 
   /* ── 4. Dynamic Main Content Column (Auto-Expands to 100%) ── */
+    /* ── Center Content Column (Auto-Expands to 100%, Never Side-by-Side) ── */
   .notes-column, .pdf-guide-column {
-    flex: 1 1 0% !important;
+    flex: 1 1 100% !important;
     min-width: 0 !important;
     width: 100% !important;
+    max-width: 100% !important;
     display: flex !important;
     flex-direction: column !important;
     gap: 24px !important;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  }
+  .notes-column.hidden, .pdf-guide-column.hidden,
+  #track1-container.hidden, #track2-container.hidden {
+    display: none !important;
+  }
+  #track1-container:not(.hidden) {
+    display: flex !important;
+  }
+  #track2-container:not(.hidden) {
+    display: flex !important;
   }
 
   /* ── 5. Official Course Video Lectures & Timestamps Hub Banner ── */
@@ -2441,13 +2453,10 @@
   <div class="view-mode-bar">
     <div class="view-mode-switcher">
       <button class="vms-btn active t1" id="vms-t1" onclick="switchViewMode('t1')">
-        🎓 Track 1: Deep-Dive Masterclass
+        🎓 Track 1: Vivek Gupta Masterclass (11 Chapters)
       </button>
       <button class="vms-btn t2" id="vms-t2" onclick="switchViewMode('t2')">
-        📄 Track 2: CodeHelp 41-Page PDF Guide
-      </button>
-      <button class="vms-btn both" id="vms-both" onclick="switchViewMode('both')">
-        🔄 Dual View (Both Tracks)
+        📄 Track 2: CodeHelp Placement Guide (41 Pages)
       </button>
     </div>
   </div>
@@ -2681,51 +2690,7 @@
     <!-- Primary Study Notes Column -->
     <main class="notes-column" id="track1-container">
 
-      <!-- Official Course Video Lectures & Timestamps Hub (Direct YouTube Access, No Broken Iframe) -->
-      <div class="video-resources-banner">
-        <div class="vrb-header">
-          <div class="vrb-title-group">
-            <span style="font-size:1.3rem;">📺</span>
-            <div>
-              <div class="vrb-title">Official Video Lectures &amp; Timestamps Directory</div>
-              <div class="vrb-note">Direct YouTube streaming with precise timestamps across both instructors. Click any lecture to open in a new tab.</div>
-            </div>
-          </div>
-          <span class="vrb-badge">YouTube Verified &bull; Error 153 Free</span>
-        </div>
-        <div class="vrb-grid">
-          <a href="https://www.youtube.com/watch?v=kn6rYzVsCEQ" target="_blank" class="vrb-card">
-            <span class="vrb-card-tutor">Vivek Gupta &bull; Part 1</span>
-            <span class="vrb-card-name">OS Architecture, Process Lifecycle &amp; PCB</span>
-            <span class="vrb-card-action"><span>▶</span> Watch Lecture on YouTube &nearr;</span>
-          </a>
-          <a href="https://www.youtube.com/watch?v=8WxLX-hfZTo" target="_blank" class="vrb-card">
-            <span class="vrb-card-tutor">Vivek Gupta &bull; Part 2</span>
-            <span class="vrb-card-name">CPU Scheduling, Multicore &amp; Real-Time Systems</span>
-            <span class="vrb-card-action"><span>▶</span> Watch Lecture on YouTube &nearr;</span>
-          </a>
-          <a href="https://www.youtube.com/watch?v=X077mn-qghM" target="_blank" class="vrb-card">
-            <span class="vrb-card-tutor">Vivek Gupta &bull; Part 3</span>
-            <span class="vrb-card-name">Memory Management, Paging, TLB &amp; Inverted Tables</span>
-            <span class="vrb-card-action"><span>▶</span> Watch Lecture on YouTube &nearr;</span>
-          </a>
-          <a href="https://www.youtube.com/watch?v=4fG-5g5u86E" target="_blank" class="vrb-card">
-            <span class="vrb-card-tutor">Vivek Gupta &bull; Part 4</span>
-            <span class="vrb-card-name">Concurrency, Peterson's Proof, Semaphores &amp; Locks</span>
-            <span class="vrb-card-action"><span>▶</span> Watch Lecture on YouTube &nearr;</span>
-          </a>
-          <a href="https://www.youtube.com/watch?v=q6gM5g9i27Y" target="_blank" class="vrb-card">
-            <span class="vrb-card-tutor">Vivek Gupta &bull; Part 5</span>
-            <span class="vrb-card-name">Deadlocks, Banker's Algorithm &amp; Linux VFS</span>
-            <span class="vrb-card-action"><span>▶</span> Watch Lecture on YouTube &nearr;</span>
-          </a>
-          <a href="https://www.youtube.com/watch?v=3obEP8eLsCw&t=8183s" target="_blank" class="vrb-card featured">
-            <span class="vrb-card-tutor">Love Babbar &bull; CodeHelp (15 Hours)</span>
-            <span class="vrb-card-name">Complete 1-Shot Operating Systems Placement Masterclass</span>
-            <span class="vrb-card-action"><span>▶</span> Jump to Timestamp (8183s) &nearr;</span>
-          </a>
-        </div>
-      </div>
+      
 
       
       <!-- Quick Navigation Pills -->
@@ -4704,7 +4669,7 @@ def minEatingSpeed(piles: list[int], h: int) -> int:
 
 </main>
     <!-- Middle Column: Track 2 - CodeHelp 41-Page Scrollable PDF Guide -->
-    <main class="pdf-guide-column" id="track2-container" style="display:none;">
+    <main class="pdf-guide-column hidden" id="track2-container" style="display:none;">
       
       <!-- PDF Control Toolbar -->
       <div class="pdf-control-bar">
@@ -8015,37 +7980,34 @@ document.addEventListener('DOMContentLoaded', function() {
     let currentVideoTrack = 1;
 
     function switchViewMode(mode) {
-      currentViewMode = mode;
+      currentViewMode = (mode === 't2') ? 't2' : 't1';
       const t1 = document.getElementById('track1-container');
       const t2 = document.getElementById('track2-container');
       const b1 = document.getElementById('vms-t1');
       const b2 = document.getElementById('vms-t2');
-      const bBoth = document.getElementById('vms-both');
 
-      if (mode === 't1') {
-        if (t1) t1.style.display = 'block';
-        if (t2) t2.style.display = 'none';
-        b1.className = 'vms-btn active t1';
-        b2.className = 'vms-btn t2';
-        bBoth.className = 'vms-btn both';
-      } else if (mode === 't2') {
-        if (t1) t1.style.display = 'none';
-        if (t2) t2.style.display = 'flex';
-        b1.className = 'vms-btn t1';
-        b2.className = 'vms-btn active t2';
-        bBoth.className = 'vms-btn both';
-      } else if (mode === 'both') {
+      if (currentViewMode === 't1') {
         if (t1) {
-          t1.style.display = 'block';
-          t1.style.flex = '1 1 50%';
+          t1.classList.remove('hidden');
+          t1.style.display = 'flex';
         }
         if (t2) {
-          t2.style.display = 'flex';
-          t2.style.flex = '1 1 50%';
+          t2.classList.add('hidden');
+          t2.style.display = 'none';
         }
-        b1.className = 'vms-btn t1';
-        b2.className = 'vms-btn t2';
-        bBoth.className = 'vms-btn active both';
+        if (b1) b1.className = 'vms-btn active t1';
+        if (b2) b2.className = 'vms-btn t2';
+      } else {
+        if (t1) {
+          t1.classList.add('hidden');
+          t1.style.display = 'none';
+        }
+        if (t2) {
+          t2.classList.remove('hidden');
+          t2.style.display = 'flex';
+        }
+        if (b1) b1.className = 'vms-btn t1';
+        if (b2) b2.className = 'vms-btn active t2';
       }
       if (typeof sections !== 'undefined' && typeof getSections === 'function') {
         try { sections = getSections(); } catch(e){}

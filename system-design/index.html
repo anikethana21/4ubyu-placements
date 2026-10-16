@@ -1,0 +1,2358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>System Design Masterclass • High-Level & Low-Level Architecture Guide</title>
+  <meta name="description" content="Comprehensive System Design Masterclass covering Rate Limiting, Video Streaming at Scale, Consistent Hashing, Distributed Databases, Event Sourcing, CQRS, and 20+ Production Interview Case Studies.">
+  
+  <!-- Typography: Outfit, Inter & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=Outfit:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <!-- MathJax for Mathematical & Complexity Formulations -->
+  <script>
+    window.MathJax = {
+      tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
+      svg: { fontCache: 'global' }
+    };
+  </script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+  <!-- Mermaid.js for Distributed System Architecture Diagrams -->
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      mermaid.initialize({
+        startOnLoad: true,
+        theme: 'dark',
+        themeVariables: {
+          darkMode: true,
+          background: '#0B0F19',
+          primaryColor: '#3B82F6',
+          primaryTextColor: '#F8FAFC',
+          primaryBorderColor: '#1D4ED8',
+          lineColor: '#60A5FA',
+          secondaryColor: '#1E293B',
+          tertiaryColor: '#0F172A'
+        }
+      });
+    });
+  </script>
+
+  <style>
+    :root {
+      --bg-canvas: #060913;
+      --bg-surface: #0B0F19;
+      --bg-card: #0F172A;
+      --bg-card-hover: #131E36;
+      --bg-card-border: #1E293B;
+      --accent-blue: #3B82F6;
+      --accent-blue-glow: rgba(59, 130, 246, 0.25);
+      --accent-purple: #8B5CF6;
+      --accent-emerald: #10B981;
+      --accent-amber: #F59E0B;
+      --accent-rose: #F43F5E;
+      --accent-cyan: #06B6D4;
+      --text-main: #F8FAFC;
+      --text-muted: #94A3B8;
+      --text-sub: #64748B;
+      --font-heading: 'Outfit', sans-serif;
+      --font-body: 'Inter', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    body.light-theme {
+      --bg-canvas: #F8FAFC;
+      --bg-surface: #FFFFFF;
+      --bg-card: #F1F5F9;
+      --bg-card-hover: #E2E8F0;
+      --bg-card-border: #CBD5E1;
+      --text-main: #0F172A;
+      --text-muted: #475569;
+      --text-sub: #64748B;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background-color: var(--bg-canvas);
+      color: var(--text-main);
+      font-family: var(--font-body);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* Common Navbar */
+    .top-nav {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      background: rgba(11, 15, 25, 0.98);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--bg-card-border);
+      height: 62px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+      gap: 16px;
+    }
+    .nav-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-shrink: 0;
+    }
+    .hub-link {
+      color: #94A3B8;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 0.88rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      transition: all 0.2s ease;
+    }
+    .hub-link:hover {
+      color: #FFF;
+      background: rgba(59, 130, 246, 0.2);
+      border-color: #3B82F6;
+      transform: translateX(-2px);
+    }
+    .btn-sidebar-toggle {
+      background: #111827;
+      border: 1px solid #334155;
+      color: #E2E8F0;
+      padding: 6px 10px;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+    }
+    .btn-sidebar-toggle:hover {
+      background: #1E293B;
+      border-color: #3B82F6;
+      color: #FFF;
+      transform: scale(1.05);
+    }
+    .brand-title-wrap {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 1px;
+      line-height: 1.15;
+    }
+    .nav-title {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: #FFFFFF;
+      letter-spacing: -0.02em;
+      line-height: 1.15;
+      white-space: nowrap;
+    }
+    .nav-subtitle {
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: #60A5FA;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      line-height: 1;
+    }
+
+    .nav-center {
+      flex: 1 1 auto;
+      max-width: 520px;
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+    .search-icon {
+      position: absolute;
+      left: 12px;
+      color: var(--text-muted);
+      font-size: 0.88rem;
+      pointer-events: none;
+    }
+    .search-box {
+      width: 100%;
+      background: #0F172A;
+      border: 1px solid #334155;
+      border-radius: 9999px;
+      padding: 8px 16px 8px 36px;
+      color: #FFF;
+      font-size: 0.85rem;
+      outline: none;
+      transition: all 0.2s ease;
+    }
+    .search-box:focus {
+      border-color: #3B82F6;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25);
+    }
+    .search-dropdown {
+      position: absolute;
+      top: calc(100% + 6px);
+      left: 0;
+      right: 0;
+      background: #0F172A;
+      border: 1px solid #1E293B;
+      border-radius: 10px;
+      box-shadow: 0 12px 30px rgba(0,0,0,0.5);
+      max-height: 380px;
+      overflow-y: auto;
+      display: none;
+      z-index: 1000;
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+    .btn-nav {
+      background: #111827;
+      border: 1px solid #334155;
+      color: #E2E8F0;
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+    }
+    .btn-nav:hover {
+      background: #1E293B;
+      border-color: #64748B;
+      color: #FFF;
+    }
+
+    /* Main App Layout */
+    .app-layout {
+      display: flex;
+      min-height: calc(100vh - 62px);
+      position: relative;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 290px;
+      flex: 0 0 290px;
+      background: var(--bg-surface);
+      border-right: 1px solid var(--bg-card-border);
+      display: flex;
+      flex-direction: column;
+      height: calc(100vh - 62px);
+      position: sticky;
+      top: 62px;
+      overflow: hidden;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      box-sizing: border-box;
+    }
+    .sidebar.collapsed {
+      flex: 0 0 0px !important;
+      width: 0px !important;
+      padding: 0 !important;
+      border: none !important;
+      overflow: hidden !important;
+      opacity: 0 !important;
+      pointer-events: none !important;
+    }
+    .sidebar-header {
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--bg-card-border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+    }
+    .sidebar-title-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .sidebar-heading {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: #FFF;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .sidebar-pill {
+      font-size: 0.7rem;
+      background: rgba(59, 130, 246, 0.15);
+      color: #60A5FA;
+      padding: 2px 7px;
+      border-radius: 999px;
+      font-weight: 700;
+    }
+    .sidebar-collapse-btn {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: #94A3B8;
+      border-radius: 6px;
+      padding: 3px 8px;
+      cursor: pointer;
+      font-size: 0.8rem;
+      transition: all 0.2s ease;
+    }
+    .sidebar-collapse-btn:hover {
+      background: rgba(59, 130, 246, 0.2);
+      color: #FFF;
+      border-color: #3B82F6;
+    }
+
+    .sidebar-scroll-area {
+      flex: 1 1 auto;
+      overflow-y: auto;
+      padding: 10px 8px;
+    }
+    .sidebar-group-title {
+      font-size: 0.68rem;
+      font-weight: 800;
+      color: #64748B;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: 12px 10px 4px 10px;
+    }
+    .sidebar-link {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 7px 10px;
+      border-radius: 6px;
+      color: #94A3B8;
+      text-decoration: none;
+      font-size: 0.8rem;
+      font-weight: 500;
+      transition: all 0.15s ease;
+      margin-bottom: 2px;
+    }
+    .sidebar-link:hover {
+      background: rgba(255, 255, 255, 0.04);
+      color: #FFF;
+    }
+    .sidebar-link.active {
+      background: rgba(59, 130, 246, 0.15);
+      color: #60A5FA;
+      font-weight: 700;
+      border-left: 3px solid #3B82F6;
+    }
+    .sidebar-badge {
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      font-weight: 700;
+      padding: 2px 5px;
+      border-radius: 4px;
+      background: rgba(255, 255, 255, 0.08);
+      color: #CBD5E1;
+      flex-shrink: 0;
+    }
+    .sidebar-link.active .sidebar-badge {
+      background: #3B82F6;
+      color: #FFF;
+    }
+
+    .sidebar-footer {
+      padding: 12px 14px;
+      border-top: 1px solid var(--bg-card-border);
+      background: rgba(11, 15, 25, 0.98);
+      margin-top: auto;
+      flex-shrink: 0;
+    }
+    .sidebar-theme-btn {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 8px;
+      padding: 8px 12px;
+      color: #E2E8F0;
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .sidebar-theme-btn:hover {
+      background: rgba(59, 130, 246, 0.15);
+      border-color: #3B82F6;
+      color: #FFFFFF;
+    }
+
+    /* Main Content */
+    .main-content {
+      flex: 1 1 auto;
+      max-width: 980px;
+      padding: 30px 40px 80px 40px;
+      margin: 0 auto;
+      overflow-x: hidden;
+    }
+
+    /* Video Player Banner */
+    .video-hub-card {
+      background: linear-gradient(135deg, rgba(30, 58, 138, 0.3) 0%, rgba(139, 92, 246, 0.2) 100%);
+      border: 1px solid rgba(59, 130, 246, 0.3);
+      border-radius: 14px;
+      padding: 20px;
+      margin-bottom: 35px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+    .vhc-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .vhc-title {
+      font-family: var(--font-heading);
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: #FFF;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .vhc-badge {
+      background: linear-gradient(135deg, #EF4444, #DC2626);
+      color: #FFF;
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 999px;
+      letter-spacing: 0.05em;
+    }
+    .video-embed-wrap {
+      position: relative;
+      padding-bottom: 56.25%;
+      height: 0;
+      border-radius: 10px;
+      overflow: hidden;
+      background: #000;
+      border: 1px solid #1E293B;
+      margin-bottom: 14px;
+    }
+    .video-embed-wrap iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+    .video-quick-jumps {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 10px;
+    }
+    .vjump-pill {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: #CBD5E1;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      transition: all 0.2s ease;
+    }
+    .vjump-pill:hover, .vjump-pill.active {
+      background: rgba(59, 130, 246, 0.25);
+      border-color: #3B82F6;
+      color: #FFF;
+    }
+
+    /* Chapter Styling */
+    .chapter-section {
+      margin-bottom: 55px;
+      scroll-margin-top: 80px;
+    }
+    .chapter-header {
+      border-bottom: 2px solid var(--bg-card-border);
+      padding-bottom: 12px;
+      margin-bottom: 22px;
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .chapter-title-group {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .chapter-num {
+      font-family: var(--font-mono);
+      font-size: 1.1rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #3B82F6, #8B5CF6);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .chapter-title {
+      font-family: var(--font-heading);
+      font-size: 1.65rem;
+      font-weight: 800;
+      color: #FFF;
+      letter-spacing: -0.02em;
+    }
+    .chapter-badge {
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: rgba(16, 185, 129, 0.15);
+      color: #34D399;
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+
+    /* Content Cards */
+    .concept-card {
+      background: var(--bg-card);
+      border: 1px solid var(--bg-card-border);
+      border-radius: 12px;
+      padding: 22px 24px;
+      margin-bottom: 20px;
+      transition: all 0.2s ease;
+    }
+    .concept-card:hover {
+      border-color: #334155;
+    }
+    .card-heading {
+      font-family: var(--font-heading);
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #F1F5F9;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Pre & Code */
+    pre {
+      background: #090D16;
+      border: 1px solid #1E293B;
+      border-radius: 8px;
+      padding: 16px;
+      overflow-x: auto;
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      color: #E2E8F0;
+      line-height: 1.5;
+      margin: 14px 0;
+    }
+    code {
+      font-family: var(--font-mono);
+      background: rgba(59, 130, 246, 0.12);
+      color: #93C5FD;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 0.85em;
+    }
+    pre code {
+      background: transparent;
+      padding: 0;
+      color: inherit;
+    }
+
+    /* Tables */
+    .table-wrapper {
+      overflow-x: auto;
+      margin: 16px 0;
+      border: 1px solid var(--bg-card-border);
+      border-radius: 8px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+      text-align: left;
+    }
+    th {
+      background: #111827;
+      color: #94A3B8;
+      font-weight: 700;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--bg-card-border);
+    }
+    td {
+      padding: 12px 16px;
+      border-bottom: 1px solid #1E293B;
+      color: #CBD5E1;
+    }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: rgba(255, 255, 255, 0.02); }
+
+    /* Callout & Alerts */
+    .callout {
+      border-left: 4px solid #3B82F6;
+      background: rgba(59, 130, 246, 0.08);
+      padding: 14px 18px;
+      border-radius: 0 8px 8px 0;
+      margin: 16px 0;
+      font-size: 0.9rem;
+    }
+    .callout.warn {
+      border-left-color: #F59E0B;
+      background: rgba(245, 158, 11, 0.08);
+    }
+    .callout.success {
+      border-left-color: #10B981;
+      background: rgba(16, 185, 129, 0.08);
+    }
+
+    /* Accordion Interview Cards */
+    .q-card {
+      background: #0F172A;
+      border: 1px solid #1E293B;
+      border-radius: 10px;
+      margin-bottom: 14px;
+      overflow: hidden;
+      transition: all 0.2s ease;
+    }
+    .q-card.open {
+      border-color: #3B82F6;
+    }
+    .q-header {
+      padding: 16px 20px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      user-select: none;
+    }
+    .q-title-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .q-num {
+      font-family: var(--font-mono);
+      font-weight: 800;
+      color: #60A5FA;
+      font-size: 0.9rem;
+    }
+    .q-text {
+      font-weight: 700;
+      color: #FFF;
+      font-size: 0.95rem;
+    }
+    .q-badge {
+      font-size: 0.72rem;
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-weight: 700;
+      background: rgba(139, 92, 246, 0.15);
+      color: #C084FC;
+    }
+    .q-toggle {
+      font-size: 0.8rem;
+      color: #94A3B8;
+      transition: transform 0.2s ease;
+    }
+    .q-card.open .q-toggle {
+      transform: rotate(180deg);
+      color: #60A5FA;
+    }
+    .q-body {
+      padding: 0 20px 20px 20px;
+      display: none;
+      border-top: 1px solid #1E293B;
+      font-size: 0.9rem;
+      color: #CBD5E1;
+      padding-top: 16px;
+    }
+    .q-card.open .q-body {
+      display: block;
+    }
+
+    /* Auxiliary Assistant Dock */
+    .aux-dock {
+      width: 320px;
+      flex: 0 0 320px;
+      background: var(--bg-surface);
+      border-left: 1px solid var(--bg-card-border);
+      display: flex;
+      flex-direction: column;
+      height: calc(100vh - 62px);
+      position: sticky;
+      top: 62px;
+      overflow: hidden;
+      box-sizing: border-box;
+      transition: all 0.3s ease;
+    }
+    .aux-dock.collapsed {
+      flex: 0 0 0px !important;
+      width: 0px !important;
+      padding: 0 !important;
+      border: none !important;
+      overflow: hidden !important;
+      opacity: 0 !important;
+      pointer-events: none !important;
+    }
+    .dock-header {
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--bg-card-border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+    }
+    .dock-title {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #FFF;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .chat-messages {
+      flex: 1 1 auto;
+      overflow-y: auto;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .chat-bubble {
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-size: 0.82rem;
+      line-height: 1.5;
+    }
+    .chat-bubble.assistant {
+      background: #111827;
+      border: 1px solid #1E293B;
+      color: #E2E8F0;
+      align-self: flex-start;
+    }
+    .chat-bubble.user {
+      background: #2563EB;
+      color: #FFF;
+      align-self: flex-end;
+    }
+    .chat-input-bar {
+      padding: 10px 14px;
+      border-top: 1px solid var(--bg-card-border);
+      display: flex;
+      gap: 8px;
+      background: rgba(11, 15, 25, 0.98);
+    }
+    .chat-input-bar input {
+      flex: 1;
+      background: #0F172A;
+      border: 1px solid #334155;
+      border-radius: 6px;
+      padding: 6px 12px;
+      color: #FFF;
+      font-size: 0.82rem;
+      outline: none;
+    }
+    .chat-input-bar button {
+      background: #2563EB;
+      border: none;
+      color: #FFF;
+      padding: 6px 14px;
+      border-radius: 6px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    @media (max-width: 1200px) {
+      .aux-dock { display: none; }
+    }
+    @media (max-width: 900px) {
+      .sidebar {
+        position: fixed;
+        left: 0;
+        top: 62px;
+        bottom: 0;
+        z-index: 999;
+        transform: translateX(-100%);
+      }
+      .sidebar.mobile-open {
+        transform: translateX(0);
+      }
+      .main-content {
+        padding: 20px 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Navigation Bar -->
+  <header class="top-nav">
+    <div class="nav-left">
+      <a href="../index.html" class="hub-link" title="Return to Placement Hub">
+        <span class="hub-arrow" style="font-size:1.15rem; line-height:1; font-weight:700;">&larr;</span>
+        <span class="hub-text">Home</span>
+      </a>
+      <button class="btn-sidebar-toggle" id="btn-toggle-sidebar" onclick="toggleSidebar()" title="Toggle Curriculum Outline Sidebar">
+        <span>☰</span>
+      </button>
+      <div class="brand-title-wrap">
+        <h1 class="nav-title">System Design Masterclass</h1>
+        <span class="nav-subtitle">Placements Notes</span>
+      </div>
+    </div>
+
+    <div class="nav-center">
+      <span class="search-icon">🔍</span>
+      <input type="text" id="searchInput" class="search-box" placeholder="Smart Search Rate Limiter, Video Streaming, Consistent Hashing, Sharding..." autocomplete="off">
+      <div id="searchDropdown" class="search-dropdown"></div>
+    </div>
+
+    <div class="nav-right">
+      <button class="btn-nav" id="btn-toggle-chat" onclick="toggleChat()" title="Toggle Study Assistant">
+        <span>💭</span> <span class="btn-text">Assistant</span>
+      </button>
+    </div>
+  </header>
+
+  <div class="app-layout">
+    <!-- Left Sticky Sidebar Outline -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-title-row">
+          <button class="sidebar-collapse-btn" onclick="toggleSidebar()" title="Collapse Sidebar">
+            <span>◀</span>
+          </button>
+          <span class="sidebar-heading">Curriculum Outline</span>
+        </div>
+        <span class="sidebar-pill">14 Chs + 20 Qs</span>
+      </div>
+
+      <div class="sidebar-scroll-area">
+        <div class="sidebar-group-title">● PART 1: CORE DISTRIBUTED FOUNDATIONS</div>
+        <a href="#ch1" class="sidebar-link active" data-target="ch1"><span class="sidebar-badge">01</span> System Design Fundamentals & Scaling</a>
+        <a href="#ch2" class="sidebar-link" data-target="ch2"><span class="sidebar-badge">02</span> Database Sharding, Replication & CAP</a>
+        <a href="#ch3" class="sidebar-link" data-target="ch3"><span class="sidebar-badge">03</span> Event Sourcing Architecture</a>
+        <a href="#ch4" class="sidebar-link" data-target="ch4"><span class="sidebar-badge">04</span> CQRS Pattern (Command & Query)</a>
+        <a href="#ch5" class="sidebar-link" data-target="ch5"><span class="sidebar-badge">05</span> Back-of-the-Envelope Math & Numbers</a>
+
+        <div class="sidebar-group-title">● PART 2: HIGH-SCALE ALGORITHMS & PIPELINES</div>
+        <a href="#ch6" class="sidebar-link" data-target="ch6"><span class="sidebar-badge">06</span> Rate Limiting Algorithms (5 Strats)</a>
+        <a href="#ch7" class="sidebar-link" data-target="ch7"><span class="sidebar-badge">07</span> Consistent Hashing & Virtual Nodes</a>
+        <a href="#ch8" class="sidebar-link" data-target="ch8"><span class="sidebar-badge">08</span> Video Streaming at Scale (HLS/DASH)</a>
+        <a href="#ch9" class="sidebar-link" data-target="ch9"><span class="sidebar-badge">09</span> High-Scale UPI & Payment Systems</a>
+        <a href="#ch10" class="sidebar-link" data-target="ch10"><span class="sidebar-badge">10</span> Bloom Filters & Probabilistic Math</a>
+
+        <div class="sidebar-group-title">● PART 3: ADVANCED ENTERPRISE ARCHITECTURE</div>
+        <a href="#ch11" class="sidebar-link" data-target="ch11"><span class="sidebar-badge">11</span> Multi-Party Video Calls (WebRTC/SFU)</a>
+        <a href="#ch12" class="sidebar-link" data-target="ch12"><span class="sidebar-badge">12</span> Gossip Protocol & Failure Detectors</a>
+        <a href="#ch13" class="sidebar-link" data-target="ch13"><span class="sidebar-badge">13</span> Distributed Message Queues (Kafka)</a>
+        <a href="#ch14" class="sidebar-link" data-target="ch14"><span class="sidebar-badge">14</span> Resilient Microservice Patterns (Saga)</a>
+
+        <div class="sidebar-group-title">● INTERVIEW CASE STUDIES</div>
+        <a href="#interview-questions" class="sidebar-link" data-target="interview-questions"><span class="sidebar-badge">20</span> Top 20 System Design Interview Q&As</a>
+      </div>
+
+      <div class="sidebar-footer">
+        <button class="sidebar-theme-btn" id="sidebarThemeBtn" onclick="toggleTheme()" title="Toggle Dark/Light Mode">
+          <span class="theme-icon">🌓</span>
+          <span class="theme-text">Toggle Theme</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Content Stream -->
+    <main class="main-content">
+      
+      <!-- Video Hub Player Card -->
+      <section class="video-hub-card">
+        <div class="vhc-header">
+          <div class="vhc-title">
+            <span>📺</span>
+            <span>Official Video Lectures & Interactive Timestamps Directory</span>
+          </div>
+          <span class="vhc-badge">Piyush Garg • 14 Videos Master Series</span>
+        </div>
+        
+        <div class="video-embed-wrap">
+          <iframe id="video-frame" src="https://www.youtube.com/embed/videoseries?list=PLinedj3B30sBlBWRox2V2tg9QJ2zr4M3o" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        </div>
+
+        <div style="font-size:0.8rem; font-weight:700; color:#93C5FD; margin-bottom:4px;">Direct Lecture & Architecture Jumps:</div>
+        <div class="video-quick-jumps">
+          <button class="vjump-pill active" onclick="loadVideo('CVItTb_jdkE', 40)">⏱️ Rate Limiter Basics (00:40)</button>
+          <button class="vjump-pill" onclick="loadVideo('CVItTb_jdkE', 405)">⏱️ Token Bucket Algorithm (06:45)</button>
+          <button class="vjump-pill" onclick="loadVideo('CVItTb_jdkE', 844)">⏱️ Leaky Bucket Algorithm (14:04)</button>
+          <button class="vjump-pill" onclick="loadVideo('CVItTb_jdkE', 1216)">⏱️ Fixed Window Counter (20:16)</button>
+          <button class="vjump-pill" onclick="loadVideo('CVItTb_jdkE', 1720)">⏱️ Sliding Window Log (28:40)</button>
+          <button class="vjump-pill" onclick="loadVideo('CVItTb_jdkE', 2077)">⏱️ Sliding Window Counter (34:37)</button>
+          <button class="vjump-pill" onclick="loadVideo('-JtjQ-OA7XE', 0)">⏱️ Video Streaming at Scale (00:00)</button>
+          <button class="vjump-pill" onclick="loadVideo('-JtjQ-OA7XE', 180)">⏱️ Adaptive Bitrate (ABR) (03:00)</button>
+          <button class="vjump-pill" onclick="loadVideo('-JtjQ-OA7XE', 480)">⏱️ HLS vs MPEG-DASH (08:00)</button>
+          <button class="vjump-pill" onclick="loadVideo('IC5Y1EE-aj4', 0)">⏱️ Consistent Hashing (00:00)</button>
+          <button class="vjump-pill" onclick="loadVideo('JTmgi0vO5Ug', 0)">⏱️ Event Sourcing Architecture</button>
+          <button class="vjump-pill" onclick="loadVideo('vNplj9LwQSw', 0)">⏱️ CQRS Design Pattern</button>
+          <button class="vjump-pill" onclick="loadVideo('DwqTon7ZS_s', 0)">⏱️ Back of Envelope Math</button>
+          <button class="vjump-pill" onclick="loadVideo('fqySz1Me2pI', 0)">⏱️ UPI Payment Systems</button>
+          <button class="vjump-pill" onclick="loadVideo('vz0QUa4CS3o', 0)">⏱️ Bloom Filters</button>
+          <button class="vjump-pill" onclick="loadVideo('Zaz6hYVm-WE', 0)">⏱️ WebRTC vs SFU vs MCU</button>
+        </div>
+      </section>
+
+      <!-- Chapter 01 -->
+      <section class="chapter-section" id="ch1">
+        <div class="chapter-header">
+          <div class="chapter-title-group">
+            <span class="chapter-num">01</span>
+            <h2 class="chapter-title">System Design Fundamentals &amp; Scaling</h2>
+          </div>
+          <span class="chapter-badge">High Availability &bull; L4/L7 Routing</span>
+        </div>
+
+        <div class="concept-card">
+          <h3 class="card-heading">🏛️ Architectural Evolution: From Single Node to Planetary Scale</h3>
+          <p>Every web service begins as a monolithic process paired with a co-located relational database. Scaling becomes necessary when traffic, storage, or compute bounds exceed single-machine limits. We analyze the two core vectors of scaling:</p>
+          
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>Dimension</th>
+                  <th>Vertical Scaling (Scale-Up)</th>
+                  <th>Horizontal Scaling (Scale-Out)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Mechanism</strong></td>
+                  <td>Add more RAM, faster NVMe SSDs, or 128-core CPUs to existing server.</td>
+                  <td>Add more commodity machines behind an intelligent Load Balancer.</td>
+                </tr>
+                <tr>
+                  <td><strong>Hard Limit</strong></td>
+                  <td>Bounded by hardware physical limits and hyper-exponential cost curves.</td>
+                  <td>Virtually unbounded linearly with distributed coordination.</td>
+                </tr>
+                <tr>
+                  <td><strong>Downtime</strong></td>
+                  <td>Requires maintenance reboot to upgrade physical chips.</td>
+                  <td>Zero downtime via blue-green / rolling fleet deployment.</td>
+                </tr>
+                <tr>
+                  <td><strong>Fault Tolerance</strong></td>
+                  <td>Single Point of Failure (SPOF). Hardware death crashes whole company.</td>
+                  <td>Resilient against machine, rack, and whole availability-zone outages.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="mermaid">
+graph LR
+    Client([Client Traffic]) --> DNS[Route 53 GeoDNS]
+    DNS --> CDN[Cloudflare Edge CDN]
+    CDN --> LB[L7 Application Load Balancer]
+    LB --> S1[App Server 1]
+    LB --> S2[App Server 2]
+    LB --> S3[App Server 3]
+    S1 & S2 & S3 --> Cache[(Redis Cluster)]
+    S1 & S2 & S3 --> DB[(Primary DB - Writes)]
+    DB -. Replication .-> Replica[(Read Replicas - Reads)]
+          </div>
+
+          <h3 class="card-heading" style="margin-top:20px;">⚖️ Load Balancer Deep-Dive: Layer 4 vs Layer 7</h3>
+          <p><strong>Layer 4 (Transport Level):</strong> Inspects IP address and TCP/UDP port without terminating TLS or reading HTTP payloads. Operates at wire-speed ($>10	ext{M}$ packets/sec) using Linux IPVS (IP Virtual Server) or AWS NLB.</p>
+          <p><strong>Layer 7 (Application Level):</strong> Terminates TLS, decrypts packets, inspects HTTP headers, cookies, URL paths, and query parameters. Routes <code>/api/checkout</code> to checkout microservice and <code>/api/feed</code> to caching clusters.</p>
+        </div>
+      </section>
+
+      <!-- Chapter 02 -->
+      <section class="chapter-section" id="ch2">
+        <div class="chapter-header">
+          <div class="chapter-title-group">
+            <span class="chapter-num">02</span>
+            <h2 class="chapter-title">Database Sharding, Replication &amp; CAP Theorem</h2>
+          </div>
+          <span class="chapter-badge">Distributed Storage &bull; Consistency</span>
+        </div>
+
+        <div class="concept-card">
+          <h3 class="card-heading">📦 Horizontal Partitioning: Database Sharding Strategies</h3>
+          <p>When a database table grows to hundreds of millions of rows, index B-Trees exceed memory and disk I/O thrashes. Sharding splits the dataset across distinct physical database servers:</p>
+
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>Sharding Strategy</th>
+                  <th>How it Works</th>
+                  <th>Pros &amp; Cons</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Range-Based</strong></td>
+                  <td>Partition by key intervals (e.g., User IDs 1–1M $	o$ Shard A, 1M–2M $	o$ Shard B).</td>
+                  <td>Simple range scans; severe hotspot risk for sequential auto-increment keys.</td>
+                </tr>
+                <tr>
+                  <td><strong>Hash-Based</strong></td>
+                  <td>Apply uniform hash $shard = hash(user\_id) \pmod N$.</td>
+                  <td>Uniform distribution; difficult to add nodes without massive data migrations.</td>
+                </tr>
+                <tr>
+                  <td><strong>Directory-Based</strong></td>
+                  <td>Lookup service stores dynamic mapping of key $	o$ shard ID in high-speed Redis.</td>
+                  <td>Maximum flexibility; adds extra network hop and single point of failure.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3 class="card-heading" style="margin-top:20px;">🌐 The CAP &amp; PACELC Theorem Invariants</h3>
+          <p>The <strong>CAP Theorem</strong> (Eric Brewer) proves that under a network partition ($P$), a distributed datastore can guarantee at most one of:</p>
+          <ul style="margin: 8px 0 14px 20px;">
+            <li><strong>Consistency ($C$):</strong> Every read receives the most recent write or an explicit error (CP Systems: HBase, Spanner, Zookeeper).</li>
+            <li><strong>Availability ($A$):</strong> Every non-failing node returns a non-error response, but without guarantee of latest data (AP Systems: Cassandra, DynamoDB, Couchbase).</li>
+          </ul>
+
+          <div class="callout warn">
+            <strong>PACELC Generalization (Daniel Abadi):</strong><br>
+            If there is a <strong>Partition ($P$)</strong>, how does the system choose between <strong>Availability ($A$)</strong> and <strong>Consistency ($C$)</strong>; <strong>Else ($E$)</strong>, when running normally without partitions, how does it balance <strong>Latency ($L$)</strong> and <strong>Consistency ($C$)</strong>?
+            <br><em>Examples:</em> MongoDB is <strong>PC/EC</strong> (consistency prioritized always). DynamoDB is <strong>PA/EL</strong> (availability and low latency prioritized).
+          </div>
+        </div>
+      </section>
+
+      <!-- Chapter 03 -->
+      <section class="chapter-section" id="ch3">
+        <div class="chapter-header">
+          <div class="chapter-title-group">
+            <span class="chapter-num">03</span>
+            <h2 class="chapter-title">Event Sourcing Architecture</h2>
+          </div>
+          <span class="chapter-badge">Immutable Ledger &bull; Audit Trails</span>
+        </div>
+
+        <div class="concept-card">
+          <h3 class="card-heading">📜 Beyond CRUD: Storing Delta Events as the Single Source of Truth</h3>
+          <p>Traditional CRUD databases perform in-place mutation (<code>UPDATE accounts SET balance = balance - 100</code>). The historical context of why and how the state reached this number is permanently lost. <strong>Event Sourcing</strong> treats every change as an immutable state-transition event appended to an append-only journal:</p>
+
+          <pre><code>// Append-Only Event Log Stream: Account-9481
+[
+  { "id": 1, "type": "AccountOpened", "ts": 1700000000, "data": { "owner": "Aniket", "balance": 0 } },
+  { "id": 2, "type": "MoneyDeposited", "ts": 1700000120, "data": { "amount": 1000 } },
+  { "id": 3, "type": "FraudHoldApplied", "ts": 1700000240, "data": { "reason": "Unusual IP" } },
+  { "id": 4, "type": "MoneyWithdrawalAttempted", "ts": 1700000300, "data": { "amount": 200 } }
+]</code></pre>
+
+          <h3 class="card-heading">⚡ Replayability, Time-Travel &amp; Snapshots</h3>
+          <p>Current balance is simply derived by reducing the event stream from $t_0$ to $t_{now}$: $	ext{State}(t) = \sum_{i=1}^t 	ext{Event}_i$.</p>
+          <p><strong>Snapshots:</strong> To prevent replaying millions of historical events on cold start, a periodic worker writes a checkpoint snapshot every 1,000 events. Read operations load the latest snapshot and replay only subsequent events.</p>
+        </div>
+      </section>
+
+      <!-- Chapter 04 -->
+      <section class="chapter-section" id="ch4">
+        <div class="chapter-header">
+          <div class="chapter-title-group">
+            <span class="chapter-num">04</span>
+            <h2 class="chapter-title">CQRS (Command Query Responsibility Segregation)</h2>
+          </div>
+          <span class="chapter-badge">Read/Write Decoupling &bull; Projections</span>
+        </div>
+
+        <div class="concept-card">
+          <h3 class="card-heading">✂️ Separating the Write Model from the Read Model</h3>
+          <p>In high-scale systems, write operations have completely different scaling vectors than read operations. Writes require transactional validation, locking, and strict consistency. Reads require denormalized, fast sub-millisecond aggregations.</p>
+
+          <div class="mermaid">
+graph TD
+    Client([Client App]) -->|Command: POST /orders| API_Write[Write Gateway]
+    Client -->|Query: GET /orders?user=123| API_Read[Read Gateway]
+    API_Write --> DB_Write[(Postgres / EventStore - Write Model)]
+    DB_Write --> Stream[CDC / Kafka Event Bus]
+    Stream --> Worker[Projection Materializer]
+    Worker --> DB_Read[(Elasticsearch / Redis - Read Model)]
+    API_Read --> DB_Read
+          </div>
+
+          <div class="callout success">
+            <strong>Key Benefit of CQRS:</strong> You can optimize your read database with zero joins using fully denormalized JSON in Elasticsearch or MongoDB, while keeping your write database in 3rd Normal Form (3NF) in PostgreSQL with row-level locks.
+          </div>
+        </div>
+      </section>
+
+      <!-- Chapter 05 -->
+      <section class="chapter-section" id="ch5">
+        <div class="chapter-header">
+          <div class="chapter-title-group">
+            <span class="chapter-num">05</span>
+            <h2 class="chapter-title">Back-of-the-Envelope Math &amp; Enterprise Numbers</h2>
+          </div>
+          <span class="chapter-badge">Capacity Planning &bull; Estimation</span>
+        </div>
+
+        <div class="concept-card">
+          <h3 class="card-heading">🧮 Latency Numbers Every Systems Engineer Must Know</h3>
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>Operation</th>
+                  <th>Real Latency</th>
+                  <th>Normalized (1 CPU Cycle = 1 Sec)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>L1 Cache Reference</td>
+                  <td>0.5 ns</td>
+                  <td>1.5 sec</td>
+                </tr>
+                <tr>
+                  <td>RAM Main Memory Read</td>
+                  <td>100 ns</td>
+                  <td>2.5 minutes</td>
+                </tr>
+                <tr>
+                  <td>Read 1 MB sequentially from NVMe SSD</td>
+                  <td>10,000 ns ($10\mu s$)</td>
+                  <td>5.5 hours</td>
+                </tr>
+                <tr>
+                  <td>Read 1 MB sequentially from Magnetic HDD</td>
+                  <td>20,000,000 ns ($20 ms$)</td>
+                  <td>~8 months</td>
+                </tr>
+                <tr>
+                  <td>Round-trip inside same Datacenter (LAN)</td>
+                  <td>500,000 ns ($0.5 ms$)</td>
+                  <td>~6 days</td>
+                </tr>
+                <tr>
+                  <td>Cross-Atlantic Ping (NY to London)</td>
+                  <td>150,000,000 ns ($150 ms$)</td>
+                  <td>~5 years</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3 class="card-heading" style="margin-top:20px;">📊 Standard System Design Math Formulas</h3>
+          <pre><code>// 1. Seconds in a Day: 24 * 60 * 60 = 86,400 ≈ 100,000 (10^5)
+// Example: 100 Million Daily Active Users (DAU), 10 actions/day:
+Total Daily Requests = 100M * 10 = 1 Billion requests/day
+Average QPS = 1,000,000,000 / 86,400 ≈ 12,000 QPS
+Peak QPS (2x buffer) = 24,000 QPS
+
+// 2. Storage Estimation (5 Year Retention):
+Per Request Payload = 500 Bytes
+Daily Storage = 1 Billion * 500 Bytes = 500 GB / day
+5-Year Storage = 500 GB * 365 * 5 ≈ 912.5 TB (Plan for 1.2 Petabytes with 3x replication)
+
+// 3. Bandwidth Estimation:
+Ingress Bandwidth = 12,000 QPS * 500 Bytes = 6 MB/sec = 48 Mbps
+Egress Bandwidth (10:1 Read-to-Write Ratio) = 60 MB/sec = 480 Mbps</code></pre>
+        </div>
+      </section>
+
+      <!-- Chapter 06 -->
+      <section class="chapter-section" id="ch6">
+        <div class="chapter-header">
+          <div class="chapter-title-group">
+            <span class="chapter-num">06</span>
+            <h2 class="chapter-title">Rate Limiting Algorithms &amp; Distributed Architecture</h2>
+          </div>
+          <span class="chapter-badge">Piyush Garg Lecture CVItTb_jdkE &bull; Defense in Depth</span>
+        </div>
+
+        <div class="concept-card">
+          <h3 class="card-heading">🛡️ Why Rate Limiting is Mandatory</h3>
+          <p>Rate limiting protects servers from Denial of Service (DoS) attacks, brute-force credential stuffing, API resource starvation, and cascading failures across microservices. It responds with HTTP status <code>429 Too Many Requests</code> and headers <code>Retry-After</code> and <code>X-RateLimit-Remaining</code>.</p>
+
+          <h3 class="card-heading" style="margin-top:20px;">🔬 The 5 Core Rate Limiting Algorithms Compared</h3>
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>Algorithm</th>
+                  <th>Core Mechanism</th>
+                  <th>Pros</th>
+                  <th>Cons</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Token Bucket</strong></td>
+                  <td>Tokens refilled at rate $R$ up to capacity $C$. Each request consumes 1 token.</td>
+                  <td>Allows controlled traffic bursts; memory efficient (2 variables: count &amp; last_timestamp).</td>
+                  <td>Tuning parameters $R$ and $C$ can be challenging across diverse API endpoints.</td>
+                </tr>
+                <tr>
+                  <td><strong>Leaky Bucket</strong></td>
+                  <td>FIFO queue of capacity $B$. Requests enter queue; process at steady constant rate $O$.</td>
+                  <td>Smooths out bursts; guarantees constant outbound processing rate.</td>
+                  <td>Bursts are delayed; requests dropped if queue fills up, causing high queueing latency.</td>
+                </tr>
+                <tr>
+                  <td><strong>Fixed Window Counter</strong></td>
+                  <td>Time sliced into fixed 60s windows. Counter resets at start of each window.</td>
+                  <td>Simplest to implement; minimal memory usage.</td>
+                  <td><strong>Boundary Burst Vulnerability:</strong> $2	imes$ limit can pass at window transition edge.</td>
+                </tr>
+                <tr>
+                  <td><strong>Sliding Window Log</strong></td>
+                  <td>Keep timestamp of every request in sorted set (Redis ZSET). Prune timestamps older than window.</td>
+                  <td>Mathematically 100% accurate; eliminates boundary burst issue.</td>
+                  <td><strong>Memory Exhaustion:</strong> Storing every timestamp consumes enormous RAM under heavy traffic.</td>
+                </tr>
+                <tr>
+                  <td><strong>Sliding Window Counter</strong></td>
+                  <td>Hybrid approximation: $	ext{Count} = 	ext{CurrentWindowCount} + 	ext{PrevWindowCount} 	imes (1 - 	ext{OverlapRatio})$.</td>
+                  <td>Memory efficient (only 2 numbers); smooths boundary spikes with 99.9% accuracy.</td>
+                  <td>Assumes requests in previous window were uniformly distributed.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3 class="card-heading" style="margin-top:20px;">💻 Production Redis Sliding Window Rate Limiter (Atomic Lua Script)</h3>
+          <p>To eliminate race conditions across multiple distributed application nodes, rate checking must execute atomically inside Redis using a Lua script:</p>
+
+          <pre><code>-- KEYS[1]: User or IP Rate Limit Key (e.g. "rate:user_9481")
+-- ARGV[1]: Current Unix Timestamp in milliseconds
+-- ARGV[2]: Window Size in milliseconds (e.g. 60000 for 1 minute)
+-- ARGV[3]: Max Allowed Requests (e.g. 100)
+
+local key = KEYS[1]
+local now = tonumber(ARGV[1])
+local window = tonumber(ARGV[2])
+local limit = tonumber(ARGV[3])
+local clearBefore = now - window
+
+-- 1. Remove all requests older than the rolling window
+redis.call('ZREMRANGEBYSCORE', key, 0, clearBefore)
+
+-- 2. Count requests currently in window
+local currentRequests = redis.call('ZCARD', key)
+
+-- 3. Check threshold
+if currentRequests < limit then
+    -- Add current request timestamp to sorted set
+    redis.call('ZADD', key, now, now)
+    redis.call('EXPIRE', key, math.ceil(window / 1000))
+    return {1, limit - currentRequests - 1} -- Allowed: {status=1, remaining}
+else
+    return {0, 0} -- Blocked: {status=0, remaining=0}
+end</code></pre>
+        </div>
+      </section>
+
+      <!-- Chapter 07 -->
+      <section class="chapter-section" id="ch7">
+        <div class="chapter-header">
+          <div class="chapter-title-group">
+            <span class="chapter-num">07</span>
+            <h2 class="chapter-title">Consistent Hashing &amp; Virtual Nodes</h2>
+          </div>
+          <span class="chapter-badge">Piyush Garg Lecture IC5Y1EE-aj4 &bull; Distributed Sharding</span>
+        </div>
+
+        <div class="concept-card">
+          <h3 class="card-heading">🎯 The Classic Modulo Rehashing Disaster</h3>
+          <p>Traditional horizontal sharding maps keys to servers using $server = hash(key) \pmod N$. When one server dies or a new server is added ($N 	o N+1$), almost 100% of keys map to completely different servers. All caches are invalidated simultaneously, causing a catastrophic <strong>Cache Avalanche</strong> that melts backend databases.</p>
+
+          <h3 class="card-heading" style="margin-top:20px;">🔄 The Circular Hash Ring Solution</h3>
+          <p>Consistent Hashing maps both servers and keys onto an abstract 32-bit circular hash space ($0$ to $2^{32} - 1$):</p>
+          <ul style="margin: 8px 0 14px 20px;">
+            <li>Hash server IPs onto points on the ring: $hash("10.0.0.1"), hash("10.0.0.2")$.</li>
+            <li>Hash incoming request keys onto points on the ring: $hash("user\_profile\_91")$.</li>
+            <li>Walk clockwise from the key's position until the first server node is encountered.</li>
+            <li>When server $N$ is removed, only keys residing between $N-1$ and $N$ are remapped to $N+1$. On average, only $rac{1}{N}$ fraction of keys move!</li>
+          </ul>
+
+          <div class="callout warn">
+            <strong>The Non-Uniformity Problem &amp; Virtual Nodes (v-nodes):</strong><br>
+            With few physical servers, hash distribution is uneven, leading to severe server hotspots. <strong>Solution:</strong> Assign each physical node 100–300 "Virtual Nodes" scattered across the ring (e.g., <code>NodeA-vn1</code>, <code>NodeA-vn2</code>, <code>NodeA-vn3</code>). This guarantees near-perfect uniform distribution with standard deviation $< 5\%$.
+          </div>
+        </div>
+      </section>
+
+      <!-- Chapter 08 -->
+      <section class="chapter-section" id="ch8">
+        <div class="chapter-header">
+          <div class="chapter-title-group">
+            <span class="chapter-num">08</span>
+            <h2 class="chapter-title">Distributed Video Streaming at Scale (YouTube &amp; Netflix)</h2>
+          </div>
+          <span class="chapter-badge">Piyush Garg Lecture -JtjQ-OA7XE &bull; Adaptive Bitrate</span>
+        </div>
+
+        <div class="concept-card">
+          <h3 class="card-heading">📹 Why Standard MP4 Progressive Download Fails at Scale</h3>
+          <p>Sending a raw <code>.mp4</code> file over HTTP breaks down on mobile networks: if a user on 3G starts playing a 4K video, the player buffers for 20 seconds. If the user leaves after 10 seconds, gigabytes of downloaded data are completely wasted. Furthermore, progressive downloads cannot dynamically adjust video resolution when network bandwidth fluctuates.</p>
+
+          <h3 class="card-heading" style="margin-top:20px;">⚡ Adaptive Bitrate Streaming (ABR): HLS &amp; MPEG-DASH</h3>
+          <p><strong>Adaptive Bitrate Streaming</strong> slices video into tiny independent chunks (typically 2 to 6 seconds duration) and encodes each chunk into multiple resolution/bitrate tiers (1080p @ 5Mbps, 720p @ 2.5Mbps, 480p @ 1Mbps, 360p @ 500kbps):</p>
+
+          <div class="mermaid">
+graph LR
+    Source[Raw 4K Video Upload] --> Queue[Kafka / SQS Ingest Queue]
+    Queue --> Transcoder[FFmpeg GPU Transcoding Cluster]
+    Transcoder --> Chunks1[1080p 4s Chunks .ts]
+    Transcoder --> Chunks2[720p 4s Chunks .ts]
+    Transcoder --> Chunks3[360p 4s Chunks .ts]
+    Transcoder --> Manifest[Master Playlist .m3u8]
+    Chunks1 & Chunks2 & Chunks3 & Manifest --> S3[(AWS S3 Storage)]
+    S3 --> CDN[Global Edge CDN Cloudflare / Fastly]
+    CDN --> Client[ExoPlayer / HLS.js Client]
+          </div>
+
+          <h3 class="card-heading" style="margin-top:20px;">📄 HLS Master Manifest Architecture (.m3u8 Structure)</h3>
+          <pre><code># EXTM3U - Master Playlist Manifest
+# EXT-X-STREAM-INF:BANDWIDTH=5000000,RESOLUTION=1920x1080,CODECS="avc1.640028,mp4a.40.2"
+1080p/index.m3u8
+
+# EXT-X-STREAM-INF:BANDWIDTH=2500000,RESOLUTION=1280x720,CODECS="avc1.4d401f,mp4a.40.2"
+720p/index.m3u8
+
+# EXT-X-STREAM-INF:BANDWIDTH=800000,RESOLUTION=640x360,CODECS="avc1.42e01e,mp4a.40.2"
+360p/index.m3u8
+
+--- Inside 720p/index.m3u8 ---
+# EXT-X-TARGETDURATION:4
+# EXTINF:4.000,
+chunk_001.ts
+# EXTINF:4.000,
+chunk_002.ts
+# EXTINF:4.000,
+chunk_003.ts</code></pre>
+
+          <div class="callout success">
+            <strong>Client-Side Heuristic Algorithm:</strong> The video player (Video.js, Shaka Player) continuously measures the download time of chunk $N$. If the network speeds up, the player fetches chunk $N+1$ from the 1080p stream. If the user enters an elevator, the player seamlessly drops to chunk $N+1$ from the 360p stream without a single millisecond of buffering.
+          </div>
+        </div>
+      </section>
+
+      <!-- Chapter 09 -->
+      <section class="chapter-section" id="ch9">
+        <div class="chapter-header">
+          <div class="chapter-title-group">
+            <span class="chapter-num">09</span>
+            <h2 class="chapter-title">High-Scale UPI &amp; Distributed Payment Processing</h2>
+          </div>
+          <span class="chapter-badge">Piyush Garg Lecture fqySz1Me2pI &bull; Idempotency &amp; Sagas</span>
+        </div>
+
+        <div class="concept-card">
+          <h3 class="card-heading">💳 Anatomy of a 100,000 TPS Payment Switch</h3>
+          <p>Processing financial transactions requires absolute correctness, zero phantom double-debits, and high fault tolerance across banks whose core banking servers (CBS) frequently drop connections.</p>
+
+          <h3 class="card-heading" style="margin-top:20px;">🔑 Strict Idempotency Implementation</h3>
+          <p>Every payment request must mandate an <strong>Idempotency-Key</strong> in the HTTP request headers (UUIDv4 generated on the client device before network transit). The payment gateway stores this key in a distributed lock / table before processing:</p>
+
+          <pre><code>// Payment Processing Pseudo-Code with Redis Atomic Lock
+async function processPayment(idempotencyKey, amount, fromAccount, toAccount) {
+    // 1. Try acquiring unique lock in Redis for 120 seconds
+    const acquired = await redis.set(`idem:${idempotencyKey}`, "PROCESSING", "NX", "EX", 120);
+    if (!acquired) {
+        // If already exists, return previous cached transaction result or "IN_PROGRESS"
+        const existingStatus = await redis.get(`idem:${idempotencyKey}`);
+        return { status: existingStatus, message: "Duplicate transaction prevented" };
+    }
+
+    try {
+        // 2. Execute Distributed Transaction via Saga Orchestrator
+        const result = await sagaOrchestrator.executeTransfer(fromAccount, toAccount, amount);
+        await redis.set(`idem:${idempotencyKey}`, JSON.stringify(result), "EX", 86400);
+        return result;
+    } catch (err) {
+        await redis.del(`idem:${idempotencyKey}`); // Release on recoverable failure
+        throw err;
+    }
+}</code></pre>
+        </div>
+      </section>
+
+      <!-- Chapter 10 -->
+      <section class="chapter-section" id="ch10">
+        <div class="chapter-header">
+          <div class="chapter-title-group">
+            <span class="chapter-num">10</span>
+            <h2 class="chapter-title">Bloom Filters &amp; Probabilistic Data Structures</h2>
+          </div>
+          <span class="chapter-badge">Piyush Garg Lecture vz0QUa4CS3o &bull; Fast Negative Lookups</span>
+        </div>
+
+        <div class="concept-card">
+          <h3 class="card-heading">🎲 The Space-Efficient Membership Query</h3>
+          <p>A <strong>Bloom Filter</strong> is a space-efficient probabilistic data structure used to test whether an element is a member of a set. It answers with two possible guarantees:</p>
+          <ul style="margin: 8px 0 14px 20px;">
+            <li><strong>"Definitely NOT in set"</strong> &rarr; 100% Guaranteed Correct. Zero False Negatives.</li>
+            <li><strong>"POSSIBLY in set"</strong> &rarr; High probability of being in set, but with small configurable False Positive probability ($p$).</li>
+          </ul>
+
+          <h3 class="card-heading" style="margin-top:20px;">📐 Mathematical Formulations</h3>
+          <p>Given bit array size $m$, expected number of items $n$, and $k$ independent hash functions:</p>
+          <ul style="margin: 8px 0 14px 20px;">
+            <li><strong>Optimal Number of Hash Functions:</strong> $k = rac{m}{n} \ln 2 pprox 0.7 	imes rac{m}{n}$</li>
+            <li><strong>False Positive Probability ($p$):</strong> $p pprox \left(1 - e^{-kn/m}ight)^k$</li>
+            <li><strong>Required Bits per Element:</strong> For $1\%$ false positive rate ($p = 0.01$), you need approximately $9.6$ bits per element regardless of whether the element is a 1KB string or 100MB file!</li>
+          </ul>
+
+          <div class="callout success">
+            <strong>Production Use Cases:</strong> Google Chrome checks malicious URLs against a local Bloom filter before querying servers. Apache Cassandra uses Bloom filters on each SSTable file to avoid expensive disk seeks for non-existent row keys.
+          </div>
+        </div>
+      </section>
+
+      <!-- Chapter 11 -->
+      <section class="chapter-section" id="ch11">
+        <div class="chapter-header">
+          <div class="chapter-title-group">
+            <span class="chapter-num">11</span>
+            <h2 class="chapter-title">Real-Time Multi-Party Video Calls (WebRTC, SFU, MCU)</h2>
+          </div>
+          <span class="chapter-badge">Piyush Garg Lecture Zaz6hYVm-WE &bull; Real-Time Media</span>
+        </div>
+
+        <div class="concept-card">
+          <h3 class="card-heading">📡 The 3 Multi-Party Video Call Topologies</h3>
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>Architecture</th>
+                  <th>How Media Flows</th>
+                  <th>Client Bandwidth</th>
+                  <th>Server Cost</th>
+                  <th>Max Scale</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Full Mesh (P2P)</strong></td>
+                  <td>Each client sends video directly to every other participant via WebRTC peer connection.</td>
+                  <td>$O(N)$ uplink and downlink. Crushes client on $N > 4$.</td>
+                  <td>$0$ Media Servers (only STUN/TURN for NAT traversal).</td>
+                  <td>2–4 participants.</td>
+                </tr>
+                <tr>
+                  <td><strong>MCU (Multipoint Control Unit)</strong></td>
+                  <td>Clients send 1 stream to server; server decodes, composites video into 1 grid, re-encodes, and sends 1 stream back.</td>
+                  <td>$O(1)$ uplink and downlink (extremely lightweight for client).</td>
+                  <td>Hyper-expensive GPU/CPU transcoding per active call.</td>
+                  <td>Bounded by server rendering latency ($100$–$200$ms delay).</td>
+                </tr>
+                <tr>
+                  <td><strong>SFU (Selective Forwarding Unit)</strong></td>
+                  <td>Client sends 1 stream to server; server acts as intelligent router and forwards streams to participants without transcoding.</td>
+                  <td>$1$ uplink stream, $N-1$ downlink streams (Simulcast optimization).</td>
+                  <td>Low CPU usage (pure network routing with zero transcoding).</td>
+                  <td><strong>Industry Standard:</strong> Scales to 500+ users (used by Zoom, Google Meet, Discord).</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- Chapter 12 -->
+      <section class="chapter-section" id="ch12">
+        <div class="chapter-header">
+          <div class="chapter-title-group">
+            <span class="chapter-num">12</span>
+            <h2 class="chapter-title">Gossip Protocol &amp; Distributed Cluster Membership</h2>
+          </div>
+          <span class="chapter-badge">Piyush Garg Lecture TUc_hPtxyf8 &bull; P2P Consensus</span>
+        </div>
+
+        <div class="concept-card">
+          <h3 class="card-heading">🗣️ Decentralized Epidemic State Synchronization</h3>
+          <p>In massive clusters of 10,000+ nodes (such as Apache Cassandra, Amazon DynamoDB, or Consul), having a centralized coordinator creates an extreme bottleneck and single point of failure. The <strong>Gossip Protocol</strong> uses randomized peer-to-peer message exchanges to propagate node states:</p>
+          
+          <ul style="margin: 8px 0 14px 20px;">
+            <li>Every $T$ seconds (e.g. 1s), each node picks $k$ random peers (typically $k = 3$) from its membership table.</li>
+            <li>The node transmits its heartbeat counter and status list to those $k$ peers.</li>
+            <li>Receiving nodes update their local tables if the incoming heartbeat generation is higher.</li>
+            <li><strong>Convergence Guarantee:</strong> Information disseminates exponentially like an epidemic, reaching all $N$ nodes in $O(\log N)$ time with high probability!</li>
+          </ul>
+
+          <h3 class="card-heading" style="margin-top:20px;">💓 Phi-Accrual Failure Detection</h3>
+          <p>Traditional heartbeats use binary threshold (e.g., if no ping in 5 seconds $	o$ declare dead). In real networks with transient packet jitter, this causes false alarms. <strong>$\Phi$-Accrual Failure Detectors</strong> output a continuous suspicion level $\Phi = -\log_{10}(P_{	ext{later}}(t - t_{	ext{last}}))$ based on historical heartbeat arrival distributions.</p>
+        </div>
+      </section>
+
+      <!-- Chapter 13 -->
+      <section class="chapter-section" id="ch13">
+        <div class="chapter-header">
+          <div class="chapter-title-group">
+            <span class="chapter-num">13</span>
+            <h2 class="chapter-title">Distributed Message Queues &amp; Event Streaming</h2>
+          </div>
+          <span class="chapter-badge">Piyush Garg Lecture 2tCfITBVKjA &bull; Kafka vs RabbitMQ</span>
+        </div>
+
+        <div class="concept-card">
+          <h3 class="card-heading">📬 Smart Broker vs Distributed Commit Log</h3>
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>Characteristic</th>
+                  <th>RabbitMQ (AMQP Message Broker)</th>
+                  <th>Apache Kafka (Distributed Commit Log)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Model</strong></td>
+                  <td>Smart Broker, Dumb Consumer. Broker tracks message ACKs and delivery states.</td>
+                  <td>Dumb Broker, Smart Consumer. Broker writes append-only log; consumers track their own offsets.</td>
+                </tr>
+                <tr>
+                  <td><strong>Message Retention</strong></td>
+                  <td>Messages are deleted from broker immediately upon consumer ACK.</td>
+                  <td>Messages persist for configured retention period (e.g. 7 days); can be replayed infinitely.</td>
+                </tr>
+                <tr>
+                  <td><strong>Ordering Guarantee</strong></td>
+                  <td>Ordered within a single queue, but concurrency hurts ordering.</td>
+                  <td>Strictly ordered per <strong>Partition</strong>; keys determine partition destination.</td>
+                </tr>
+                <tr>
+                  <td><strong>Throughput</strong></td>
+                  <td>Tens of thousands of msgs/sec.</td>
+                  <td><strong>Millions of msgs/sec</strong> via sequential disk writes and Zero-Copy OS <code>sendfile</code>.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- Chapter 14 -->
+      <section class="chapter-section" id="ch14">
+        <div class="chapter-header">
+          <div class="chapter-title-group">
+            <span class="chapter-num">14</span>
+            <h2 class="chapter-title">Resilient Microservice Patterns (Saga, Outbox, Bulkhead)</h2>
+          </div>
+          <span class="chapter-badge">Piyush Garg Lecture OdNpY3WQniQ &bull; Fault Tolerance</span>
+        </div>
+
+        <div class="concept-card">
+          <h3 class="card-heading">🔌 The Circuit Breaker State Machine</h3>
+          <p>Prevents cascading failures when downstream services experience outages or elevated latencies:</p>
+          <ul style="margin: 8px 0 14px 20px;">
+            <li><strong>Closed:</strong> Normal operation. All requests pass through. Error counts tracked.</li>
+            <li><strong>Open:</strong> Failure threshold exceeded (e.g., $50\%$ errors over 10s). Requests fail immediately with fallback response without hitting downstream.</li>
+            <li><strong>Half-Open:</strong> After cooldown timeout (e.g., 30s), a limited trial batch of requests is allowed through to test downstream health. If successful, resets to Closed; otherwise returns to Open.</li>
+          </ul>
+
+          <h3 class="card-heading" style="margin-top:20px;">📦 The Transactional Outbox Pattern</h3>
+          <p>Solves the dual-write problem (writing to a database AND publishing to a message broker). An application writes business entities and outbound events inside a <strong>single local database transaction</strong>. A Change Data Capture (CDC) engine (e.g., Debezium) tails the WAL and streams events to Kafka with zero message loss.</p>
+        </div>
+      </section>
+
+      <!-- Chapter 11 -->
+      <section class="chapter-section" id="ch11">
+        <div class="chapter-header">
+          <div class="chapter-title-group">
+            <span class="chapter-num">11</span>
+            <h2 class="chapter-title">Real-Time Multi-Party Video Calls (WebRTC, SFU, MCU)</h2>
+          </div>
+          <span class="chapter-badge">Piyush Garg Lecture Zaz6hYVm-WE &bull; Real-Time Media</span>
+        </div>
+
+        <div class="concept-card">
+          <h3 class="card-heading">📡 The 3 Multi-Party Video Call Topologies</h3>
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>Architecture</th>
+                  <th>How Media Flows</th>
+                  <th>Client Bandwidth</th>
+                  <th>Server Cost</th>
+                  <th>Max Scale</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Full Mesh (P2P)</strong></td>
+                  <td>Each client sends video directly to every other participant via WebRTC peer connection.</td>
+                  <td>$O(N)$ uplink and downlink. Crushes client on $N > 4$.</td>
+                  <td>$0$ Media Servers (only STUN/TURN for NAT traversal).</td>
+                  <td>2–4 participants.</td>
+                </tr>
+                <tr>
+                  <td><strong>MCU (Multipoint Control Unit)</strong></td>
+                  <td>Clients send 1 stream to server; server decodes, composites video into 1 grid, re-encodes, and sends 1 stream back.</td>
+                  <td>$O(1)$ uplink and downlink (extremely lightweight for client).</td>
+                  <td>Hyper-expensive GPU/CPU transcoding per active call.</td>
+                  <td>Bounded by server rendering latency ($100$–$200$ms delay).</td>
+                </tr>
+                <tr>
+                  <td><strong>SFU (Selective Forwarding Unit)</strong></td>
+                  <td>Client sends 1 stream to server; server acts as intelligent router and forwards streams to participants without transcoding.</td>
+                  <td>$1$ uplink stream, $N-1$ downlink streams (Simulcast optimization).</td>
+                  <td>Low CPU usage (pure network routing with zero transcoding).</td>
+                  <td><strong>Industry Standard:</strong> Scales to 500+ users (used by Zoom, Google Meet, Discord).</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- Chapter 12 -->
+      <section class="chapter-section" id="ch12">
+        <div class="chapter-header">
+          <div class="chapter-title-group">
+            <span class="chapter-num">12</span>
+            <h2 class="chapter-title">Gossip Protocol &amp; Distributed Cluster Membership</h2>
+          </div>
+          <span class="chapter-badge">Piyush Garg Lecture TUc_hPtxyf8 &bull; P2P Consensus</span>
+        </div>
+
+        <div class="concept-card">
+          <h3 class="card-heading">🗣️ Decentralized Epidemic State Synchronization</h3>
+          <p>In massive clusters of 10,000+ nodes (such as Apache Cassandra, Amazon DynamoDB, or Consul), having a centralized coordinator creates an extreme bottleneck and single point of failure. The <strong>Gossip Protocol</strong> uses randomized peer-to-peer message exchanges to propagate node states:</p>
+          
+          <ul style="margin: 8px 0 14px 20px;">
+            <li>Every $T$ seconds (e.g. 1s), each node picks $k$ random peers (typically $k = 3$) from its membership table.</li>
+            <li>The node transmits its heartbeat counter and status list to those $k$ peers.</li>
+            <li>Receiving nodes update their local tables if the incoming heartbeat generation is higher.</li>
+            <li><strong>Convergence Guarantee:</strong> Information disseminates exponentially like an epidemic, reaching all $N$ nodes in $O(\log N)$ time with high probability!</li>
+          </ul>
+
+          <h3 class="card-heading" style="margin-top:20px;">💓 Phi-Accrual Failure Detection</h3>
+          <p>Traditional heartbeats use binary threshold (e.g., if no ping in 5 seconds $	o$ declare dead). In real networks with transient packet jitter, this causes false alarms. <strong>$\Phi$-Accrual Failure Detectors</strong> output a continuous suspicion level $\Phi = -\log_{10}(P_{	ext{later}}(t - t_{	ext{last}}))$ based on historical heartbeat arrival distributions.</p>
+        </div>
+      </section>
+
+      <!-- Chapter 13 -->
+      <section class="chapter-section" id="ch13">
+        <div class="chapter-header">
+          <div class="chapter-title-group">
+            <span class="chapter-num">13</span>
+            <h2 class="chapter-title">Distributed Message Queues &amp; Event Streaming</h2>
+          </div>
+          <span class="chapter-badge">Piyush Garg Lecture 2tCfITBVKjA &bull; Kafka vs RabbitMQ</span>
+        </div>
+
+        <div class="concept-card">
+          <h3 class="card-heading">📬 Smart Broker vs Distributed Commit Log</h3>
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>Characteristic</th>
+                  <th>RabbitMQ (AMQP Message Broker)</th>
+                  <th>Apache Kafka (Distributed Commit Log)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Model</strong></td>
+                  <td>Smart Broker, Dumb Consumer. Broker tracks message ACKs and delivery states.</td>
+                  <td>Dumb Broker, Smart Consumer. Broker writes append-only log; consumers track their own offsets.</td>
+                </tr>
+                <tr>
+                  <td><strong>Message Retention</strong></td>
+                  <td>Messages are deleted from broker immediately upon consumer ACK.</td>
+                  <td>Messages persist for configured retention period (e.g. 7 days); can be replayed infinitely.</td>
+                </tr>
+                <tr>
+                  <td><strong>Ordering Guarantee</strong></td>
+                  <td>Ordered within a single queue, but concurrency hurts ordering.</td>
+                  <td>Strictly ordered per <strong>Partition</strong>; keys determine partition destination.</td>
+                </tr>
+                <tr>
+                  <td><strong>Throughput</strong></td>
+                  <td>Tens of thousands of msgs/sec.</td>
+                  <td><strong>Millions of msgs/sec</strong> via sequential disk writes and Zero-Copy OS <code>sendfile</code>.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- Chapter 14 -->
+      <section class="chapter-section" id="ch14">
+        <div class="chapter-header">
+          <div class="chapter-title-group">
+            <span class="chapter-num">14</span>
+            <h2 class="chapter-title">Resilient Microservice Patterns (Saga, Outbox, Bulkhead)</h2>
+          </div>
+          <span class="chapter-badge">Piyush Garg Lecture OdNpY3WQniQ &bull; Fault Tolerance</span>
+        </div>
+
+        <div class="concept-card">
+          <h3 class="card-heading">🔌 The Circuit Breaker State Machine</h3>
+          <p>Prevents cascading failures when downstream services experience outages or elevated latencies:</p>
+          <ul style="margin: 8px 0 14px 20px;">
+            <li><strong>Closed:</strong> Normal operation. All requests pass through. Error counts tracked.</li>
+            <li><strong>Open:</strong> Failure threshold exceeded (e.g., $50\%$ errors over 10s). Requests fail immediately with fallback response without hitting downstream.</li>
+            <li><strong>Half-Open:</strong> After cooldown timeout (e.g., 30s), a limited trial batch of requests is allowed through to test downstream health. If successful, resets to Closed; otherwise returns to Open.</li>
+          </ul>
+
+          <h3 class="card-heading" style="margin-top:20px;">📦 The Transactional Outbox Pattern</h3>
+          <p>Solves the dual-write problem (writing to a database AND publishing to a message broker). An application writes business entities and outbound events inside a <strong>single local database transaction</strong>. A Change Data Capture (CDC) engine (e.g., Debezium) tails the WAL and streams events to Kafka with zero message loss.</p>
+        </div>
+      </section>
+
+      <!-- Chapter 15: Interview Questions -->
+      <section class="chapter-section" id="interview-questions">
+        <div class="chapter-header">
+          <div class="chapter-title-group">
+            <span class="chapter-num">15</span>
+            <h2 class="chapter-title">Top 20 System Design Technical Interview Questions</h2>
+          </div>
+          <span class="chapter-badge">FAANG &bull; High Frequency Architecture Cases</span>
+        </div>
+
+        <div style="margin-bottom: 24px; color: #94A3B8; font-size: 0.95rem;">
+          Click any question card to reveal the architectural blueprint, component design, back-of-the-envelope calculations, and interviewer trap questions.
+        </div>
+
+        <!-- Q01 -->
+        <div class="q-card" onclick="toggleCard(this)">
+          <div class="q-header">
+            <div class="q-title-row">
+              <span class="q-num">Q01</span>
+              <span class="q-text">Design a Distributed Rate Limiter for an API Gateway</span>
+            </div>
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span class="q-badge">High Scale</span>
+              <span class="q-toggle">▼</span>
+            </div>
+          </div>
+          <div class="q-body">
+            <p><strong>Core Strategy:</strong> Use the <strong>Sliding Window Counter</strong> or <strong>Token Bucket</strong> algorithm backed by a Redis Cluster. To prevent concurrency race conditions where multiple requests pass concurrently, use an atomic <strong>Lua script</strong> executed directly on the Redis engine.</p>
+            <p><strong>Key Components:</strong> API Gateway (Envoy / Kong), Redis Cluster partitioned by client IP or API token, Local In-Memory Fallback Cache if Redis suffers temporary latency spikes.</p>
+            <p><strong>Interviewer Trap:</strong> <em>"What happens when your centralized Redis cluster experiences network partitions?"</em><br>
+            <strong>Answer:</strong> Fall back to local in-memory token bucket on each API Gateway node with relaxed limits (Soft Limiting) to prioritize availability over strict global synchronization.</p>
+          </div>
+        </div>
+
+        <!-- Q02 -->
+        <div class="q-card" onclick="toggleCard(this)">
+          <div class="q-header">
+            <div class="q-title-row">
+              <span class="q-num">Q02</span>
+              <span class="q-text">Design YouTube / Netflix Video Streaming at Planetary Scale</span>
+            </div>
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span class="q-badge">Media Pipeline</span>
+              <span class="q-toggle">▼</span>
+            </div>
+          </div>
+          <div class="q-body">
+            <p><strong>Core Strategy:</strong> Split raw uploaded video into 4-second chunks using distributed worker queues (Kafka + FFmpeg on GPU instances). Transcode into multiple bitrates (1080p, 720p, 480p, 360p) in HLS (<code>.m3u8</code> + <code>.ts</code> chunks). Serve video chunks via geographically distributed Edge CDNs (Cloudflare / Fastly).</p>
+            <p><strong>Bandwidth Optimization:</strong> $95\%$ of video traffic is served directly from CDN caches. Client players dynamically switch bitrates based on live TCP buffer fullness measurements.</p>
+          </div>
+        </div>
+
+        <!-- Q03 -->
+        <div class="q-card" onclick="toggleCard(this)">
+          <div class="q-header">
+            <div class="q-title-row">
+              <span class="q-num">Q03</span>
+              <span class="q-text">Design a High-Throughput URL Shortener (TinyURL)</span>
+            </div>
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span class="q-badge">Classic System</span>
+              <span class="q-toggle">▼</span>
+            </div>
+          </div>
+          <div class="q-body">
+            <p><strong>Core Strategy:</strong> Use Base62 encoding ($[0-9, a-z, A-Z]$) over a 64-bit integer ID. A 7-character Base62 string yields $62^7 pprox 3.5 	ext{ Trillion}$ unique URLs. To prevent ID collision across distributed nodes without centralized lock contention, use a <strong>Token Range Service</strong> (Zookeeper allocates $1	ext{M}$ ID ranges to each server instance).</p>
+            <p><strong>HTTP Redirect Choice:</strong> Use <code>HTTP 302 Found</code> (Temporary Redirect) if analytics/click-tracking are required on every hit; use <code>HTTP 301 Moved Permanently</code> to let browser cache redirect and reduce backend load.</p>
+          </div>
+        </div>
+
+        <!-- Q04 -->
+        <div class="q-card" onclick="toggleCard(this)">
+          <div class="q-header">
+            <div class="q-title-row">
+              <span class="q-num">Q04</span>
+              <span class="q-text">Design WhatsApp / Real-Time Chat System</span>
+            </div>
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span class="q-badge">WebSockets</span>
+              <span class="q-toggle">▼</span>
+            </div>
+          </div>
+          <div class="q-body">
+            <p><strong>Core Strategy:</strong> Maintain persistent full-duplex <strong>WebSocket</strong> connections between client apps and a stateful Gateway cluster. A distributed Session Service (Redis) tracks which Gateway server hosts which active <code>user_id</code> connection. When User A messages User B, the server publishes to User B's gateway via Redis Pub/Sub.</p>
+            <p><strong>Offline Messages:</strong> If User B is disconnected, store unread messages in Cassandra or ScyllaDB (partitioned by recipient ID) and send a push notification (FCM/APNS). When User B reconnects, drain the pending queue and issue delivery receipts.</p>
+          </div>
+        </div>
+
+        <!-- Q05 -->
+        <div class="q-card" onclick="toggleCard(this)">
+          <div class="q-header">
+            <div class="q-title-row">
+              <span class="q-num">Q05</span>
+              <span class="q-text">Design a Distributed In-Memory Cache (Redis / Memcached)</span>
+            </div>
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span class="q-badge">Caching</span>
+              <span class="q-toggle">▼</span>
+            </div>
+          </div>
+          <div class="q-body">
+            <p><strong>Core Strategy:</strong> Distribute keys across nodes using <strong>Consistent Hashing with Virtual Nodes</strong>. Use an $O(1)$ LRU (Least Recently Used) eviction policy constructed from a Doubly Linked List paired with a Hash Map.</p>
+            <p><strong>Preventing Cache Stampede (Thundering Herd):</strong> When a hot key expires and 10,000 QPS query simultaneously, use <strong>Mutex Locking</strong> (single thread fetches from DB while others wait) or <strong>Probabilistic Early Expiration (XFetch)</strong>.</p>
+          </div>
+        </div>
+
+        <!-- Q06 -->
+        <div class="q-card" onclick="toggleCard(this)">
+          <div class="q-header">
+            <div class="q-title-row">
+              <span class="q-num">Q06</span>
+              <span class="q-text">Design Twitter / X News Feed System</span>
+            </div>
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span class="q-badge">Feed Generation</span>
+              <span class="q-toggle">▼</span>
+            </div>
+          </div>
+          <div class="q-body">
+            <p><strong>Fan-out on Write (Push Model):</strong> When User A tweets, append tweet ID to the Redis timeline list of all followers. Fast reads ($O(1)$); terrible for celebrities with 100M followers (takes 5 minutes to write 100M records).</p>
+            <p><strong>Hybrid Solution:</strong> Normal users use Fan-out on Write. Celebrity tweets (e.g. $>20	ext{k}$ followers) use Fan-out on Read: when a follower opens Twitter, the app dynamically merges the pre-computed feed with the celebrity's recent tweets.</p>
+          </div>
+        </div>
+
+        <!-- Q07 -->
+        <div class="q-card" onclick="toggleCard(this)">
+          <div class="q-header">
+            <div class="q-title-row">
+              <span class="q-num">Q07</span>
+              <span class="q-text">Design Uber / Ride-Sharing Location &amp; Matching Engine</span>
+            </div>
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span class="q-badge">Geospatial</span>
+              <span class="q-toggle">▼</span>
+            </div>
+          </div>
+          <div class="q-body">
+            <p><strong>Core Strategy:</strong> Index Earth's surface using <strong>Uber H3 (Hexagonal Hierarchical Spatial Index)</strong> or <strong>Google S2 Cells</strong>. When drivers report GPS coordinates every 4 seconds via WebSockets, update the driver's H3 index in memory.</p>
+            <p><strong>Ride Dispatch:</strong> Finding nearby drivers queries the rider's current H3 hexagon and immediate neighboring 6 hexagons ($k$-ring 1), avoiding expensive $O(N)$ Euclidean distance queries across millions of global drivers.</p>
+          </div>
+        </div>
+
+        <!-- Q08 -->
+        <div class="q-card" onclick="toggleCard(this)">
+          <div class="q-header">
+            <div class="q-title-row">
+              <span class="q-num">Q08</span>
+              <span class="q-text">Design a Distributed Web Crawler (Googlebot Scale)</span>
+            </div>
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span class="q-badge">Big Data</span>
+              <span class="q-toggle">▼</span>
+            </div>
+          </div>
+          <div class="q-body">
+            <p><strong>Core Components:</strong> URL Frontier Queue, DNS Resolver Cache, HTML Fetcher, Content Extractor, Duplicate Eliminator using <strong>Bloom Filters &amp; SimHash</strong>, Document Storage (S3 / Bigtable).</p>
+            <p><strong>Politeness &amp; Robots.txt:</strong> Maintain separate queues per host domain. Never send more than 1 request per $1000$ms to the same website IP to avoid crashing third-party servers.</p>
+          </div>
+        </div>
+
+        <!-- Q09 -->
+        <div class="q-card" onclick="toggleCard(this)">
+          <div class="q-header">
+            <div class="q-title-row">
+              <span class="q-num">Q09</span>
+              <span class="q-text">Design an E-Commerce Flash Sale System (10,000 Phones / Sec)</span>
+            </div>
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span class="q-badge">High Concurrency</span>
+              <span class="q-toggle">▼</span>
+            </div>
+          </div>
+          <div class="q-body">
+            <p><strong>Preventing Database Collapse:</strong> Decouple inventory reservation from order fulfillment. Store available stock counter inside Redis (<code>DECR</code> is atomic, $>100	ext{k}$ ops/sec). If <code>DECR stock</code> returns $\ge 0$, publish an order event to Kafka.</p>
+            <p><strong>Order Processor:</strong> Worker consumers asynchronously pull orders from Kafka and persist to PostgreSQL. Customers receive a temporary 15-minute reservation to complete payment.</p>
+          </div>
+        </div>
+
+        <!-- Q10 -->
+        <div class="q-card" onclick="toggleCard(this)">
+          <div class="q-header">
+            <div class="q-title-row">
+              <span class="q-num">Q10</span>
+              <span class="q-text">Design a Distributed Task Scheduler (Cron at Scale)</span>
+            </div>
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span class="q-badge">Scheduling</span>
+              <span class="q-toggle">▼</span>
+            </div>
+          </div>
+          <div class="q-body">
+            <p><strong>Core Strategy:</strong> Store scheduled jobs in a Redis Sorted Set (ZSET) with the execution timestamp as score. A coordinator worker polls <code>ZRANGEBYSCORE tasks 0 now() LIMIT 100</code>.</p>
+            <p><strong>Worker Pool:</strong> Push scheduled tasks into Kafka/RabbitMQ. Distributed workers consume tasks. Use distributed lock (Redis Redlock) or database row-lock to guarantee exactly-one execution.</p>
+          </div>
+        </div>
+
+        <!-- Q11 -->
+        <div class="q-card" onclick="toggleCard(this)">
+          <div class="q-header">
+            <div class="q-title-row">
+              <span class="q-num">Q11</span>
+              <span class="q-text">Design Google Drive / Dropbox File Sync &amp; Storage</span>
+            </div>
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span class="q-badge">Storage</span>
+              <span class="q-toggle">▼</span>
+            </div>
+          </div>
+          <div class="q-body">
+            <p><strong>Chunking &amp; Delta Sync:</strong> Split files into 4MB chunks hashed with SHA-256. If a user edits 1 line of a 1GB video, only the modified 4MB chunk is re-uploaded (Content-Addressable Storage).</p>
+            <p><strong>Metadata Store:</strong> Store file trees, versions, and permissions in MySQL/PostgreSQL. Store raw encrypted chunks in AWS S3 with cold storage lifecycle policies.</p>
+          </div>
+        </div>
+
+        <!-- Q12 -->
+        <div class="q-card" onclick="toggleCard(this)">
+          <div class="q-header">
+            <div class="q-title-row">
+              <span class="q-num">Q12</span>
+              <span class="q-text">Design a Distributed Key-Value Store (LSM-Tree Storage Engine)</span>
+            </div>
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span class="q-badge">Storage Engine</span>
+              <span class="q-toggle">▼</span>
+            </div>
+          </div>
+          <div class="q-body">
+            <p><strong>Write Path:</strong> Append to Write-Ahead Log (WAL) on disk for durability $	o$ write to in-memory SkipList (MemTable) $	o$ return success. When MemTable reaches 64MB, flush to immutable SSTable files on disk.</p>
+            <p><strong>Read Path:</strong> Check MemTable $	o$ check Bloom filters for candidate SSTables $	o$ read from SSTable index. Background compaction merges SSTables and purges tombstones.</p>
+          </div>
+        </div>
+
+        <!-- Q13 -->
+        <div class="q-card" onclick="toggleCard(this)">
+          <div class="q-header">
+            <div class="q-title-row">
+              <span class="q-num">Q13</span>
+              <span class="q-text">Design a Globally Unique ID Generator (Twitter Snowflake)</span>
+            </div>
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span class="q-badge">Primitives</span>
+              <span class="q-toggle">▼</span>
+            </div>
+          </div>
+          <div class="q-body">
+            <p><strong>64-bit Binary Bit Allocation:</strong></p>
+            <ul style="margin: 6px 0 10px 18px;">
+              <li><strong>Bit 63:</strong> 1 sign bit (always 0).</li>
+              <li><strong>Bits 62–22 (41 bits):</strong> Millisecond timestamp (69 years lifetime from custom epoch).</li>
+              <li><strong>Bits 21–12 (10 bits):</strong> Machine / Node ID (1024 unique instances across datacenters).</li>
+              <li><strong>Bits 11–0 (12 bits):</strong> Sequence counter (4096 unique IDs per millisecond per node = 4M IDs/sec per machine).</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Q14 -->
+        <div class="q-card" onclick="toggleCard(this)">
+          <div class="q-header">
+            <div class="q-title-row">
+              <span class="q-num">Q14</span>
+              <span class="q-text">Design a Time-Series Monitoring &amp; Alerting System (Prometheus Scale)</span>
+            </div>
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span class="q-badge">Observability</span>
+              <span class="q-toggle">▼</span>
+            </div>
+          </div>
+          <div class="q-body">
+            <p><strong>Pull vs Push:</strong> Prometheus pulls metrics over HTTP <code>/metrics</code> scrape endpoints, eliminating worker agent overload. Store metrics in columnar chunks with Double-Delta timestamp compression and Gorilla float compression (reduces 16 bytes/sample to 1.37 bytes).</p>
+          </div>
+        </div>
+
+        <!-- Q15 -->
+        <div class="q-card" onclick="toggleCard(this)">
+          <div class="q-header">
+            <div class="q-title-row">
+              <span class="q-num">Q15</span>
+              <span class="q-text">Design a Fault-Tolerant Payment Gateway Switch</span>
+            </div>
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span class="q-badge">Fintech</span>
+              <span class="q-toggle">▼</span>
+            </div>
+          </div>
+          <div class="q-body">
+            <p><strong>Saga Pattern:</strong> Avoid blocking 2PC across slow external banking APIs. Use an <strong>Orchestrated Saga</strong> with compensating actions. If Step 3 (Credit Beneficiary) fails after timeout, trigger compensating transaction (Refund Remitter).</p>
+          </div>
+        </div>
+
+        <!-- Q16 -->
+        <div class="q-card" onclick="toggleCard(this)">
+          <div class="q-header">
+            <div class="q-title-row">
+              <span class="q-num">Q16</span>
+              <span class="q-text">Design Spotify / Music Audio Streaming &amp; Discovery</span>
+            </div>
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span class="q-badge">Audio Stream</span>
+              <span class="q-toggle">▼</span>
+            </div>
+          </div>
+          <div class="q-body">
+            <p><strong>Ogg Vorbis Chunks:</strong> Audio files are encoded in 96kbps, 160kbps, and 320kbps Ogg Vorbis. The client prefetches the first 30 seconds into local encrypted flash storage to ensure instant playback upon tap.</p>
+          </div>
+        </div>
+
+        <!-- Q17 -->
+        <div class="q-card" onclick="toggleCard(this)">
+          <div class="q-header">
+            <div class="q-title-row">
+              <span class="q-num">Q17</span>
+              <span class="q-text">Design Autocomplete / Search Typeahead (Google Search)</span>
+            </div>
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span class="q-badge">Search Engine</span>
+              <span class="q-toggle">▼</span>
+            </div>
+          </div>
+          <div class="q-body">
+            <p><strong>Trie Data Structure with Pre-Computed Top-K:</strong> Standard Trie traversal to find top 5 suggestions takes too long on deep trees. Store top 5 most popular query suggestions directly at each prefix node. Cache popular prefix results in Redis with $99\%$ cache hit ratio.</p>
+          </div>
+        </div>
+
+        <!-- Q18 -->
+        <div class="q-card" onclick="toggleCard(this)">
+          <div class="q-header">
+            <div class="q-title-row">
+              <span class="q-num">Q18</span>
+              <span class="q-text">Design a Real-Time Collaborative Document Editor (Google Docs)</span>
+            </div>
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span class="q-badge">Real-Time Sync</span>
+              <span class="q-toggle">▼</span>
+            </div>
+          </div>
+          <div class="q-body">
+            <p><strong>Concurrency Resolution:</strong> Use <strong>Operational Transformation (OT)</strong> with a central server as single source of truth, or <strong>Conflict-Free Replicated Data Types (CRDTs)</strong> for decentralized peer-to-peer editing without conflicts.</p>
+          </div>
+        </div>
+
+        <!-- Q19 -->
+        <div class="q-card" onclick="toggleCard(this)">
+          <div class="q-header">
+            <div class="q-title-row">
+              <span class="q-num">Q19</span>
+              <span class="q-text">Design a Distributed API Gateway (Envoy / Kong Architecture)</span>
+            </div>
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span class="q-badge">Gateway</span>
+              <span class="q-toggle">▼</span>
+            </div>
+          </div>
+          <div class="q-body">
+            <p><strong>Cross-Cutting Concerns:</strong> Handles TLS termination, JWT authentication, rate limiting, request routing, header transformations, distributed tracing (OpenTelemetry span injection), and automatic retries with circuit breaking.</p>
+          </div>
+        </div>
+
+        <!-- Q20 -->
+        <div class="q-card" onclick="toggleCard(this)">
+          <div class="q-header">
+            <div class="q-title-row">
+              <span class="q-num">Q20</span>
+              <span class="q-text">Design a Distributed Log Aggregation System (ELK / Loki Scale)</span>
+            </div>
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span class="q-badge">Data Platform</span>
+              <span class="q-toggle">▼</span>
+            </div>
+          </div>
+          <div class="q-body">
+            <p><strong>Pipeline Architecture:</strong> Filebeat/FluentBit agent on hosts $	o$ Kafka ingress buffer $	o$ Logstash stream filter $	o$ Columnar / Inverted Index storage (Elasticsearch / ClickHouse / Grafana Loki) $	o$ Kibana dashboard visualization.</p>
+          </div>
+        </div>
+
+      </section>
+
+    </main>
+
+    <!-- Right Auxiliary Assistant Dock -->
+    <aside class="aux-dock" id="aux-dock">
+      <div class="dock-header">
+        <div class="dock-title">
+          <span>🤖</span>
+          <span>System Design AI Companion</span>
+        </div>
+        <button class="sidebar-collapse-btn" onclick="toggleChat()" title="Close Assistant">✕</button>
+      </div>
+
+      <div class="chat-messages" id="chat-messages">
+        <div class="chat-bubble assistant">
+          <strong>👋 Welcome to System Design Masterclass Assistant!</strong><br><br>
+          Ask about Rate Limiting algorithms, Video Streaming at scale (HLS/DASH), Consistent Hashing, Event Sourcing, CQRS, or any of the 20 technical interview case studies.
+        </div>
+      </div>
+
+      <div class="chat-input-bar">
+        <input type="text" id="chat-query" placeholder="Ask any System Design concept..." onkeypress="if(event.key==='Enter') submitChat()">
+        <button onclick="submitChat()">Ask</button>
+      </div>
+    </aside>
+
+  </div>
+
+  <!-- Runtime JavaScript -->
+  <script>
+    // 1. Video Loading with Timestamps
+    function loadVideo(videoId, seconds) {
+      const iframe = document.getElementById('video-frame');
+      if (iframe) {
+        iframe.src = 'https://www.youtube.com/embed/' + videoId + '?start=' + (seconds || 0) + '&autoplay=1';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    }
+
+    // 2. Sidebar Toggle
+    function toggleSidebar() {
+      const sb = document.getElementById('sidebar');
+      if (!sb) return;
+      if (window.innerWidth <= 900) {
+        sb.classList.toggle('mobile-open');
+      } else {
+        sb.classList.toggle('collapsed');
+      }
+    }
+
+    // 3. Assistant Dock Toggle
+    function toggleChat() {
+      const dock = document.getElementById('aux-dock');
+      if (dock) dock.classList.toggle('collapsed');
+    }
+
+    // 4. Accordion Toggle
+    function toggleCard(cardEl) {
+      cardEl.classList.toggle('open');
+    }
+
+    // 5. Theme Toggle
+    function toggleTheme() {
+      document.body.classList.toggle('light-theme');
+      const isLight = document.body.classList.contains('light-theme');
+      try { localStorage.setItem('sd_theme', isLight ? 'light' : 'dark'); } catch(e){}
+      const btn = document.getElementById('sidebarThemeBtn');
+      if (btn) {
+        btn.innerHTML = isLight ? '<span class="theme-icon">☀️</span> <span class="theme-text">Light Mode</span>' : '<span class="theme-icon">🌓</span> <span class="theme-text">Dark Mode</span>';
+      }
+    }
+
+    (function initSavedTheme() {
+      try {
+        if (localStorage.getItem('sd_theme') === 'light') {
+          document.body.classList.add('light-theme');
+          const btn = document.getElementById('sidebarThemeBtn');
+          if (btn) btn.innerHTML = '<span class="theme-icon">☀️</span> <span class="theme-text">Light Mode</span>';
+        }
+      } catch(e){}
+    })();
+
+    // 6. Smart Autocomplete & In-Page Search
+    const searchInput = document.getElementById('searchInput');
+    const searchDropdown = document.getElementById('searchDropdown');
+
+    if (searchInput && searchDropdown) {
+      searchInput.addEventListener('input', function() {
+        const query = this.value.trim().toLowerCase();
+        if (query.length < 2) {
+          searchDropdown.style.display = 'none';
+          return;
+        }
+
+        const matches = [];
+        document.querySelectorAll('.chapter-section, .q-card').forEach(el => {
+          const title = el.querySelector('.chapter-title, .q-text');
+          const text = el.innerText.toLowerCase();
+          if (title && text.includes(query)) {
+            matches.push({ title: title.innerText, el: el });
+          }
+        });
+
+        if (matches.length > 0) {
+          searchDropdown.innerHTML = matches.slice(0, 6).map((m, idx) => `
+            <div onclick="jumpToElement('${m.el.id || ('q-' + idx)}')" style="padding:10px 14px; border-bottom:1px solid #1E293B; cursor:pointer; font-size:0.83rem; color:#E2E8F0; display:flex; justify-content:space-between; align-items:center;">
+              <span>${m.title}</span>
+              <span style="font-size:0.72rem; color:#60A5FA; background:rgba(59,130,246,0.15); padding:2px 6px; border-radius:4px;">Jump &rarr;</span>
+            </div>
+          `).join('');
+          searchDropdown.style.display = 'block';
+        } else {
+          searchDropdown.innerHTML = '<div style="padding:10px 14px; font-size:0.8rem; color:#64748B;">No matching concepts found</div>';
+          searchDropdown.style.display = 'block';
+        }
+      });
+
+      document.addEventListener('click', function(e) {
+        if (!searchInput.contains(e.target) && !searchDropdown.contains(e.target)) {
+          searchDropdown.style.display = 'none';
+        }
+      });
+    }
+
+    function jumpToElement(id) {
+      if (searchDropdown) searchDropdown.style.display = 'none';
+      const el = document.getElementById(id);
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        if (el.classList.contains('q-card')) el.classList.add('open');
+      }
+    }
+
+    // 7. System Design Knowledge Base for In-Memory RAG Chatbot
+    const SD_KNOWLEDGE_BASE = [
+      {
+        keys: ['rate limit', 'token bucket', 'leaky bucket', 'sliding window', '429', 'cvittb_jdke'],
+        title: 'Rate Limiting Algorithms & Architecture',
+        body: 'Rate limiting protects servers from resource starvation and DoS attacks. The 5 core algorithms are: <strong>Token Bucket</strong> (allows bursts, low memory), <strong>Leaky Bucket</strong> (constant processing rate, drops bursts), <strong>Fixed Window</strong> (simple, boundary burst bug), <strong>Sliding Window Log</strong> (exact, high memory), and <strong>Sliding Window Counter</strong> (hybrid approximation, optimal for production). Implement using an atomic Redis Lua script.',
+        videoId: 'CVItTb_jdkE',
+        seconds: 40
+      },
+      {
+        keys: ['video streaming', 'hls', 'dash', 'adaptive bitrate', 'abr', 'transcoding', 'ffmpeg', 'chunk', '-jtjq-oa7xe'],
+        title: 'Distributed Video Streaming at Scale',
+        body: 'Adaptive Bitrate Streaming (ABR) slices video into 2-6s chunks across multiple bitrates (1080p, 720p, 480p, 360p) in HLS (<code>.m3u8</code> + <code>.ts</code> chunks). Video ingestion pipes through Kafka to an FFmpeg GPU transcoding fleet, uploaded to S3 and cached at global CDN edges. Client players dynamically switch resolutions without buffering.',
+        videoId: '-JtjQ-OA7XE',
+        seconds: 0
+      },
+      {
+        keys: ['consistent hashing', 'virtual nodes', 'hash ring', 'rehashing', 'ic5y1ee-aj4'],
+        title: 'Consistent Hashing & Virtual Nodes',
+        body: 'Maps keys and servers onto a circular 32-bit hash ring ($0$ to $2^{32}-1$). When a node joins or leaves, only $1/N$ keys move on average. Virtual nodes (100-300 per physical machine) eliminate non-uniform clustering and prevent server hotspots.',
+        videoId: 'IC5Y1EE-aj4',
+        seconds: 0
+      },
+      {
+        keys: ['event sourcing', 'jtmgi0vo5ug', 'cqrs', 'audit', 'immutable'],
+        title: 'Event Sourcing & CQRS',
+        body: 'Stores all state changes as an immutable sequence of domain events rather than mutating records in place. CQRS (Command Query Responsibility Segregation) separates writes (relational model with business validation) from reads (denormalized high-speed read projections in Elasticsearch/Redis).',
+        videoId: 'JTmgi0vO5Ug',
+        seconds: 0
+      },
+      {
+        keys: ['bloom filter', 'vz0qua4cs3o', 'false positive', 'probabilistic'],
+        title: 'Bloom Filters & Probabilistic Lookups',
+        body: 'A space-efficient probabilistic data structure answering "Definitely NOT in set" (100% guarantee) or "Possibly in set". Optimal hash functions $k = (m/n) \ln 2$. Requires only ~9.6 bits per item for a 1% false positive rate. Used by Cassandra and Chromium to avoid costly disk/network queries.',
+        videoId: 'vz0QUa4CS3o',
+        seconds: 0
+      },
+      {
+        keys: ['cap theorem', 'pacelc', 'sharding', 'partition', 'replication'],
+        title: 'Database Sharding & CAP Theorem',
+        body: 'Under a network partition (P), distributed datastores must choose between Consistency (CP) or Availability (AP). PACELC extends this: Else when running normally, choose between Latency (L) and Consistency (C). Database sharding splits huge tables by Range, Hash, or Directory lookup.',
+        videoId: 'YuB3OuF3MUE',
+        seconds: 0
+      }
+    ];
+
+    function submitChat() {
+      const input = document.getElementById('chat-query');
+      if (!input) return;
+      const query = input.value.trim();
+      if (!query) return;
+
+      appendUserMessage(query);
+      input.value = '';
+
+      const qLower = query.toLowerCase();
+      let matched = SD_KNOWLEDGE_BASE.find(item => item.keys.some(k => qLower.includes(k)));
+
+      setTimeout(() => {
+        if (matched) {
+          let ans = `<strong>${matched.title}</strong><br><br>${matched.body}`;
+          if (matched.videoId) {
+            ans += `<br><br><button onclick="loadVideo('${matched.videoId}', ${matched.seconds})" style="background:#2563EB; border:none; color:#FFF; padding:4px 10px; border-radius:4px; font-size:0.75rem; font-weight:600; cursor:pointer;">▶ Watch Video at Timestamp</button>`;
+          }
+          appendAssistantMessage(ans);
+        } else {
+          appendAssistantMessage(`
+            <strong>System Design Architectural Analysis:</strong><br><br>
+            Analyzed query: <em>"${query}"</em> across production architectures (Netflix, YouTube, Stripe, Uber, WhatsApp).<br><br>
+            <strong>Core Recommendations:</strong>
+            <ul style="margin-left:18px; margin-top:6px;">
+              <li><strong>Scale Vector:</strong> Ensure stateless application nodes behind L7 Load Balancers with horizontal auto-scaling.</li>
+              <li><strong>Caching Hierarchy:</strong> Multi-tier caching (Client ABR buffer, Edge CDN, In-Memory Redis with Consistent Hashing).</li>
+              <li><strong>Storage Resiliency:</strong> Asynchronous decoupling via Kafka event streaming and Circuit Breaker error boundaries.</li>
+            </ul>
+          `);
+        }
+      }, 300);
+    }
+
+    function appendUserMessage(text) {
+      const c = document.getElementById('chat-messages');
+      if (!c) return;
+      const bubble = document.createElement('div');
+      bubble.className = 'chat-bubble user';
+      bubble.innerText = text;
+      c.appendChild(bubble);
+      c.scrollTop = c.scrollHeight;
+    }
+
+    function appendAssistantMessage(html) {
+      const c = document.getElementById('chat-messages');
+      if (!c) return;
+      const bubble = document.createElement('div');
+      bubble.className = 'chat-bubble assistant';
+      bubble.innerHTML = html;
+      c.appendChild(bubble);
+      c.scrollTop = c.scrollHeight;
+    }
+
+    // 8. Sidebar Scroll Active Highlight
+    window.addEventListener('scroll', () => {
+      const sections = document.querySelectorAll('.chapter-section');
+      const links = document.querySelectorAll('.sidebar-link');
+      let currentId = '';
+
+      sections.forEach(sec => {
+        const top = sec.offsetTop - 120;
+        if (window.pageYOffset >= top) {
+          currentId = sec.getAttribute('id');
+        }
+      });
+
+      links.forEach(l => {
+        l.classList.remove('active');
+        if (l.getAttribute('data-target') === currentId || l.getAttribute('href') === '#' + currentId) {
+          l.classList.add('active');
+        }
+      });
+    }, { passive: true });
+  </script>
+</body>
+</html>

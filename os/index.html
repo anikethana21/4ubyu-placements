@@ -2409,8 +2409,8 @@
     <header class="top-navbar">
     <div class="brand-group">
       <a href="../index.html" class="hub-link" title="Return to Placement Hub">
-        <span style="font-size:1.15rem; line-height:1; font-weight:700;">&larr;</span>
-        <span>Placement Hub</span>
+        <span class="hub-arrow" style="font-size:1.15rem; line-height:1; font-weight:700;">&larr;</span>
+        <span class="hub-text">Home</span>
       </a>
       <span class="brand-pill">Placements Notes</span>
       <h1 class="nav-title" style="margin:0; font-size:1.05rem;">Operating Systems Masterclass</h1>
@@ -2424,14 +2424,17 @@
 
     <div class="nav-controls">
       <button class="btn-nav" id="btn-toggle-sidebar" onclick="toggleSidebar()" title="Toggle Curriculum Outline Sidebar">
-        <span>☰</span> <span>Sidebar</span>
+        <span>☰</span> <span class="btn-text">Sidebar</span>
       </button>
       <button class="btn-nav" id="btn-toggle-chat" onclick="toggleChat()" title="Toggle Study Assistant">
-        <span>💬</span> <span>Assistant</span>
+        <span>💬</span> <span class="btn-text">Assistant</span>
       </button>
-      <button class="btn-nav" onclick="toggleTheme()" title="Toggle Dark/Light Mode">
-        <span>🌓</span> <span>Theme</span>
+      <button class="btn-nav" id="themeToggleBtn" onclick="toggleTheme()" title="Toggle Dark/Light Mode">
+        <span>🌓</span> <span class="btn-text">Theme</span>
       </button>
+      <a href="../index.html" class="btn-nav home-btn" title="Back to Central Placement Hub">
+        <span>🏠</span> <span class="btn-text">Hub</span>
+      </a>
     </div>
   </header>
   <!-- Dual-Track View Mode Switcher -->
@@ -2756,7 +2759,7 @@
 <!-- BEGIN chapter_1 -->
 
   <!-- CURRICULUM HERO BANNER -->
-  <section id="curriculum-overview" style="background:linear-gradient(135deg,#10B98118,#0596690a,#0A0F1E 55%);border:1px solid rgba(16,185,129,0.25);border-radius:14px;padding:44px 50px;margin-bottom:24px;position:relative;overflow:hidden;">
+  <section id="curriculum-hero" style="background:linear-gradient(135deg,#10B98118,#0596690a,#0A0F1E 55%);border:1px solid rgba(16,185,129,0.25);border-radius:14px;padding:44px 50px;margin-bottom:24px;position:relative;overflow:hidden;">
     <div style="position:absolute;top:-60px;right:-60px;width:220px;height:220px;background:radial-gradient(circle,#10B98122,transparent 70%);pointer-events:none;"></div>
     <div style="display:flex;gap:10px;margin-bottom:18px;flex-wrap:wrap;">
       <span style="font-size:11px;background:rgba(16,185,129,0.18);color:#34D399;border:1px solid rgba(16,185,129,0.35);padding:4px 12px;border-radius:999px;font-weight:700;letter-spacing:0.5px;">Track 1: Vivek Gupta (Ex-Google) — AlgoZenith OS Course</span>
@@ -7022,11 +7025,39 @@ ightarrow P_j$ indicates $P_i$ is waiting for a resource held by $P_j$. Periodic
   <!-- Interactive Logic Scripts -->
   <script>
     // 1. Guide Navigation
+    
+    // Theme Toggle Functionality
+    function toggleTheme() {
+      document.body.classList.toggle('light-theme');
+      var isLight = document.body.classList.contains('light-theme');
+      try {
+        localStorage.setItem('os_theme', isLight ? 'light' : 'dark');
+      } catch(e){}
+      var btn = document.getElementById('themeToggleBtn');
+      if (btn) btn.innerHTML = isLight ? '<span>☀️</span> <span class="btn-text">Light</span>' : '<span>🌓</span> <span class="btn-text">Theme</span>';
+    }
+    (function initSavedTheme() {
+      try {
+        if (localStorage.getItem('os_theme') === 'light') {
+          document.body.classList.add('light-theme');
+          var btn = document.getElementById('themeToggleBtn');
+          if (btn) btn.innerHTML = '<span>☀️</span> <span class="btn-text">Light</span>';
+        }
+      } catch(e){}
+    })();
+
     function jumpToChapter(chapterId) {
-      const el = document.getElementById(chapterId);
-      if (el) {
-        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      if (typeof currentViewMode !== 'undefined' && currentViewMode === 't2') {
+        switchViewMode('t1');
       }
+      setTimeout(function() {
+        const el = document.getElementById(chapterId);
+        if (el) {
+          const offset = 80;
+          const top = el.getBoundingClientRect().top + window.pageYOffset - offset;
+          window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
+        }
+      }, 50);
     }
 
     // 2. Interactive Real-Time Section Filter
@@ -7816,7 +7847,14 @@ document.addEventListener('DOMContentLoaded', function() {
     function getSections() {
       if (guideType === "dbms") {
         return document.querySelectorAll('article[id^="page-"], section#interview-questions');
-      } else if (guideType === "os" || guideType === "ml") {
+      } else if (guideType === "os") {
+        if (typeof currentViewMode !== 'undefined' && currentViewMode === 't2') {
+          return document.querySelectorAll('#track2-container article[id^="page-"]');
+        } else if (typeof currentViewMode !== 'undefined' && currentViewMode === 'both') {
+          return document.querySelectorAll('section#curriculum-overview, article[id^="chapter-"], section#placement-interview-drill, article[id^="page-"]');
+        }
+        return document.querySelectorAll('#track1-container section#curriculum-overview, #track1-container article[id^="chapter-"], #track1-container section#placement-interview-drill');
+      } else if (guideType === "ml") {
         return document.querySelectorAll('section#curriculum-overview, article[id^="chapter-"], section#interview-questions');
       } else if (guideType === "cn") {
         return document.querySelectorAll('article[id^="module-"], section#interview-questions');
@@ -7928,20 +7966,34 @@ document.addEventListener('DOMContentLoaded', function() {
 
     window.addEventListener('scroll', onScroll, { passive: true });
 
-    // Smooth click handler with offset compensation
+    // Smooth click handler with auto track switching and offset compensation
     pillLinks.forEach(function(link) {
       link.addEventListener('click', function(e) {
         var href = link.getAttribute('href') || '';
         if (href.startsWith('#')) {
           e.preventDefault();
           var targetId = href.substring(1);
-          var targetEl = document.getElementById(targetId);
-          if (targetEl) {
-            var offset = 75;
-            var targetTop = targetEl.getBoundingClientRect().top + window.pageYOffset - offset;
-            window.scrollTo({ top: Math.max(0, targetTop), behavior: 'smooth' });
-            setActivePill(targetId);
+          
+          // Auto switch track if clicking across tracks
+          if (targetId.startsWith('page-')) {
+            if (typeof currentViewMode !== 'undefined' && currentViewMode === 't1') {
+              switchViewMode('t2');
+            }
+          } else if (targetId.startsWith('chapter-') || targetId.indexOf('curriculum') !== -1 || targetId.indexOf('interview') !== -1 || targetId.startsWith('expanded-')) {
+            if (typeof currentViewMode !== 'undefined' && currentViewMode === 't2') {
+              switchViewMode('t1');
+            }
           }
+          
+          setTimeout(function() {
+            var targetEl = document.getElementById(targetId);
+            if (targetEl) {
+              var offset = 85;
+              var targetTop = targetEl.getBoundingClientRect().top + window.pageYOffset - offset;
+              window.scrollTo({ top: Math.max(0, targetTop), behavior: 'smooth' });
+              setActivePill(targetId);
+            }
+          }, 60);
         }
       });
     });
@@ -7994,6 +8046,9 @@ document.addEventListener('DOMContentLoaded', function() {
         b1.className = 'vms-btn t1';
         b2.className = 'vms-btn t2';
         bBoth.className = 'vms-btn active both';
+      }
+      if (typeof sections !== 'undefined' && typeof getSections === 'function') {
+        try { sections = getSections(); } catch(e){}
       }
     }
 
@@ -8100,19 +8155,21 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Page and Lecture Navigation
     function jumpToPage(pageNum) {
-      if (currentViewMode === 't1') {
+      if (typeof currentViewMode !== 'undefined' && currentViewMode === 't1') {
         switchViewMode('t2');
       }
       setTimeout(() => {
         const target = document.getElementById('page-' + pageNum);
         if (target) {
-          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          const offset = 80;
+          const top = target.getBoundingClientRect().top + window.pageYOffset - offset;
+          window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
           const ind = document.getElementById('page-indicator');
           if (ind) ind.innerText = 'Page ' + pageNum + ' of 41';
           const sel = document.getElementById('lecture-jump');
           if (sel) sel.value = String(pageNum);
         }
-      }, 50);
+      }, 60);
     }
 
     function jumpToSelectedLecture() {
